@@ -1,0 +1,40 @@
+g_PanelHasFocus           = false
+g_SelectedPlayer          = -1
+
+efn_onlyRevealedResources = true
+efn_onlyRevealedPlots     = true
+efn_resourceNames         = {}
+efn_resourceDataByName    = {}
+efn_resourcesToLocateList = {}
+efn_resourcePinData       = {}
+efn_functions             = {}
+
+-------------------------------------------------------------------------------
+
+efn_functions["IsResourceRevealed"] = function (resName, player)
+-- Function returns true iff the specified resource has been revealed to the specified player
+	local idxTech, idxCivic, techRevealed, civicRevealed
+	local resource = efn_resourceDataByName[resName]
+	idxTech  = resource.IndexPrereqTech
+	idxCivic = resource.IndexPrereqCivic
+	techRevealed  = (idxTech  == -1) or player:GetTechs():HasTech(idxTech)
+	civicRevealed = (idxCivic == -1) or player:GetCulture():HasCivic(idxCivic)
+	return techRevealed and civicRevealed
+end
+
+function efn_Initialize()
+	print("******EFN_Tuner loading")
+	local resource, resourceName, prereqTech, idxPrereqTech, prereqCivic, idxPrereqCivic
+	for resource in GameInfo.Resources() do
+	  resourceName = string.gsub(resource.ResourceType, "RESOURCE_", "")
+	  table.insert(efn_resourceNames, resourceName)
+	  prereqTech = resource.PrereqTech
+		idxPrereqTech = -1; if prereqTech then idxPrereqTech = GameInfo.Technologies[prereqTech].Index end
+	  prereqCivic = resource.PrereqCivic
+		idxPrereqCivic = -1; if prereqCivic then idxPrereqCivic = GameInfo.Civics[prereqCivic].Index end
+	  efn_resourceDataByName[resourceName] = {Index = resource.Index, IndexPrereqTech = idxPrereqTech, IndexPrereqCivic = idxPrereqCivic}
+	end
+	print("Initialized Resource Data with "..#efn_resourceNames.." items.")
+end
+
+efn_Initialize()

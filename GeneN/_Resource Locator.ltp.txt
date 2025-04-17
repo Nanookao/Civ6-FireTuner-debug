@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Resource Locator</Name>
+  <App>Civ6</App>
+  <EnterAction>
+  </EnterAction>
+  <ExitAction />
+  <CompatibleStates>
+    <string>EFN_Tuner</string>
+  </CompatibleStates>
+  <LoadStates>
+  </LoadStates>
+  <Actions>
+    <ActionData><Name>Add Resource</Name>
+      <Location>
+        <X>200</X>
+        <Y>30</Y>
+      </Location>
+      <Action>
+        if efn_SelectedResource then
+          table.insert(efn_resourcesToLocateList, efn_SelectedResource)
+        end
+      </Action>
+    </ActionData>
+    <ActionData><Name>Remove Resource</Name>
+      <Location>
+        <X>200</X>
+        <Y>60</Y>
+      </Location>
+      <Action>
+        if efn_SelectedResourceToLocateIndex then
+          table.remove(efn_resourcesToLocateList, efn_SelectedResourceToLocateIndex)
+        end
+      </Action>
+    </ActionData>
+    <ActionData><Name>Remove All</Name>
+      <Location>
+        <X>200</X>
+        <Y>90</Y>
+      </Location>
+      <Action>
+        efn_resourcesToLocateList = {}
+      </Action>
+    </ActionData>
+    <ActionData><Name>Highlight Resource Plots</Name>
+      <Location>
+        <X>325</X>
+        <Y>300</Y>
+      </Location>
+      <Action>
+        local plotsToHighlight = {}
+        UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, false)
+        if efn_resourcePinData and (#efn_resourcePinData &gt; 0) then
+          local idxPin, pinData
+          for idxPin, pinData in ipairs(efn_resourcePinData) do
+            table.insert(plotsToHighlight, pinData.PlotIndex)
+          end
+          UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, true, plotsToHighlight)
+        end
+      </Action>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls>
+    <BooleanControlData><Name>Show Only Revealed Resources</Name>
+      <Location>
+        <X>325</X>
+        <Y>220</Y>
+      </Location>
+      <GetFunction>function()
+          return efn_onlyRevealedResources
+        end
+      </GetFunction>
+      <SetFunction>function(value)
+          efn_onlyRevealedResources = value
+       end
+      </SetFunction>
+    </BooleanControlData>
+    <BooleanControlData><Name>Show Only Revealed Plots</Name>
+      <Location>
+        <X>325</X>
+        <Y>260</Y>
+      </Location>
+      <GetFunction>function()
+          return efn_onlyRevealedPlots
+        end
+      </GetFunction>
+      <SetFunction>function(value)
+          efn_onlyRevealedPlots = value
+       end
+      </SetFunction>
+    </BooleanControlData>  </BooleanControls>
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData><Name>Resources:150</Name>
+      <Location>
+        <X>10</X>
+        <Y>30</Y>
+      </Location>
+      <Size>
+        <Width>175</Width>
+        <Height>350</Height>
+      </Size>
+      <PopulateList>function()
+          return efn_resourceNames
+        end
+      </PopulateList>
+      <OnSelection>function(selection)
+          efn_SelectedResource = selection
+        end
+      </OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData><Name>ID:25;Resources To Locate:150</Name>
+      <Location>
+        <X>325</X>
+        <Y>30</Y>
+      </Location>
+      <Size>
+        <Width>175</Width>
+        <Height>175</Height>
+      </Size>
+      <PopulateList>function()
+          local itemList = {}
+          if efn_resourcesToLocateList ~= nil then
+            local idxLoc, resName
+            for idxLoc, resName in ipairs(efn_resourcesToLocateList) do
+              itemList[idxLoc] = idxLoc .. ";" .. resName
+            end
+          end
+          return itemList
+        end
+      </PopulateList>
+      <OnSelection>function(selection)
+          efn_SelectedResourceToLocateIndex = tonumber(selection)
+        end
+      </OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData><Name>ID:25;Resource:150;MapId:50;X:25;Y:25;Rev:25</Name>
+      <Location>
+        <X>545</X>
+        <Y>30</Y>
+      </Location>
+      <Size>
+        <Width>325</Width>
+        <Height>350</Height>
+      </Size>
+      <PopulateList>function()
+          local idxPin, pinData
+          efn_resourcePinData = {}
+          local resourcePinList = {}
+          if efn_resourcesToLocateList then
+            local resourceIndexesToLocate = {}
+            local idxPlayer, Player, playerVis
+            local idxLoc, resName, idxRes
+            idxPlayer = Game.GetLocalPlayer()
+            playerVis = PlayersVisibility[idxPlayer]
+            player    = Players[idxPlayer]
+            -- add efn_resourcesToLocateList items to resourceIndexesToLocate consistent with efn_onlyRevealedResources
+            for idxLoc, resName in ipairs(efn_resourcesToLocateList) do
+              if (not efn_onlyRevealedResources) or efn_functions.IsResourceRevealed(resName, player) then
+                resourceIndexesToLocate[resName] = efn_resourceDataByName[resName].Index
+              end
+            end
+            -- create a table of pin location data for plots containing resourcesToLocate consistent with efn_onlyRevealedPlots.
+            local idxPlot, plotRevealed, plot, resType
+            idxPin = 0
+            for idxPlot = 0, Map.GetPlotCount() - 1 do
+              plotRevealed = "no"; if playerVis:IsRevealed(idxPlot) then plotRevealed = "yes" end
+              if (not efn_onlyRevealedPlots) or (plotRevealed == "yes") then
+                plot = Map.GetPlotByIndex(idxPlot)
+                resType = plot:GetResourceType()
+                for resName, idxRes in pairs(resourceIndexesToLocate) do
+                  if resType == idxRes then
+                    idxPin = idxPin + 1
+                    efn_resourcePinData[idxPin] = {Name = resName, PlotIndex = idxPlot, PlotX = plot:GetX(), PlotY = plot:GetY()}
+                    resourcePinList[idxPin] = idxPin .. ";" .. resName .. ";" .. idxPlot .. ";" .. plot:GetX() .. ";" .. plot:GetY() .. ";" .. plotRevealed
+                    break
+                  end
+                end
+              end
+            end
+          end
+          return resourcePinList
+        end
+      </PopulateList>
+      <OnSelection>function(selection)
+          efn_SelectedLocatedResourceIndex = tonumber(selection)
+        end
+      </OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData><Name>Map Pins</Name>
+      <Location>
+        <X>880</X>
+        <Y>30</Y>
+      </Location>
+      <Size>
+        <Width>150</Width>
+        <Height>350</Height>
+      </Size>
+      <PopulateList>function()
+          return efn_resourcesToLocateList
+        end
+      </PopulateList>
+      <OnSelection>function(selection)
+          efn_SelectedResource = selection
+        end
+      </OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>
