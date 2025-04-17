@@ -146,7 +146,7 @@ end
         <Y>30</Y>
       </Location>
       <Size>
-        <Width>200</Width>
+        <Width>180</Width>
         <Height>300</Height>
       </Size>
 
@@ -180,13 +180,14 @@ end
 
     <SelectionListData>
       <Name>Spoof City Owner</Name>
+      <Sorted>false</Sorted>
 
       <Location>
-        <X>1120</X>
+        <X>1100</X>
         <Y>30</Y>
       </Location>
       <Size>
-        <Width>200</Width>
+        <Width>180</Width>
         <Height>300</Height>
       </Size>
 
@@ -237,13 +238,15 @@ end
     </SelectionListData>
 
 
+
+
     <SelectionListData>
       <Name>Constructed:0;Building:90;X,Y:40;Complete:60;Pillaged:60;DistrictID:60;</Name>
       <Sorted>false</Sorted>
 
       <Location>
         <X>0</X>
-        <Y>340</Y>
+        <Y>360</Y>
       </Location>
       <Size>
         <Width>580</Width>
@@ -292,10 +295,11 @@ end
 
     <SelectionListData>
       <Name>Districts:0;District:90;Note:60</Name>
+      <Sorted>false</Sorted>
 
       <Location>
         <X>600</X>
-        <Y>340</Y>
+        <Y>360</Y>
       </Location>
       <Size>
         <Width>180</Width>
@@ -317,10 +321,11 @@ end
 
     <SelectionListData>
       <Name>Buildings:0;Building:90;Note:60</Name>
+      <Sorted>false</Sorted>
 
       <Location>
         <X>800</X>
-        <Y>340</Y>
+        <Y>360</Y>
       </Location>
       <Size>
         <Width>180</Width>
@@ -342,10 +347,11 @@ end
 
     <SelectionListData>
       <Name>Wonders:0;Wonder:90;Note:60</Name>
+      <Sorted>false</Sorted>
 
       <Location>
         <X>1000</X>
-        <Y>340</Y>
+        <Y>360</Y>
       </Location>
       <Size>
         <Width>180</Width>
@@ -373,10 +379,11 @@ end
 
     <MultiselectListData>
       <Name>Pillaged Buildings</Name>
+      <Sorted>false</Sorted>
 
       <Location>
         <X>1200</X>
-        <Y>340</Y>
+        <Y>360</Y>
       </Location>
       <Size>
         <Width>180</Width>
@@ -430,10 +437,16 @@ end
   <BooleanControls>
     <BooleanControlData>
       <Name>Place District</Name>
+      <Location>
+        <X>600</X>
+        <Y>660</Y>
+      </Location>
+
       <GetFunction>function(IsPlaceDistrict)
   return TunerCity and TunerCity:GetPlacementBuilding('district')
 end
       </GetFunction>
+
       <SetFunction>function(IsPlaceDistrict)
   if not TunerCity then  return  end
   if IsPlaceDistrict then
@@ -443,17 +456,20 @@ end
   end
 end
       </SetFunction>
-      <Location>
-        <X>500</X>
-        <Y>320</Y>
-      </Location>
     </BooleanControlData>
+
     <BooleanControlData>
       <Name>Place Building</Name>
+      <Location>
+        <X>800</X>
+        <Y>690</Y>
+      </Location>
+
       <GetFunction>function(IsPlaceBuilding)
   return TunerCity and TunerCity:GetPlacementBuilding('building')
 end
       </GetFunction>
+
       <SetFunction>function(IsPlaceBuilding)
   if not TunerCity then  return  end
   if IsPlaceBuilding then
@@ -463,81 +479,35 @@ end
   end
 end
       </SetFunction>
-      <Location>
-        <X>390</X>
-        <Y>320</Y>
-      </Location>
     </BooleanControlData>
+
     <BooleanControlData>
       <Name>Pick City</Name>
-      <GetFunction>function(IsPickCity)
-end
-      </GetFunction>
-      <SetFunction>function(IsPickCity)
-end
-      </SetFunction>
       <Location>
         <X>240</X>
         <Y>320</Y>
       </Location>
+
+      <GetFunction>function(IsPickCity)
+end
+      </GetFunction>
+
+      <SetFunction>function(IsPickCity)
+end
+      </SetFunction>
     </BooleanControlData>
   </BooleanControls>
 
   <IntegerControls>
-    <IntegerControlData>
-      <Name>Outer Damage</Name>
-      <GetFunction>function(OuterDamage)
-  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-  return pDistrict and pDistrict.GetDamage and pDistrict:GetDamage(DefenseTypes.DISTRICT_OUTER);
-end
-      </GetFunction>
-      <SetFunction>function(OuterDamage)
-  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_OUTER, OuterDamage)
-end
-      </SetFunction>
-      <Location>
-        <X>150</X>
-        <Y>558</Y>
-      </Location>
-      <DefaultValue>0</DefaultValue>
-    </IntegerControlData>
-    <IntegerControlData>
-      <Name>Garrison Damage</Name>
-      <GetFunction>function(GarrisonDamage)
-  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-  return pDistrict and pDistrict.GetDamage and pDistrict:GetDamage(DefenseTypes.DISTRICT_GARRISON);
-end
-      </GetFunction>
-      <SetFunction>function(GarrisonDamage)
-  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_GARRISON, GarrisonDamage);
-end
-      </SetFunction>
-      <Location>
-        <X>10</X>
-        <Y>557</Y>
-      </Location>
-      <DefaultValue>0</DefaultValue>
-    </IntegerControlData>
-    <IntegerControlData>
-      <Name>Build Percent</Name>
-      <GetFunction>function(BuildPercent)
-  return TunerCity and TunerCity:GetBuildPercent() or "??";
-end
-      </GetFunction>
-      <SetFunction>function(BuildPercent)
-  TunerCity:SetBuildPercent(BuildPercent)
-end
-      </SetFunction>
-      <Location>
-        <X>560</X>
-        <Y>355</Y>
-      </Location>
-      <DefaultValue>100</DefaultValue>
-    </IntegerControlData>
+
     <IntegerControlData>
       <Name>City Count</Name>
+      <DefaultValue>0</DefaultValue>
+      <Location>
+        <X>10</X>
+        <Y>330</Y>
+      </Location>
+
       <GetFunction>function(CityCount)
   local i = 0;
   local count = 0;
@@ -550,17 +520,20 @@ end
   return count;
 end
       </GetFunction>
+
       <SetFunction>function(CityCount)
 end
       </SetFunction>
-      <Location>
-        <X>920</X>
-        <Y>323</Y>
-      </Location>
-      <DefaultValue>0</DefaultValue>
     </IntegerControlData>
+
     <IntegerControlData>
       <Name>District Count</Name>
+      <DefaultValue>0</DefaultValue>
+      <Location>
+        <X>120</X>
+        <Y>330</Y>
+      </Location>
+
       <GetFunction>function(DistrictCount)
   local i = 0;
   local count = 0;
@@ -573,224 +546,259 @@ end
   return count;
 end
       </GetFunction>
+
       <SetFunction>function(DistrictCount)
 end
       </SetFunction>
-      <Location>
-        <X>1030</X>
-        <Y>323</Y>
-      </Location>
-      <DefaultValue>0</DefaultValue>
     </IntegerControlData>
+
+
+
+
     <IntegerControlData>
       <Name>Add Production</Name>
+      <DefaultValue>1</DefaultValue>
+      <Location>
+        <X>250</X>
+        <Y>660</Y>
+      </Location>
+
       <GetFunction>function(AddProduction)
   return TunerCity and TunerCity.options.AddProduction or 1;
 end
       </GetFunction>
+
       <SetFunction>function(AddProduction)
   TunerCity.options.AddProduction = AddProduction;
 end
       </SetFunction>
-      <Location>
-        <X>730</X>
-        <Y>394</Y>
-      </Location>
-      <DefaultValue>10</DefaultValue>
     </IntegerControlData>
+
+
+    <IntegerControlData>
+      <Name>Build Percent</Name>
+      <DefaultValue>100</DefaultValue>
+      <Location>
+        <X>460</X>
+        <Y>660</Y>
+      </Location>
+
+      <GetFunction>function(BuildPercent)
+  return TunerCity and TunerCity:GetBuildPercent() or "??";
+end
+      </GetFunction>
+
+      <SetFunction>function(BuildPercent)
+  TunerCity:SetBuildPercent(BuildPercent)
+end
+      </SetFunction>
+    </IntegerControlData>
+
+
+
+
+    <IntegerControlData>
+      <Name>CityCenter Outer Damage</Name>
+      <DefaultValue>0</DefaultValue>
+      <Location>
+        <X>10</X>
+        <Y>800</Y>
+      </Location>
+
+      <GetFunction>function(OuterDamage)
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict.GetDamage and pDistrict:GetDamage(DefenseTypes.DISTRICT_OUTER);
+end
+      </GetFunction>
+
+      <SetFunction>function(OuterDamage)
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_OUTER, OuterDamage)
+end
+      </SetFunction>
+    </IntegerControlData>
+
+    <IntegerControlData>
+      <Name>CityCenter Garrison Damage</Name>
+      <DefaultValue>0</DefaultValue>
+      <Location>
+        <X>10</X>
+        <Y>830</Y>
+      </Location>
+
+      <GetFunction>function(GarrisonDamage)
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict.GetDamage and pDistrict:GetDamage(DefenseTypes.DISTRICT_GARRISON);
+end
+      </GetFunction>
+
+      <SetFunction>function(GarrisonDamage)
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_GARRISON, GarrisonDamage);
+end
+      </SetFunction>
+    </IntegerControlData>
+
+    <IntegerControlData>
+      <Name>Encampement Garrison Damage</Name>
+      <DefaultValue>0</DefaultValue>
+      <Location>
+        <X>10</X>
+        <Y>860</Y>
+      </Location>
+
+      <GetFunction>function(GarrisonDamage)
+  local pDistrict = TunerCity and TunerCity:GetDistrictOfSelectedCity('DISTRICT_ENCAMPMENT');
+  return pDistrict and pDistrict.GetDamage and pDistrict:GetDamage(DefenseTypes.DISTRICT_GARRISON);
+end
+      </GetFunction>
+
+      <SetFunction>function(GarrisonDamage)
+  local pDistrict = TunerCity and TunerCity:GetDistrictOfSelectedCity('DISTRICT_ENCAMPMENT');
+  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_GARRISON, GarrisonDamage);
+end
+      </SetFunction>
+    </IntegerControlData>
+
   </IntegerControls>
 
+
+
+
   <StringControls>
+
     <StringControlData>
-      <Name>Place Building</Name>
-      <GetFunction>function(PlaceBuilding)
-  local dbBuildingInfo = TunerCity and TunerCity:GetPlacementBuilding('building')
-  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or ""
-end
-      </GetFunction>
-      <SetFunction>function(PlaceBuilding)
-end
-      </SetFunction>
+      <Name>City Name:200</Name>
       <Location>
-        <X>270</X>
-        <Y>397</Y>
+        <X>250</X>
+        <Y>330</Y>
       </Location>
-    </StringControlData>
-    <StringControlData>
-      <Name>Currently Building</Name>
-      <GetFunction>function(CurrentlyBuilding)
-  return TunerCity and TunerCity:GetCurrentlyBuilding() or ""
-end
-      </GetFunction>
-      <SetFunction>function(CurrentlyBuilding)
-end
-      </SetFunction>
-      <Location>
-        <X>270</X>
-        <Y>357</Y>
-      </Location>
-    </StringControlData>
-    <StringControlData>
-      <Name>Property Key:100</Name>
-      <GetFunction>function(PropertyKey)
-  return TunerCity and TunerCity.options.PropertyKey;
-end
-      </GetFunction>
-      <SetFunction>function(PropertyKey)
-  TunerCity.options.PropertyKey = PropertyKey;
-end
-      </SetFunction>
-      <Location>
-        <X>910</X>
-        <Y>585</Y>
-      </Location>
-    </StringControlData>
-    <StringControlData>
-      <Name>Property Value:91</Name>
-      <GetFunction>function(PropertyValue)
-  return TunerCity and TunerCity.options.PropertyValue;
-end
-      </GetFunction>
-      <SetFunction>function(PropertyValue)
-  TunerCity.options.PropertyValue = PropertyValue;
-end
-      </SetFunction>
-      <Location>
-        <X>910</X>
-        <Y>616</Y>
-      </Location>
-    </StringControlData>
-    <StringControlData>
-      <Name>City:200</Name>
+
       <GetFunction>function(CityName)
   local pCity = TunerCity and TunerCity:GetSelectedCity()
   if not pCity then  return "- select city -"  end
   return Locale.Lookup( pCity:GetName() )
 end
       </GetFunction>
+
       <SetFunction>function(CityName)
   local pCity = TunerCity and TunerCity:GetSelectedCity()
   return pCity and pCity:SetName(CityName)
 end
       </SetFunction>
+    </StringControlData>
+
+
+    <StringControlData>
+      <Name>Currently Building</Name>
       <Location>
         <X>10</X>
-        <Y>321</Y>
+        <Y>660</Y>
       </Location>
+
+      <GetFunction>function(CurrentlyBuilding)
+  return TunerCity and TunerCity:GetCurrentlyBuilding() or ""
+end
+      </GetFunction>
+
+      <SetFunction>function(CurrentlyBuilding)
+end
+      </SetFunction>
     </StringControlData>
+
+
+
+
     <StringControlData>
       <Name>Place District</Name>
+      <Location>
+        <X>600</X>
+        <Y>690</Y>
+      </Location>
+
       <GetFunction>function(PlaceDistrict)
   local dbBuildingInfo = TunerCity and TunerCity:GetPlacementBuilding('district')
   return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or ""
 end
       </GetFunction>
+
       <SetFunction>function(PlaceDistrict)
 end
       </SetFunction>
-      <Location>
-        <X>500</X>
-        <Y>397</Y>
-      </Location>
     </StringControlData>
+
+
+    <StringControlData>
+      <Name>Place Building</Name>
+      <Location>
+        <X>700</X>
+        <Y>690</Y>
+      </Location>
+
+      <GetFunction>function(PlaceBuilding)
+  local dbBuildingInfo = TunerCity and TunerCity:GetPlacementBuilding('building')
+  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or ""
+end
+      </GetFunction>
+
+      <SetFunction>function(PlaceBuilding)
+end
+      </SetFunction>
+    </StringControlData>
+
+
+
+
+    <StringControlData>
+      <Name>Property Key</Name>
+      <Location>
+        <X>700</X>
+        <Y>330</Y>
+      </Location>
+
+      <GetFunction>function(PropertyKey)
+  return TunerCity and TunerCity.options.PropertyKey;
+end
+      </GetFunction>
+
+      <SetFunction>function(PropertyKey)
+  TunerCity.options.PropertyKey = PropertyKey;
+end
+      </SetFunction>
+    </StringControlData>
+
+    <StringControlData>
+      <Name>Property Value</Name>
+      <Location>
+        <X>850</X>
+        <Y>330</Y>
+      </Location>
+
+      <GetFunction>function(PropertyValue)
+  return TunerCity and TunerCity.options.PropertyValue;
+end
+      </GetFunction>
+
+      <SetFunction>function(PropertyValue)
+  TunerCity.options.PropertyValue = PropertyValue;
+end
+      </SetFunction>
+    </StringControlData>
+
   </StringControls>
+
+
+
 
   <Actions>
 
     <ActionData>
-      <Name>Increase Pop</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-return pCity and pCity:ChangePopulation(1);
-      </Action>
-      <Location>
-        <X>170</X>
-        <Y>354</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>Decrease Pop</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-return pCity and pCity:ChangePopulation(-1);
-      </Action>
-      <Location>
-        <X>170</X>
-        <Y>379</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>AI Focus: None</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-if pCity then
-  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.NO_CITY_AI_FOCUS_TYPE);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>729</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>AI Focus: Food</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-if pCity then
-  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_FOOD);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>756</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>AI Focus: Production</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-if pCity then
-  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_PRODUCTION);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>782</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>AI Focus: Gold</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-if pCity then
-  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_GOLD);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>808</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>DESTROY CITY</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-return pCity and Cities.DestroyCity(pCity);
-      </Action>
-      <Location>
-        <X>140</X>
-        <Y>521</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
       <Name>+ Production</Name>
+      <Location>
+        <X>370</X>
+        <Y>663</Y>
+      </Location>
+
       <Action>
 local pCity = TunerCity and TunerCity:GetSelectedCity()
 if pCity then
@@ -798,170 +806,70 @@ if pCity then
   pBuildQueue:AddProgress(TunerCity.options.AddProduction or 1);
 end
       </Action>
-      <Location>
-        <X>850</X>
-        <Y>396</Y>
-      </Location>
     </ActionData>
 
+
     <ActionData>
-      <Name>+25 Damage Garrison</Name>
-      <Action>
-local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
-      </Action>
+      <Name>Pop +1</Name>
       <Location>
         <X>10</X>
-        <Y>589</Y>
+        <Y>700</Y>
       </Location>
-    </ActionData>
 
-    <ActionData>
-      <Name>-25 Damage Garrison</Name>
       <Action>
-local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, -25);
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:ChangePopulation(1);
       </Action>
-      <Location>
-        <X>10</X>
-        <Y>613</Y>
-      </Location>
     </ActionData>
 
     <ActionData>
-      <Name>+25 Damage Outer</Name>
+      <Name>Pop -1</Name>
+      <Location>
+        <X>60</X>
+        <Y>700</Y>
+      </Location>
+
       <Action>
-local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_OUTER, 25);
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:ChangePopulation(-1);
       </Action>
-      <Location>
-        <X>150</X>
-        <Y>590</Y>
-      </Location>
     </ActionData>
 
-    <ActionData>
-      <Name>-25 Damage Outer</Name>
-      <Action>
-local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_OUTER, -25);
-      </Action>
-      <Location>
-        <X>150</X>
-        <Y>614</Y>
-      </Location>
-    </ActionData>
 
     <ActionData>
-      <Name>-25 Damage Garrison (ENC)</Name>
-      <Action>
-local pDistrict = TunerCity and TunerCity:GetDistrictOfSelectedCity("DISTRICT_ENCAMPMENT");
-return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, -25);
-      </Action>
+      <Name>Loyalty +10</Name>
       <Location>
-        <X>10</X>
-        <Y>678</Y>
+        <X>120</X>
+        <Y>700</Y>
       </Location>
-    </ActionData>
 
-    <ActionData>
-      <Name>+25 Damage Garrison (ENC)</Name>
-      <Action>
-local pDistrict = TunerCity and TunerCity:GetDistrictOfSelectedCity("DISTRICT_ENCAMPMENT");
-return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>654</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>+10 Loyalty</Name>
       <Action>
 local pCity = TunerCity and TunerCity:GetSelectedCity()
 return pCity and pCity:ChangeLoyalty(10);
       </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>Loyalty -10</Name>
       <Location>
         <X>190</X>
-        <Y>654</Y>
+        <Y>700</Y>
       </Location>
-    </ActionData>
 
-    <ActionData>
-      <Name>-10 Loyalty</Name>
       <Action>
 local pCity = TunerCity and TunerCity:GetSelectedCity()
-return pCity and pCity:ChangeLoyalty(-10);
+return pCity and pCity:ChangeLoyalty(10);
       </Action>
-      <Location>
-        <X>190</X>
-        <Y>677</Y>
-      </Location>
     </ActionData>
 
-    <ActionData>
-      <Name>MAKE FREE CITY</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-return pCity and CityManager.TransferCityToFreeCities(pCity);
-      </Action>
-      <Location>
-        <X>130</X>
-        <Y>486</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>Set Property</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-return pCity and pCity:SetProperty( TunerCity.options.PropertyKey, TunerCity.options.PropertyValue )
-      </Action>
-      <Location>
-        <X>910</X>
-        <Y>646</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>Clear Property</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-return pCity and pCity:SetProperty( TunerCity.options.PropertyKey, nil )
-      </Action>
-      <Location>
-        <X>910</X>
-        <Y>670</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>Set As Capital</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-return pCity and CityManager.SetAsCapital(pCity);
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>487</Y>
-      </Location>
-    </ActionData>
-
-    <ActionData>
-      <Name>Set As Original Capital</Name>
-      <Action>
-local pCity = TunerCity and TunerCity:GetSelectedCity()
-return pCity and CityManager.SetAsOriginalCapital(pCity);
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>521</Y>
-      </Location>
-    </ActionData>
 
     <ActionData>
       <Name>Toggle Pillaged</Name>
+      <Location>
+        <X>280</X>
+        <Y>700</Y>
+      </Location>
+
       <Action>
 local pDistrict = GetSelectedDistrict();
 if pDistrict then
@@ -969,10 +877,195 @@ if pDistrict then
   pDistrict:SetPillaged( not pillaged )
 end
       </Action>
+    </ActionData>
+
+
+
+
+    <ActionData>
+      <Name>+25 Damage Garrison</Name>
       <Location>
-        <X>1130</X>
-        <Y>399</Y>
+        <X>220</X>
+        <Y>800</Y>
       </Location>
+
+      <Action>
+local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
+      </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>+25 Damage Outer</Name>
+      <Location>
+        <X>220</X>
+        <Y>830</Y>
+      </Location>
+
+      <Action>
+local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_OUTER, 25);
+      </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>+25 Damage Garrison (ENC)</Name>
+      <Location>
+        <X>220</X>
+        <Y>860</Y>
+      </Location>
+
+      <Action>
+local pDistrict = TunerCity and TunerCity:GetDistrictOfSelectedCity("DISTRICT_ENCAMPMENT");
+return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
+      </Action>
+    </ActionData>
+
+
+
+
+    <ActionData>
+      <Name>AI Focus: None</Name>
+      <Location>
+        <X>400</X>
+        <Y>800</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+if pCity then
+  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.NO_CITY_AI_FOCUS_TYPE);
+end
+      </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>AI Focus: Food</Name>
+      <Location>
+        <X>400</X>
+        <Y>830</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+if pCity then
+  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_FOOD);
+end
+      </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>AI Focus: Production</Name>
+      <Location>
+        <X>400</X>
+        <Y>860</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+if pCity then
+  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_PRODUCTION);
+end
+      </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>AI Focus: Gold</Name>
+      <Location>
+        <X>400</X>
+        <Y>890</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+if pCity then
+  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_GOLD);
+end
+      </Action>
+    </ActionData>
+
+
+
+
+    <ActionData>
+      <Name>Set Property</Name>
+      <Location>
+        <X>1000</X>
+        <Y>330</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:SetProperty( TunerCity.options.PropertyKey, TunerCity.options.PropertyValue )
+      </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>Clear Property</Name>
+      <Location>
+        <X>1100</X>
+        <Y>330</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:SetProperty( TunerCity.options.PropertyKey, nil )
+      </Action>
+    </ActionData>
+
+
+
+
+    <ActionData>
+      <Name>Set As Capital</Name>
+      <Location>
+        <X>1300</X>
+        <Y>30</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and CityManager.SetAsCapital(pCity);
+      </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>Set As Original Capital</Name>
+      <Location>
+        <X>1300</X>
+        <Y>70</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and CityManager.SetAsOriginalCapital(pCity);
+      </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>MAKE FREE CITY</Name>
+      <Location>
+        <X>1300</X>
+        <Y>110</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and CityManager.TransferCityToFreeCities(pCity);
+      </Action>
+    </ActionData>
+
+    <ActionData>
+      <Name>DESTROY CITY</Name>
+      <Location>
+        <X>1300</X>
+        <Y>150</Y>
+      </Location>
+
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and Cities.DestroyCity(pCity);
+      </Action>
     </ActionData>
 
   </Actions>
