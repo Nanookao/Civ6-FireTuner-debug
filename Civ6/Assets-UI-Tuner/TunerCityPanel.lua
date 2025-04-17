@@ -127,7 +127,7 @@ function TunerCity:FormatCity(pCity :table, playerLoc :string)
 
   --local cityName = pCity:GetName():gsub("LOC_CITY_NAME_", "")
   local cityNameLoc = Locale.Lookup( pCity:GetName() )
-  local buildingLoc = Locale.Lookup( self:GetCurrentlyBuilding(pCity) )
+  local buildingLoc = self:GetCurrentlyBuildingLoc(pCity)
   --local progress = GetCityBuildProgress(pCity)
 
   local str = "    " .. playerID .. "," .. cityIDStr
@@ -147,7 +147,7 @@ end
 function TunerCity:SelectCity(selCity: string)
   -- No split available
   local playerIDStr, cityIDStr = selCity:match("^(%d+),(0x%x+)");
-  print("TunerCity:SelectCity()  selCity, playerIDStr, cityIDStr=", selCity, playerIDStr, cityIDStr)
+  --print("TunerCity:SelectCity()  selCity, playerIDStr, cityIDStr=", selCity, playerIDStr, cityIDStr)
   local pPlayer = Players[ tonumber(playerIDStr) ];
   self.selected.pPlayer = pPlayer;
 
@@ -156,23 +156,23 @@ function TunerCity:SelectCity(selCity: string)
   self.selected.pCity = pCity;
   if not pCity then  return pCity  end
 
+  --[[
   print('----');
   print('TunerCity:SelectCity("' .. selCity .. '"):', pCity:GetName());
   print('ContextPtr' , ContextPtr);
-  --[[
   print('city[panel]' , pCity);
   --print( '.GetBuildQueue[panel]' , pCity.GetBuildQueue )
   if  pCity.GetBuildQueue  then
     local pBuildQueue = pCity:GetBuildQueue()
     print( ':GetBuildQueue' , pBuildQueue )
-    print( ':CurrentlyBuilding'  , TunerCity:GetCurrentlyBuilding(pCity) )
+    print( ':CurrentlyBuilding'  , TunerCity:GetCurrentlyBuildingLoc(pCity) )
     print( '.GetTurnsLeft'       , pBuildQueue.GetTurnsLeft )
     print( '.GetProductionYield' , pBuildQueue.GetProductionYield )
   end
   print( 'LuaEvents.PrintCityInfo(pCity):' )
   LuaEvents.PrintCityInfo(pCity);
-  --]]
   print('----');
+  --]]
 
   return pCity;
 end
@@ -180,6 +180,7 @@ end
 
 
 function TunerCity:GetBuildingType(selBuilding: string, district :boolean)
+  print("TunerCity:GetBuildingType()  selBuilding=", selBuilding)
   -- Extract the db key from the line
   local name = string.match(selBuilding, '^[^;]+')
   if not name then  return  end
@@ -251,7 +252,7 @@ end
 function TunerCity:ListCityDistrictsOrBuildings(items :table, category :string, unbuilt :boolean)  -- , formatFunc :function
   items = items or {}
   local pCity = self:GetSelectedCity()
-  if not pCity then  return items  end
+  if true or not pCity then  return items  end
 
   local district = (category == 'district')
   local dbBuildings = district and GameInfo.Districts() or GameInfo.Buildings()
@@ -319,14 +320,14 @@ function TunerCity:ListCityBuildingsDetailed(items :table, unbuilt :boolean)  --
   local items = {};
   local pDistricts = pCity:GetDistricts();
   local numDistricts = pDistricts:GetNumDistricts();
-  for districtInfo in GameInfo.Districts() do
-    if pDistricts:HasDistrict(districtInfo.Index) then
-      local name = districtInfo.DistrictType:gsub("DISTRICT_", "");
-      local nameLoc = Locale.Lookup( districtInfo.Name );
+  for dbBuildingInfo in GameInfo.Districts() do
+    if pDistricts:HasDistrict(dbBuildingInfo.Index) then
+      local name = dbBuildingInfo.DistrictType:gsub("DISTRICT_", "");
+      local nameLoc = Locale.Lookup( dbBuildingInfo.Name );
       local prev = nil;
       -- numDistricts= max iterations as a safeguard against infinite loop
       for i = 0, numDistricts, 1 do
-        local pDistrict = pDistricts:GetDistrict(districtInfo.Index, i);
+        local pDistrict = pDistricts:GetDistrict(dbBuildingInfo.Index, i);
         if pDistrict == nil or pDistrict == prev then  break  end
         prev = pDistrict
         local str = name
@@ -355,10 +356,10 @@ function TunerCity:ListCityBuildingsPillage(items :table)
   for buildingInfo in GameInfo.Buildings() do
     local item = {};
     local name = Locale.Lookup( buildingInfo.Name );
-    --local name = buildingInfo.BuildingType:gsub("BUILDING_", "");
+    local name = buildingInfo.BuildingType:gsub("BUILDING_", "");
     if pBuildings:HasBuilding(buildingInfo.Index) then
-      --item.Text = name;
-      item.Text = name .. ";;;;" .. buildingInfo.BuildingType;
+      item.Text = name;
+      --item.Text = name .. ";;;;" .. buildingInfo.BuildingType;
       item.Selected =  pBuildings:IsPillaged(buildingInfo.Index)
       items[i] = item;
       i = i + 1;
@@ -366,6 +367,19 @@ function TunerCity:ListCityBuildingsPillage(items :table)
   end
 
   return items;
+end
+
+
+function TunerCity:SetBuildingPillaged(selBuilding :string, isPillaged :boolean)
+  local pCity = self:GetSelectedCity()
+  if not pCity then  return  end
+
+  -- Change the display name back to the full text key and look for it.
+  local buildingType = self:GetBuildingType(selBuilding)
+  local dbBuildingInfo = GameInfo.Buildings[buildingType];
+  if dbBuildingInfo then
+    pCity:GetBuildings():SetPillaged(dbBuildingInfo.Index, isPillaged);
+  end
 end
 
 
@@ -498,6 +512,15 @@ end
 
 
 -------------------------------------------------------------------------------
+function TunerCity:GetCurrentlyBuildingLoc(pCity :table)
+  local buildingType = self:GetCurrentlyBuilding(pCity)
+  local dbBuildingInfo = GameInfo.Buildings[buildingType]
+    or GameInfo.Districts[buildingType]
+    or GameInfo.Units[buildingType]
+    or GameInfo.Projects[buildingType]
+  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or buildingType
+end
+
 function TunerCity:GetCurrentlyBuilding(pCity :table)
   pCity = pCity or self:GetSelectedCity()
   if not pCity then  return ""  end
@@ -505,18 +528,6 @@ function TunerCity:GetCurrentlyBuilding(pCity :table)
   local pBuildQueue = pCity:GetBuildQueue()
   if pBuildQueue.CurrentlyBuilding then  return pBuildQueue:CurrentlyBuilding()  end
   return "<not accessible>"
-end
-
-function TunerCity:SetBuildingPillaged(selBuilding :string, isPillaged :boolean)
-  local pCity = self:GetSelectedCity()
-  if not pCity then  return  end
-
-  -- Change the display name back to the full text key and look for it.
-  local buildingType = self:GetBuildingType(selBuilding)
-  local dbBuildingInfo = GameInfo.Buildings[buildingType];
-  if dbBuildingInfo then
-    pCity:GetBuildings():SetPillaged(dbBuildingInfo.Index, isPillaged);
-  end
 end
 
 
@@ -587,7 +598,7 @@ end
 -------------------------------------------------------------------------------
 function TunerCity:ListRevealedToCiv()
   local pCity = self:GetSelectedCity()
-  if true or not pCity then  return  end
+  if not pCity then  return  end
 
   local items = {};
   if pCity ~= nil then
@@ -611,22 +622,24 @@ end
 -------------------------------------------------------------------------------
 function TunerCity:ListSpoofToCiv()
   local pCity = self:GetSelectedCity()
-  if true or not pCity then  return  end
+  if not pCity then  return  end
 
   local ownerIdx = pCity:GetOwner();
   local ownerCivName = PlayerConfigurations[ownerIdx]:GetCivilizationShortDescription();
-  local items = {};
+  local items = {}
+  -- local numPlayers = PlayerManager.GetWasEverAliveCount()
+  -- for playerID = 0, numPlayers-1, 1 do
   --for civ, i in GameInfo.Civilizations() do
   for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
-      if true then return end
+      -- if true then return end
     local pPlayer = Players[i];
     if pPlayer:WasEverAlive() then
       local spoofCivName = PlayerConfigurations[i]:GetCivilizationShortDescription()
-      local item = {
-        Text = Locale.Lookup( spoofCivName ),
-        Selected = (spoofCivName == ownerCivName),
-      }
-      table.insert( items, item );
+      local str = Locale.Lookup( spoofCivName )
+      table.insert( items, str );
+      if spoofCivName == ownerCivName then
+        items.selected = #items;
+      end
     end
   end
 
@@ -642,10 +655,14 @@ function TunerCity:SelectSpoofToCiv(selSpoofToCiv)
     local pPlayer = Players[i];
     local spoofCivName = pPlayer:WasEverAlive() and PlayerConfigurations[i]:GetCivilizationShortDescription()
     if spoofCivName and Locale.Lookup( spoofCivName ) == selSpoofToCiv then
+      local x, y = pCity:GetX(), pCity:GetY()
       print('----');
-      print('ContextPtr[panel]' , ContextPtr);
-      print( 'LuaEvents.SetCityCiv(city):' )
-      LuaEvents.SetCityCiv(pCity:GetX(), pCity:GetY(), civ.Index );
+      print('ContextPtr' , ContextPtr);
+      local str = x..','..y..' '
+        .. Locale.Lookup( pCity:GetName() )
+        ..' -> '..i..' '..selSpoofToCiv
+      print( 'LuaEvents.SetCityCiv("' .. selSpoofToCiv .. '"):  x,y,city,playerID,player= ' .. str )
+      LuaEvents.SetCityCiv(x, y, i)
       print('----');
       break;
     end
@@ -673,7 +690,7 @@ function OnPrintCityInfo(pCity)
 
   local pBuildQueue = pCity:GetBuildQueue()
   print( ':GetBuildQueue()' , pBuildQueue )
-  print( ':CurrentlyBuilding()'  , TunerCity:GetCurrentlyBuilding(pCity) )
+  print( ':CurrentlyBuilding()'  , TunerCity:GetCurrentlyBuildingLoc(pCity) )
   print( '.GetTurnsLeft'         , pBuildQueue.GetTurnsLeft )
   print( '.GetProductionYield'   , pBuildQueue.GetProductionYield )
   --print( ':GetTurnsLeft()'       , pBuildQueue:GetTurnsLeft() )

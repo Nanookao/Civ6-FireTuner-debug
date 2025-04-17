@@ -132,7 +132,7 @@ end
 
 
     <SelectionListData>
-      <Name>Spoof City Owner</Name>
+      <Name>Spoofed City Owner</Name>
       <Sorted>false</Sorted>
 
       <Location>
@@ -271,7 +271,7 @@ end
   <MultiselectLists>
 
     <MultiselectListData>
-      <Name>Pillaged Buildings</Name>
+      <Name>Buildings Pillaged?</Name>
       <Sorted>false</Sorted>
 
       <Location>
@@ -564,7 +564,7 @@ end
       </Location>
 
       <GetFunction>function(CurrentlyBuilding)
-  return TunerCity and TunerCity:GetCurrentlyBuilding() or ""
+  return TunerCity and TunerCity:GetCurrentlyBuildingLoc() or ""
 end
       </GetFunction>
 
