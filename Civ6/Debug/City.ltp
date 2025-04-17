@@ -161,7 +161,7 @@ end
 
 
     <SelectionListData>
-      <Name>Constructed:0;Building:90;X,Y:40;Complete:80;Pillaged:60;DistrictID:60;</Name>
+      <Name>Built Objects:0;DbIdx:30;Building:100;X,Y:40;State:90</Name>
       <Sorted>false</Sorted>
 
       <Location>
@@ -169,18 +169,17 @@ end
         <Y>360</Y>
       </Location>
       <Size>
-        <Width>580</Width>
+        <Width>390</Width>
         <Height>300</Height>
       </Size>
 
-      <PopulateList>function(PopulateList,Grouped)
-  return TunerCity and TunerCity:ListCityBuildingsGrouped( {}, false )
+      <PopulateList>function(PopulateList,Built)
+  return TunerCity and TunerCity:ListCityBuildingsBuilt( {} )
 end
       </PopulateList>
 
-      <OnSelection>function(selGrouped)
-  return TunerCity and TunerCity:SelectBuilding(selGrouped, 'grouped')
-  --return TunerCity and TunerCity:SelectDistrictByID(selGrouped)
+      <OnSelection>function(selBuilt)
+  return TunerCity and TunerCity:SelectBuilding(selBuilt)
 end
       </OnSelection>
 
@@ -188,15 +187,15 @@ end
 
 
     <SelectionListData>
-      <Name>Districts:0;District:90;Note:60</Name>
+      <Name>Districts:0;DbIdx:30;District:90;Built:60</Name>
       <Sorted>false</Sorted>
 
       <Location>
-        <X>600</X>
+        <X>400</X>
         <Y>360</Y>
       </Location>
       <Size>
-        <Width>180</Width>
+        <Width>290</Width>
         <Height>300</Height>
       </Size>
 
@@ -207,7 +206,6 @@ end
 
       <OnSelection>function(selDistrict)
   return TunerCity and TunerCity:SelectBuilding(selDistrict, 'district')
-  --return TunerCity and TunerCity:SelectDistrictByID(selDistrict)
 end
       </OnSelection>
 
@@ -215,15 +213,15 @@ end
 
 
     <SelectionListData>
-      <Name>Buildings:0;Building:90;Note:60</Name>
-      <Sorted>false</Sorted>
+      <Name>Buildings:0;DbIdx:30;Building:90;Built:60</Name>
+      <Sorted>true</Sorted>
 
       <Location>
-        <X>800</X>
+        <X>700</X>
         <Y>360</Y>
       </Location>
       <Size>
-        <Width>180</Width>
+        <Width>290</Width>
         <Height>300</Height>
       </Size>
 
@@ -239,9 +237,8 @@ end
 
     </SelectionListData>
 
-
     <SelectionListData>
-      <Name>Wonders:0;Wonder:90;Note:60</Name>
+      <Name>Wonders:0;DbIdx:30;Wonder:90;Built:60</Name>
       <Sorted>false</Sorted>
 
       <Location>
@@ -249,7 +246,7 @@ end
         <Y>360</Y>
       </Location>
       <Size>
-        <Width>180</Width>
+        <Width>290</Width>
         <Height>300</Height>
       </Size>
 
@@ -277,7 +274,7 @@ end
       <Sorted>false</Sorted>
 
       <Location>
-        <X>1200</X>
+        <X>1300</X>
         <Y>360</Y>
       </Location>
       <Size>
@@ -291,12 +288,10 @@ end
       </PopulateList>
 
       <OnSelected>function(selPillagedBuilding)
-  return TunerCity and TunerCity:SetBuildingPillaged(selPillagedBuilding, true)
 end
       </OnSelected>
 
       <OnDeselected>function(deselPillagedBuilding)
-  return TunerCity and TunerCity:SetBuildingPillaged(deselPillagedBuilding, false)
 end
       </OnDeselected>
 
@@ -645,7 +640,7 @@ end
     <ActionData>
       <Name>+ Production</Name>
       <Location>
-        <X>370</X>
+        <X>380</X>
         <Y>663</Y>
       </Location>
 
@@ -721,11 +716,7 @@ return pCity and pCity:ChangeLoyalty(-10);
       </Location>
 
       <Action>
-local pDistrict = GetSelectedDistrict();
-if pDistrict then
-  local pillaged = pDistrict:IsPillaged()
-  pDistrict:SetPillaged( not pillaged )
-end
+return TunerCity and TunerCity:TogglePillaged()
       </Action>
     </ActionData>
 

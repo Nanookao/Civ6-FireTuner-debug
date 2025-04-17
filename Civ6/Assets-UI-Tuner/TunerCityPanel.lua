@@ -1,7 +1,9 @@
 print( "loading TunerCityPanel.lua" )
+include( "DebugTools.lua" )
 --return
 
 TunerCity = TunerCity or {}
+TunerCity.ListIDdefault = 'built'
 TunerCity.selected = TunerCity.selected or {}
 TunerCity.options  = TunerCity.options  or { BuildPercent = 100 }
 
@@ -29,16 +31,6 @@ print(a,b,c)
 --]]
 
 -------------------------------------------------------------------------------
-function print_table(obj)
-	if  type(obj) ~= 'table'  then  print('type ' .. type(obj) .. ':  ' .. tostring(obj));  return  end
-	print('Properties of:  ' .. tostring(obj));
-	for k, v in pairs(obj) do
-		print('  '..k..'= '..tostring(v))
-	end
-end
-p=print_table
-
-
 function minmax(value, minimum, maximum)
   if value < minimum then  return minimum  end
   if value > maximum then  return maximum  end
@@ -100,7 +92,7 @@ function TunerCity:ListPlayerCities(items :table, pPlayer :table)
     if pCity == self.selected.pCity then
       items.selected = #items;
       local cityLoc = Locale.Lookup( pCity:GetName() )
-      print("TunerCity:ListPlayerCities()  found selected city #"..items.selected.." "..cityLoc )
+      -- print("TunerCity:ListPlayerCities()  found selected city #"..items.selected.." "..cityLoc )
     end
   end
   return items
@@ -186,51 +178,79 @@ end
 
 
 
+function TunerCity:GetSelectedBuilding(listID :string)
+  return self.selected[listID or self.ListIDdefault]
+end
+
 TunerCity.typePrefix = {
   district = "DISTRICT_",
   building = "BUILDING_",
   wonder   = "BUILDING_",
 }
 
-function TunerCity:SelectBuilding(selBuilding: string, category :string)
-  local prefix = self.typePrefix[category] or ""
+function TunerCity:SelectBuilding(selBuilding: string, listID :string)
+  print( "TunerCity:SelectBuilding()", selBuilding, listID, TunerCity.skipSelect and "skipSelect" )
+  if TunerCity.skipSelect and not listID then
+    TunerCity.skipSelect = false
+    return
+  end
+  listID = listID or self.ListIDdefault
+  local buildingType = selBuilding:match("^([^,]*)")
+  local districtIDStr = selBuilding:match(",([^,]*)")
   -- Restore the full buildingType
-  local buildingType = prefix..selBuilding:match("^[^,]*")
-  local districtID = selBuilding:match(",[^,]*")
-  local isDistrict = (category == 'district') or (prefix == "" and selBuilding:match("^DISTRICT_"))
+  local prefix = self.typePrefix[listID] or ""
+  buildingType = prefix..buildingType
+  local isDistrict = (listID == 'district') or (prefix == "" and selBuilding:match("^DISTRICT_"))
 
   local dbBuildings = isDistrict and GameInfo.Districts or GameInfo.Buildings
   local dbBuildingInfo = dbBuildings[buildingType]
-  self.selected[category] = dbBuildingInfo
+  self.selected[listID] = dbBuildingInfo
 
-  if not isDistrict then
-    self:SelectDistrictOfBuilding(dbBuildingInfo)
-  elseif districtID then
-    self:SelectDistrictByID(districtID)
+  if listID == self.ListIDdefault then
+    -- Select district only in built objects list
+    self:SelectDistrictOfBuilding(dbBuildingInfo, districtIDStr)
   end
 
   return dbBuildingInfo
 end
 
 
-function TunerCity:SelectDistrictOfBuilding(dbBuildingInfo :table)
+function TunerCity:SelectDistrictOfBuilding(dbBuildingInfo :table, districtIDStr :string)
   if not dbBuildingInfo then  return  end
   local pCity = self:GetSelectedCity()
   if not pCity then  return  end
 
-  local pDistricts = pCity and pCity:GetDistricts()
-  local pDistrict = pDistricts and pDistricts.GetDistrictByID and pDistricts:GetDistrictByID(districtID)
+  local districtID = tonumber(districtIDStr)
+  local pDistricts = pCity:GetDistricts()
+  local pDistrict
+  if dbBuildingInfo.BuildingType then
+    local plotID = pCity:GetBuildings():GetBuildingLocation(dbBuildingInfo.Index)
+    -- local pDistrict = pCity.DistrictsByPlotID[plotID]
+    pDistrict = pDistricts:GetDistrictAtLocation(plotID)
+    if not pDistrict then
+      -- Not built yet, try the building's associated district
+      local dbDistrictInfo = GameInfo.Districts[dbBuildingInfo.PrereqDistrict]
+      pDistrict = pDistricts:GetDistrictByIndex(dbDistrictInfo.Index)
+    end
+  else
+    pDistrict = districtID and pDistricts.GetDistrictByID and pDistricts:GetDistrictByID(districtID)
+      or pDistricts:GetDistrictByIndex(dbBuildingInfo.Index)
+  end
+
+  if not pDistrict then
+    print( "TunerCity:SelectDistrictOfBuilding()  district not found:  "
+      ..(dbBuildingInfo.DistrictType or dbBuildingInfo.BuildingType).."  "..tostring(districtIDStr) )
+  end
+  return pDistrict and self:SelectDistrict(pDistrict)
 end
 
 
-function TunerCity:SelectDistrictByID(districtID :string)
-  local pDistrict = pDistricts and pDistricts.GetDistrictByID and pDistricts:GetDistrictByID(districtID)
-  if pDistrict then
-    self:SetSelectedDistrict(pDistrict)
-    -- TODO: fix
+function TunerCity:SelectDistrict(pDistrict)
+  if pDistrict and self:SetSelectedDistrict(pDistrict) then
+    -- TODO: UI context
     -- UI.LookAtPlot( pDistrict:GetX(), pDistrict:GetY() )
+    return pDistrict
   end
-  return pDistrict
 end
 
 
@@ -263,7 +283,8 @@ function TunerCity:SetSelectedDistrict(pDistrict :table)
   local pCity = pDistrict:GetCity()
   local cityLoc = Locale.Lookup( pCity:GetName() )
     .." (at "..pCity:GetX()..","..pCity:GetY()..")"
-  local districtLoc = Locale.Lookup( GameInfo.Districts[pDistrict:GetType()].Name )
+  local districtIndex = pDistrict:GetType()
+  local districtLoc = Locale.Lookup( GameInfo.Districts[districtIndex].Name )
     .." (at "..pDistrict:GetX()..","..pDistrict:GetY()..")"
   print( "TunerCity:SetSelectedDistrict()  "..districtLoc.." of city "..cityLoc )
 
@@ -274,11 +295,14 @@ function TunerCity:SetSelectedDistrict(pDistrict :table)
   end
 
   self.selected.pDistrict = pDistrict
+  return pDistrict
 end
 
 
 function TunerCity:GetSelectedCityCenter()
   local pCity = self:GetSelectedCity()
+  -- local pPlayer = Players[pCity:GetOwner()]
+  -- return pPlayer:GetDistricts():FindID( pCity:GetDistrictID() )  -- pCity:GetDistrictID() is UI context only
   local pDistricts = pCity and pCity:GetDistricts()
   return pDistricts and pDistricts.GetDistrictAtLocation and pDistricts:GetDistrictAtLocation(pCity:GetX(), pCity:GetY())
 end
@@ -296,15 +320,15 @@ end
 
 
 -------------------------------------------------------------------------------
-function TunerCity:ListCityBuildingsGrouped(items :table, showUnbuilt :boolean)  -- , formatFunc :function
+function TunerCity:ListCityBuildingsBuilt(items :table, showUnbuilt :boolean)  -- , formatFunc :function
   local pCity = self:GetSelectedCity()
   if not pCity then  return  end
 
   items = items or {}
-  local category = 'grouped'
+  local listID = self.ListIDdefault
 
   local d = {
-    showUnbuilt = showUnbuilt,
+    showUnbuilt = true,
     shortID = false,
     columnXY = true,
     columnHealth = true,
@@ -313,41 +337,75 @@ function TunerCity:ListCityBuildingsGrouped(items :table, showUnbuilt :boolean) 
   d.pDistricts = pCity:GetDistricts()
   d.pBuildings = pCity:GetBuildings()
 
-  local numDistricts = d.pDistricts:GetNumDistricts();
-  for i = 0, numDistricts-1, 1 do
-    local pDistrict = d.pDistricts:GetDistrictByIndex(i)
-    local dbBuildingInfo = GameInfo.Districts[pDistrict:GetType()]
+  self:ProcessCityDistricts(pCity, d)
 
+  for i, pDistrict in ipairs(pCity.Districts) do
+    local districtIndex = pDistrict:GetType()
+    local dbBuildingInfo = GameInfo.Districts[districtIndex]
     local str = self:FormatDistrictOrBuilding(dbBuildingInfo, d, pDistrict)
     if str then
       table.insert(items, str)
-      if self.selected[category] == dbBuildingInfo then  items.selected = items.selected or #items  end
+      local sel = self.selected[listID]
+      if sel and sel.DistrictType and pDistrict == self:GetSelectedDistrict() then
+        items.selected = items.selected or #items
+      end
       self:ListDistrictBuildings(items, d, pDistrict)
+    end
+  end
+  local pDistrict = pCity.Districts.NoDistrict
+  if pDistrict then
+    table.insert(items, ";Buildings without district")
+    self:ListDistrictBuildings(items, d, pDistrict)
+  end
+  print( "TunerCity:ListCityBuildingsBuilt()  items.selected=", items.selected )
+  return items
+end
+
+
+function TunerCity:ListDistrictBuildings(items :table, d :table, pDistrict :table)
+  for i, buildingType in ipairs(pDistrict.BuildingTypes) do
+    local dbBuildingInfo = GameInfo.Buildings[buildingType]
+    --  .·◦⮡
+    local prefix = "⮡    "
+    -- local prefix = "·    "
+    local str = self:FormatDistrictOrBuilding(dbBuildingInfo, d, nil, prefix)
+    if str then
+      table.insert(items, str)
+      local sel = self.selected[listID]
+      if sel and sel.BuildingType == dbBuildingInfo.BuildingType then
+        items.selected = items.selected or #items
+      end
     end
   end
   return items
 end
 
 
-function TunerCity:ListCityBuildingsGrouped1(items :table, showUnbuilt :boolean)  -- , formatFunc :function
-  local pCity = self:GetSelectedCity()
-  if not pCity then  return  end
 
-  items = items or {}
-  local category = 'grouped'
-  local pDistricts = pCity:GetDistricts();
-  local numDistricts = pDistricts:GetNumDistricts();
 
-  local d = {
-    showUnbuilt = showUnbuilt,
-    shortID = false,
-    columnXY = true,
-    columnHealth = true,
-  }
-  d.pBuildQueue = pCity:GetBuildQueue()
-  d.pDistricts = pCity:GetDistricts()
-  d.pBuildings = pCity:GetBuildings()
+function TunerCity:ProcessCityDistricts(pCity :table, d :table)
+  pCity.Districts = {}
+  -- pCity.Districts.NoDistrict = nil
+  -- pCity.DistrictsByPlotID = {}
+  local numDistricts = d.pDistricts:GetNumDistricts()
+  for i = 1, numDistricts, 1 do
+    local pDistrict = d.pDistricts:GetDistrictByIndex(i-1)  -- indexing in C is 0-based vs in Lua 1-based
+    local districtIndex = pDistrict:GetType()
+    local dbBuildingInfo = GameInfo.Districts[districtIndex]
 
+    pCity.Districts[i] = pDistrict
+    pCity.Districts[dbBuildingInfo.DistrictType] = pDistrict
+    local plotID = Map.GetPlotIndex( pDistrict:GetLocation() )
+    -- pCity.DistrictsByPlotID[plotID] = pDistrict
+    pDistrict.BuildingTypes = {}
+  end
+  self:ProcessCityBuildings(pCity, d)
+end
+
+-- TODO: keep?
+function TunerCity:ProcessCityDistricts2(pCity :table, d :table)
+  pCity.Districts = {}
+  local numDistricts = d.pDistricts:GetNumDistricts()
   for dbBuildingInfo in GameInfo.Districts() do
     if d.pDistricts:HasDistrict(dbBuildingInfo.Index) then
       local prev = nil;
@@ -358,34 +416,51 @@ function TunerCity:ListCityBuildingsGrouped1(items :table, showUnbuilt :boolean)
         if pDistrict == nil or pDistrict == prev then  break  end
         prev = pDistrict
 
-        local str = self:FormatDistrictOrBuilding(dbBuildingInfo, d, pDistrict)
-        if str then
-          table.insert(items, str)
-          if self.selected[category] == dbBuildingInfo then  items.selected = items.selected or #items  end
-          self:ListDistrictBuildings(items, d, pDistrict)
-        end
+        pCity.Districts[i] = pDistrict
+        pCity.Districts[dbBuildingInfo.DistrictType] = pDistrict
+        local plotID = Map.GetPlotIndex( pDistrict.GetLocation() )
+        -- pCity.DistrictsByPlotID[plotID] = pDistrict
+        pDistrict.BuildingTypes = {}
       end
     end
   end
-  return items
+  self:ProcessCityBuildings(pCity, d)
+end
+
+
+function TunerCity:ProcessCityBuildings(pCity :table, d :table)
+  for dbBuildingInfo in GameInfo.Buildings() do
+    local buildingIndex = dbBuildingInfo.Index
+    local plotID = d.pBuildings:GetBuildingLocation(buildingIndex)
+    local complete = d.pBuildings.HasBuilding and d.pBuildings:HasBuilding(buildingIndex)
+    local placed = d.pBuildQueue.HasBuildingBeenPlaced and d.pBuildQueue:HasBuildingBeenPlaced(buildingIndex)
+    -- local pDistrict = pCity.DistrictsByPlotID[plotID]
+    local pDistrict = d.pDistricts:GetDistrictAtLocation(plotID)
+      or dbBuildingInfo.IsWonder and pCity.Districts.DISTRICT_WONDER
+      or pCity.Districts[dbBuildingInfo.PrereqDistrict]
+
+    if complete or placed then
+      if not pDistrict then
+        pDistrict = pCity.Districts.NoDistrict or { BuildingTypes = {} }
+        pCity.Districts.NoDistrict = pDistrict
+      end
+
+      local buildings = pDistrict.BuildingTypes
+      table.insert(buildings, dbBuildingInfo.BuildingType)
+    end
+  end
 end
 
 
 
 
-function TunerCity:ListDistrictBuildings(items :table, d :table, pDistrict :table)
-end
-
-
-
-
-function TunerCity:ListCityDistrictsOrBuildings(items :table, category :string, showUnbuilt :boolean)  -- , formatFunc :function
+function TunerCity:ListCityDistrictsOrBuildings(items :table, listID :string, showUnbuilt :boolean)  -- , formatFunc :function
   local pCity = self:GetSelectedCity()
   if not pCity then  return items  end
 
   items = items or {}
-  local showDistricts = (category == 'district')
-  local showWonders = (category == 'wonder')
+  local showDistricts = (listID == 'district')
+  local showWonders = (listID == 'wonder')
   local d = {
     showUnbuilt = showUnbuilt,
     shortID = true,
@@ -396,12 +471,12 @@ function TunerCity:ListCityDistrictsOrBuildings(items :table, category :string, 
   local dbBuildings = showDistricts and GameInfo.Districts or GameInfo.Buildings
 
   for dbBuildingInfo in dbBuildings() do
-    -- Add wonders only to wonder category, add rest to other category
-    local add = (dbBuildingInfo.IsWonder == showWonders) or (showWonders and dbBuildingInfo.DistrictType == "DISTRICT_WONDER")
+    -- Add wonders only to wonder list, add rest to other lists
+    local add = (not not dbBuildingInfo.IsWonder == showWonders) or (showWonders and dbBuildingInfo.DistrictType == "DISTRICT_WONDER")
     local str = add and self:FormatDistrictOrBuilding(dbBuildingInfo, d)
     if str then
       table.insert(items, str)
-      if self.selected[category] == dbBuildingInfo then  items.selected = items.selected or #items  end
+      if self.selected[listID] == dbBuildingInfo then  items.selected = items.selected or #items  end
     end
   end
   return items
@@ -410,65 +485,68 @@ end
 
 
 
-function TunerCity:FormatDistrictOrBuilding(dbBuildingInfo :table, d :table, pDistrict :table)
-  local buildingID = dbBuildingInfo.Index
+function TunerCity:FormatDistrictOrBuilding(dbBuildingInfo :table, d :table, pDistrict :table, namePrefix :string)
+  local buildingIndex = dbBuildingInfo.Index
   local ID = dbBuildingInfo.BuildingType or dbBuildingInfo.DistrictType
   local nameLoc = Locale.Lookup( dbBuildingInfo.Name )
+  namePrefix = namePrefix or ""
 
-  local complete, placed
+  local complete, placed, pillaged
   local location
   if dbBuildingInfo.DistrictType then
-    complete = d.pDistricts.HasDistrict and d.pDistricts:HasDistrict(buildingID)
-    placed = d.pBuildQueue.HasDistrictBeenPlaced and d.pBuildQueue:HasDistrictBeenPlaced(buildingID)
+    pDistrict = pDistrict or d.pDistricts:GetDistrict(buildingIndex)
+    complete = pDistrict and pDistrict:IsComplete()
+    placed = d.pBuildQueue.HasDistrictBeenPlaced and d.pBuildQueue:HasDistrictBeenPlaced(buildingIndex)
     if d.shortID then  ID = ID:gsub("^DISTRICT_", "")  end
 
-    pDistrict = pDistrict or d.pDistricts:GetDistrict(buildingID)
     if pDistrict then
       ID = ID..","..string.format("0x%x", pDistrict:GetID())
-      local x,y = pDistrict:GetLocation()
-      location = x..","..y
+      location = pDistrict:GetX()..","..pDistrict:GetY()
+      pillaged = pDistrict:IsPillaged()
     end
   else
-    complete = d.pBuildings.HasBuilding and d.pBuildings:HasBuilding(buildingID)
-    placed = d.pBuildQueue.HasBuildingBeenPlaced and d.pBuildQueue:HasBuildingBeenPlaced(buildingID)
+    complete = d.pBuildings.HasBuilding and d.pBuildings:HasBuilding(buildingIndex)
+    placed = d.pBuildQueue.HasBuildingBeenPlaced and d.pBuildQueue:HasBuildingBeenPlaced(buildingIndex)
+    pillaged = d.pBuildings:IsPillaged(buildingIndex)
     if d.shortID then  ID = ID:gsub("^BUILDING_", "")  end
-    local plot = Map.GetPlotByIndex( d.pBuildings:GetBuildingLocation(buildingID) )
+    local plot = Map.GetPlotByIndex( d.pBuildings:GetBuildingLocation(buildingIndex) )
     location = plot and plot:GetX()..","..plot:GetY()
   end
 
   -- List unbuilt buildings?
-  if not complete and not placed and not d.showUnbuilt then  return  end
+  local built = complete or placed
+  if not built and not d.showUnbuilt then  return  end
 
   local str = ID
-    ..";"..nameLoc
+    ..";"..buildingIndex
+    ..";"..namePrefix..nameLoc
 
   if d.columnXY then
     str = str..";"..(location or "")
   end
 
-  -- Build state
-  -- 🗹🗹☐☑✅🗹
-  -- local shouldBePlaced = not not dbBuildingInfo.DistrictType or dbBuildingInfo.IsWonder
-  local stateStr = complete and "✅ complete"
-    or placed and "🗹 incomplete"
-    or "☐"
+  -- Building state  🗹🗹☐☑✅🗹
+  local stateStr = not built and ""
+    or pillaged and "✅ pillaged 🔥"
+    or complete and "✅ complete"
+    or "🗹 incomplete"
   str = str..";"..stateStr
 
+  --[[
+  -- local shouldBePlaced = not not dbBuildingInfo.DistrictType or dbBuildingInfo.IsWonder
   -- Health state
   if d.columnHealth then
-    local pillaged = pDistrict and pDistrict:IsPillaged()
-      or d.pBuildings and d.pBuildings.IsPillaged and d.pBuildings:IsPillaged(buildingID)
-    --[[
-    -- UI context needed for IsContaminated():
-    local contaminated = d.pDistricts and d.pDistricts.IsContaminated and d.pDistricts:IsContaminated(buildingID)
+      or d.pBuildings and d.pBuildings.IsPillaged and d.pBuildings:IsPillaged(buildingIndex)
+    -- IsContaminated() is UI context only
+    local contaminated = d.pDistricts and d.pDistricts.IsContaminated and d.pDistricts:IsContaminated(buildingIndex)
     local healthStr = pillaged and contaminated and "☢🔥 contaminated,pillaged"
       or pillaged and "🔥 pillaged"
       or contaminated and "☢"
       or ""
-    --]]
     local healthStr = pillaged and "🔥 pillaged" or ""
     str = str..";"..healthStr
   end
+  --]]
 
   return str
 end
@@ -502,37 +580,45 @@ function TunerCity:ListCityBuildingsPillage(items :table)
 end
 
 
-function TunerCity:SetBuildingPillaged(selBuilding :string, isPillaged :boolean)
+function TunerCity:TogglePillaged()
   local pCity = self:GetSelectedCity()
   if not pCity then  return  end
+  local dbBuildingInfo = self:GetSelectedBuilding()
+  -- if not dbBuildingInfo then  return  end
 
-  -- Restore the display name back to the buildingType
-  local buildingType = "BUILDING_"..selBuilding
-  local dbBuildingInfo = GameInfo.Buildings[buildingType];
-  if dbBuildingInfo then
-    pCity:GetBuildings():SetPillaged(dbBuildingInfo.Index, isPillaged);
+  if dbBuildingInfo.DistrictType then
+    local pDistrict = self:GetSelectedDistrict()
+    if not pDistrict then  return  end
+    pDistrict:SetPillaged( not pDistrict:IsPillaged() )
+  else
+    local pBuildings = pCity:GetBuildings()
+    local buildingIndex = dbBuildingInfo.Index
+    pBuildings:SetPillaged(buildingIndex, not pBuildings:IsPillaged(buildingIndex) )
   end
+
+  TunerCity.skipSelect = true
+  print( "TunerCity:TogglePillaged()  DONE" )
 end
 
 
 
 
 -------------------------------------------------------------------------------
-function TunerCity:SetPlacementMode(category :string, start :boolean)
+function TunerCity:SetPlacementMode(listID :string, start :boolean)
   if start then
-    return self:StartPlacementMode(category)
+    return self:StartPlacementMode(listID)
   else
     return self:CancelPlacementMode()
   end
 end
 
-function TunerCity:StartPlacementMode(category :string)
+function TunerCity:StartPlacementMode(listID :string)
   --if self:InPlacementMode() then  return  end
-  local dbBuildingInfo = self.selected[category]
+  local dbBuildingInfo = self.selected[listID]
   if not dbBuildingInfo then  return  end
 
   -- Enter building placement mode
-  self.options.placementMode = category
+  self.options.placementMode = listID
 
   if not dbBuildingInfo.RequiresPlacement then
     -- Create it in its district, no need for placement
@@ -547,16 +633,16 @@ function TunerCity:FinishPlacement(plot)
   local dbBuildingInfo = self:GetPlacementModeBuilding()
   if not dbBuildingInfo then  return  end
 
-  local buildingID = dbBuildingInfo.Index
+  local buildingIndex = dbBuildingInfo.Index
   local percent = self.options.BuildPercent
   local pBuildQueue = pCity:GetBuildQueue();
 
   if dbBuildingInfo.DistrictType then
-    pBuildQueue:CreateIncompleteDistrict(buildingID, plot:GetIndex(), percent);
+    pBuildQueue:CreateIncompleteDistrict(buildingIndex, plot:GetIndex(), percent);
   elseif plot then
-    pBuildQueue:CreateIncompleteBuilding(buildingID, plot:GetIndex(), percent);
+    pBuildQueue:CreateIncompleteBuilding(buildingIndex, plot:GetIndex(), percent);
   else
-    pBuildQueue:CreateIncompleteBuilding(buildingID, percent);
+    pBuildQueue:CreateIncompleteBuilding(buildingIndex, percent);
   end
 
   -- Exit building placement mode
@@ -570,32 +656,32 @@ function TunerCity:CancelPlacementMode()
 end
 
 
-function TunerCity:InPlacementMode(category :string)
-  if category then  return category == self.options.placementMode  end
+function TunerCity:InPlacementMode(listID :string)
+  if listID then  return listID == self.options.placementMode  end
   return self.options.placementMode ~= nil
 end
 
 
 function TunerCity:GetPlacementModeBuilding()
-  return self.selected[ self.options.placementMode ]
+  return self:GetSelectedBuilding(self.options.placementMode)
 end
 
 
 
-function TunerCity:RemoveBuilding(category :string)
+function TunerCity:RemoveBuilding(listID :string)
   local pCity = self:GetSelectedCity()
   if not pCity then  return  end
 
-  local dbBuildingInfo = self.selected[category or 'building']
+  local dbBuildingInfo = self:GetSelectedBuilding(listID)
   if not dbBuildingInfo then  return  end
 
-  local buildingID = dbBuildingInfo.Index
-  if category == 'district' then
-    pCity:GetDistricts():RemoveDistrict(buildingID);
-    pCity:GetBuildQueue():RemoveDistrict(buildingID);
+  local buildingIndex = dbBuildingInfo.Index
+  if dbBuildingInfo.DistrictType then
+    pCity:GetDistricts():RemoveDistrict(buildingIndex);
+    pCity:GetBuildQueue():RemoveDistrict(buildingIndex);
   else
-    pCity:GetBuildings():RemoveBuilding(buildingID);
-    pCity:GetBuildQueue():RemoveBuilding(buildingID);
+    pCity:GetBuildings():RemoveBuilding(buildingIndex);
+    pCity:GetBuildQueue():RemoveBuilding(buildingIndex);
   end
 end
 
@@ -850,7 +936,8 @@ function TunerCity:MapClickHandler(plot)
 
   local cityLoc = pCity and Locale.Lookup( pCity:GetName() )
     .." (at "..pCity:GetX()..","..pCity:GetY()..")"
-  local districtLoc = pDistrict and Locale.Lookup( GameInfo.Districts[pDistrict:GetType()].Name )
+  local districtIndex = pDistrict:GetType()
+  local districtLoc = pDistrict and Locale.Lookup( GameInfo.Districts[districtIndex].Name )
   local msg = "TunerCity:MapClickHandler()  x,y= "..plot:GetX()..","..plot:GetY().."  "
   if pDistrict then  print( msg..districtLoc.." of city "..cityLoc )
   elseif pCity then  print( msg.."plot of city "..cityLoc )
@@ -892,7 +979,7 @@ function TunerCity:Initialize()
   LuaEvents.PrintCityInfo.Add( TunerCity.OnPrintCityInfo );
 end
 
--- Called by City.ltp <ExitAction>
+-- Called by City.ltp ExitAction or EnterAction
 function TunerCity:Shutdown()
   LuaEvents.UIDebugModeEntered.Remove( TunerCity.OnUIDebugModeEntered );
   LuaEvents.UIDebugModeExited.Remove( TunerCity.OnUIDebugModeExited );
