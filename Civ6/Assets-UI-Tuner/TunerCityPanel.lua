@@ -10,7 +10,6 @@ TunerCity.options  = TunerCity.options  or {}
 
 g_PlacementSettings =
 {
-  Active = false,
   Player = nil,
   CityID = nil,
   DistrictID = nil,
@@ -60,7 +59,7 @@ function TunerCity:ListPlayerCities(pPlayer :table, items :table)
 
   local pCities = pPlayer:GetCities();
   for ii, pCity in pCities:Members() do
-    local str = self:FormatCity(pCity)
+    local str = self:FormatCity(pCity, playerLoc)
     table.insert(items, str)
 
     if playerID == self.selected.PlayerID and pCity:GetID() == self.selected.CityID then
@@ -70,28 +69,37 @@ function TunerCity:ListPlayerCities(pPlayer :table, items :table)
   return items
 end
 
-function TunerCity:FormatCity(pCity :table)
-  local playerID = pCity:GetOwner():GetID;
+function TunerCity:FormatCity(pCity :table, playerLoc :string)
+  local playerID = pCity:GetOwner()
+  local cityID = pCity:GetID()
+  --local cityIdx = cityID & 0xFFFF
+  local cityIdx = cityID % 0x10000
+  local cityIdxUpper = math.floor(cityID / 0x10000)
+  local cityIDStr = string.format("0x%x", cityID)
+  --local cityIDStr = cityIdxUpper .. "," .. cityIdx
 
-  local origOwner = pCity:GetOriginalOwner();
-  local origOwnerLoc = "none";
-  if origOwner ~= -1 then
-    local origOwnerStr = PlayerConfigurations[origOwner]:GetCivilizationShortDescription();
-    origOwnerLoc = Locale.Lookup( origOwnerStr )
-    --origOwnerLoc = origOwnerStr:gsub("LOC_CIVILIZATION_", "");
-    if origOwnerLoc == "" then  origOwnerLoc = "Player " .. tostring(origOwner)  end
+  local origOwner = pCity:GetOriginalOwner()
+  local origOwnerLoc = ""
+  if origOwner ~= playerID then
+    origOwnerLoc = "none";
+    if origOwner ~= -1 then
+      local origOwnerStr = PlayerConfigurations[origOwner]:GetCivilizationShortDescription();
+      origOwnerLoc = Locale.Lookup( origOwnerStr )
+      --origOwnerLoc = origOwnerStr:gsub("LOC_CIVILIZATION_", "");
+      if origOwnerLoc == "" then  origOwnerLoc = "Player " .. tostring(origOwner)  end
+    end
+    origOwnerLoc = origOwnerLoc .. " ->"
   end
 
   --local cityName = pCity:GetName():gsub("LOC_CITY_NAME_", "")
   local cityNameLoc = Locale.Lookup( pCity:GetName() )
-
-  local pBuildQueue = pCity:GetBuildQueue()
-  local buildingLoc = Locale.Lookup( GetBQCurrentlyBuilding(pBuildQueue) )
+  local buildingLoc = Locale.Lookup( self:GetCurrentlyBuilding(pCity) )
   --local progress = GetCityBuildProgress(pCity)
 
-  local str = playerID .. "," .. pCity:GetID()
+  local str = "    " .. playerID .. "," .. cityIDStr
   .. ";" .. origOwnerLoc
   .. ";" .. playerLoc
+  .. ";" .. playerID .. "," .. cityIdx
   .. ";" .. cityNameLoc
   .. ";" .. pCity:GetX() .. "," .. pCity:GetY()
   .. ";" .. buildingLoc
@@ -99,28 +107,125 @@ function TunerCity:FormatCity(pCity :table)
 end
 
 
-function TunerCity:SelectCity(selBuilding: string)
+
+
+-------------------------------------------------------------------------------
+function TunerCity:SelectCity(selCity: string)
+  -- No split available
+  local playerIDStr, cityIDStr = selCity:match("^(%d+),(%d+);");
+  local pPlayer = Players[ tonumber(playerIDStr) ];
+  self.selected.pPlayer = pPlayer;
+
+  local cityID = tonumber(cityIDStr)
+  local pCity = cityID and pPlayer and pPlayer:GetCities():FindID(cityID);
+  self.selected.pCity = pCity;
+  if not pCity then  return pCity  end
+
+  print('----');
+  print('TunerCity:SelectCity("' .. selCity .. '"):', pCity:GetName());
+  print('ContextPtr' , ContextPtr);
+  --[[
+  print('city[panel]' , pCity);
+  --print( '.GetBuildQueue[panel]' , pCity.GetBuildQueue )
+  if  pCity.GetBuildQueue  then
+    local pBuildQueue = pCity:GetBuildQueue()
+    print( ':GetBuildQueue' , pBuildQueue )
+    print( ':CurrentlyBuilding'  , TunerCity:GetCurrentlyBuilding(pCity) )
+    print( '.GetTurnsLeft'       , pBuildQueue.GetTurnsLeft )
+    print( '.GetProductionYield' , pBuildQueue.GetProductionYield )
+  end
+  print( 'LuaEvents.PrintCityInfo(pCity):' )
+  LuaEvents.PrintCityInfo(pCity);
+  --]]
+  print('----');
+
+  return pCity;
+end
+
+
+
+function TunerCity:GetBuildingType(selBuilding: string, district :boolean)
   -- Extract the db key from the line
   local name = string.match(selBuilding, '^[^;]+')
+  if not name then  return  end
+
   -- Restore the full BuildingType
-  self.selected.BuildingType = name and ("BUILDING_" .. name)
+  return district and ('DISTRICT_' .. name) or ('BUILDING_' .. name)
+end
+
+
+function TunerCity:SelectBuilding(selBuilding: string, category :string)
+  local district = (category == 'district')
+  local dbBuildings = district and GameInfo.Districts() or GameInfo.Buildings()
+  local buildingType = self:GetBuildingType(selBuilding, district)
+  local dbBuildingInfo = dbBuildings[buildingType]
+  self.selected[category] = dbBuildingInfo
+  return dbBuildingInfo
+end
+
+
+function TunerCity:SelectDistrictByID(selDistrictState: string)
+  local districtIDStr = string.match(selDistrictState, "%d+")
+  local districtID = tonumber(districtIDStr)
+
+  local pCity = self:GetSelectedCity()
+  local pDistricts = pCity and pCity:GetDistricts()
+  local pDistrict = pDistricts and pDistricts.GetDistrictByID and pDistricts:GetDistrictByID(districtID)
+  self.selected.pDistrict = pDistrict
+  return pDistrict
+end
+
+
+function TunerCity:SelectDistrictAt(plot: table)
+  local pDistrict = CityManager.GetDistrictAt(plot)
+  self.selected.pDistrict = pDistrict
+  return pDistrict
 end
 
 
 
 
 -------------------------------------------------------------------------------
-function TunerCity:ListCityDistrictsOrBuildings(pCity :table, items :table, category :string)  -- , formatFunc :function
+function TunerCity:GetSelectedCity()
+  return self.selected.pCity
+end
+
+function TunerCity:GetSelectedCityCenter()
+  local pCity = self:GetSelectedCity()
+  local pDistricts = pCity and pCity:GetDistricts()
+  return pDistricts and pDistricts.GetDistrictAtLocation and pDistricts:GetDistrictAtLocation(pCity:GetX(), pCity:GetY())
+end
+
+function TunerCity:GetDistrictOfSelectedCity(districtType :string)
+  local dbBuildingInfo = GameInfo.Districts[districtType];
+  if not dbBuildingInfo then  return  end
+
+  local pCity = self:GetSelectedCity()
+  local pDistricts = pCity and pCity:GetDistricts();
+  return pDistricts and pDistricts.GetDistrict and pDistricts:GetDistrict(dbBuildingInfo.Index);
+end
+
+function TunerCity:GetSelectedDistrict()
+  return self.selected.pDistrict
+end
+
+
+
+
+-------------------------------------------------------------------------------
+function TunerCity:ListCityDistrictsOrBuildings(items :table, category :string)  -- , formatFunc :function
   items = items or {}
+  local pCity = self:GetSelectedCity()
   if not pCity then  return items  end
 
-  local dbBuildings = category == 'district' and GameInfo.Districts() or GameInfo.Buildings()
-  local pBuildings = category == 'district' and pCity:GetDistricts() or pCity:GetBuildings()
-  local addWonders == category == 'wonder'
+  local district = (category == 'district')
+  local dbBuildings = district and GameInfo.Districts() or GameInfo.Buildings()
+  local pBuildings = district and pCity:GetDistricts() or pCity:GetBuildings()
+  local wonder = (category == 'wonder')
   local pBuildQueue = pCity:GetBuildQueue();
   for dbBuildingInfo in dbBuildings do
     -- Add wonders only to wonder category, add rest to other category
-    local add = (dbBuildingInfo.IsWonder == addWonders)
+    local add = (dbBuildingInfo.IsWonder == wonder)
     local str = add and self:FormatDistrictOrBuilding(pBuildings, pBuildQueue, dbBuildingInfo, options)
     if str then
       local item = { Text = str }
@@ -169,44 +274,29 @@ end
 
 
 
-function TunerCity:SelectDistrict(selBuilding: string)
-  -- Extract the db key from the line
-  local name = string.match(selBuilding, '^[^;]+')
-  if not name then  return  end
-  -- Restore the full BuildingType
-  self.selected.dbDistrictInfo = GameInfo.Districts[ 'DISTRICT_' .. name ]
-end
 
-function TunerCity:SelectBuilding(selBuilding: string)
-  -- Extract the db key from the line
-  local name = string.match(selBuilding, '^[^;]+')
-  if not name then  return  end
-  -- Restore the full BuildingType
-  self.selected.dbBuildingInfo = GameInfo.Buildings[ 'BUILDING_' .. name ]
-end
-
-
-
-function TunerCity:BuildBuilding(category :string)
+-------------------------------------------------------------------------------
+function TunerCity:StartPlacement(category :string)
+  --if self:InPlacementMode() then  return  end
   local dbBuildingInfo = self.selected[category]
   if not dbBuildingInfo then  return  end
 
-  self.selected.build = dbBuildingInfo
+  self.selected.placeBuilding = dbBuildingInfo
   if dbBuildingInfo.RequiresPlacement then
     -- Enter building placement mode.
-    self.PlacementHandler = self.PlaceBuilding
+    self.PlacementHandler = self.FinishPlacement
     LuaEvents.TunerEnterDebugMode();
   else
     -- Just create it, it will go in its district.
-    self:PlaceBuilding()
+    self:FinishPlacement()
   end
 end
 
-function TunerCity:PlaceBuilding(plot)
+function TunerCity:FinishPlacement(plot)
   local pCity = self:GetSelectedCity()
   if not pCity then  return  end
 
-  local dbBuildingInfo = self.selected.build
+  local dbBuildingInfo = self.selected.placeBuilding
   if not dbBuildingInfo then  return  end
 
   local buildingID = dbBuildingInfo.Index
@@ -220,6 +310,25 @@ function TunerCity:PlaceBuilding(plot)
   else
     pBuildQueue:CreateIncompleteBuilding(buildingID, percent);
   end
+
+  self.selected.placeBuilding = nil
+end
+
+
+function TunerCity:CancelPlacementMode()
+  self.selected.placeBuilding = nil
+end
+
+
+function TunerCity:InPlacementMode()
+  return self.selected.placeBuilding
+end
+
+
+function TunerCity:GetPlacementBuilding(category :string)
+  local district = (category == 'district')
+  local dbBuildingInfo = self.selected.placeBuilding
+  return dbBuildingInfo and (district == not dbBuildingInfo.BuildingType) and dbBuildingInfo
 end
 
 
@@ -228,7 +337,7 @@ function TunerCity:RemoveBuilding(category :string)
   local pCity = self:GetSelectedCity()
   if not pCity then  return  end
 
-  local dbBuildingInfo = self.selected[category]
+  local dbBuildingInfo = self.selected[category or 'building']
   if not dbBuildingInfo then  return  end
 
   local buildingID = dbBuildingInfo.Index
@@ -242,43 +351,23 @@ function TunerCity:RemoveBuilding(category :string)
 end
 
 
+function TunerCity:RemoveDistrict()
+  local pDistrict = self:GetSelectedDistrict()
+  if pDistrict then  return CityManager.DestroyDistrict(pDistrict)  end
+  return TunerCity:RemoveBuilding('district')
+end
+
+
 
 
 -------------------------------------------------------------------------------
-function GetSelectedPlayer()
-  return g_PlacementSettings.Player and Players[g_PlacementSettings.Player];
-end
+function TunerCity:MapClickHandler(plot)
+  if self:InPlacementMode() then
+    TunerCity:FinishPlacement(plot)
+    return
+  end
+  
 
-function GetSelectedCity()
-  if not g_PlacementSettings.CityID then  return  end
-  local pPlayer = GetSelectedPlayer();
-  local cities = pPlayer and pPlayer:GetCities();
-  return cities and cities:FindID(g_PlacementSettings.CityID);
-end
-
-function GetSelectedCityCenter()
-  local pCity = GetSelectedCity();
-  local pCityDistricts = pCity and pCity:GetDistricts();
-  return pCityDistricts and pCityDistricts.GetDistrictAtLocation and pCityDistricts:GetDistrictAtLocation(pCity:GetX(), pCity:GetY());
-end
-
-function GetDistrictOfSelectedCity(districtType :string)
-  local districtEntry = GameInfo.Districts[districtType];
-  if not districtEntry then  return  end
-  local pCity = GetSelectedCity();
-  local pCityDistricts = pCity and pCity:GetDistricts();
-  return pCityDistricts and pCityDistricts.GetDistrict and pCityDistricts:GetDistrict(districtEntry.Index);
-end
-
-function GetSelectedDistrict()
-  if not g_PlacementSettings.DistrictID then  return  end
-  local pCity = GetSelectedCity();
-  local pCityDistricts = pCity and pCity:GetDistricts();
-  return pCityDistricts and pCityDistricts.GetDistrictByID and pCityDistricts:GetDistrictByID(g_PlacementSettings.DistrictID);
-end
-
--------------------------------------------------------------------------------
-function SelectCityAt(plot)
   local pCity = Cities.GetPlotWorkingCity(plot:GetIndex())
   if not pCity then  return  end
 
@@ -286,91 +375,38 @@ function SelectCityAt(plot)
   g_PlacementSettings.CityID = pCity:GetID();
 end
 
-g_CityPicker = 
-{
-  Place = SelectCityAt,
-  Remove = SelectCityAt,
-}
-
--------------------------------------------------------------------------------
-g_DistrictPlacement =
-{
-  DistrictType = -1,
-  DistrictTypeName = "",
-}
-
-function g_DistrictPlacement.Place(plot)
-  local pCity = GetSelectedCity();
-  if not pCity then  return  end
-
-  local pBuildQueue = pCity:GetBuildQueue();
-  pBuildQueue:CreateIncompleteDistrict(g_DistrictPlacement.DistrictType, plot:GetIndex(), TunerCity.options.buildPercent);
-end
-
-function g_DistrictPlacement.Remove(plot)
-  local pDistrict = CityManager.GetDistrictAt(plot);
-  if not pDistrict then  return  end
-
-  CityManager.DestroyDistrict(pDistrict);
-end
-
---[[
--------------------------------------------------------------------------------
-g_BuildingPlacement =
-{
-  BuildingType = -1,
-  BuildingTypeName = "",
-}
-
-function g_BuildingPlacement.Remove(plot)
-end
---]]
-
 
 
 
 -------------------------------------------------------------------------------
-function OnLButtonUp( plotX, plotY )
-  if not g_PanelHasFocus then  return  end
-  local plot = Map.GetPlot( plotX, plotY );
-
-  if g_PlacementSettings and g_PlacementSettings.PlacementHandler and g_PlacementSettings.PlacementHandler.Place then
-    g_PlacementSettings.PlacementHandler.Place(plot);
-  end
-
-  -- LuaEvents.TunerExitDebugMode();
+function TunerCity.OnLButtonUp(X,Y)
+  return TunerCity:MapClickHandler( Map.GetPlot(X,Y) )
 end
 
-LuaEvents.TunerMapLButtonUp.Add(OnLButtonUp);
+LuaEvents.TunerMapLButtonUp.Add( TunerCity.OnLButtonUp )
+--LuaEvents.TunerMapRButtonUp.Add( TunerCity.OnRButtonUp );
+
+
 
 -------------------------------------------------------------------------------
-function OnRButtonDown( plotX, plotY )
-  if not g_PanelHasFocus then  return  end
-  local plot = Map.GetPlot( plotX, plotY );
-
-  if g_PlacementSettings and g_PlacementSettings.PlacementHandler and g_PlacementSettings.PlacementHandler.Remove then
-    g_PlacementSettings.PlacementHandler.Remove(plot);
-  end
-
-  -- LuaEvents.TunerExitDebugMode();
+function TunerCity:SetFocused(focused)
+  self.focused = focused
+  LuaEvents.SetDebugMode[focused]()
 end
 
-LuaEvents.TunerMapRButtonDown.Add(OnRButtonDown);
+TunerCity.SetDebugMode = {}
+TunerCity.SetDebugMode[true] = LuaEvents.TunerEnterDebugMode
+TunerCity.SetDebugMode[false] = LuaEvents.TunerExitDebugMode
 
--------------------------------------------------------------------------------
 function OnUIDebugModeEntered()
-  if not g_PanelHasFocus then  return  end
-  g_PlacementSettings.Active = true;
+  TunerCity.inDebugMode = true;
+end
+
+function OnUIDebugModeExited()
+  TunerCity.inDebugMode = false;
 end
 
 LuaEvents.UIDebugModeEntered.Add(OnUIDebugModeEntered);
-
--------------------------------------------------------------------------------
-function OnUIDebugModeExited()
-  if not g_PanelHasFocus then  return  end
-  g_PlacementSettings.Active = false;
-end
-
 LuaEvents.UIDebugModeExited.Add(OnUIDebugModeExited);
 
 
@@ -407,19 +443,26 @@ end
 
 
 
+
 -------------------------------------------------------------------------------
-function GetBQCurrentlyBuilding(pBuildQueue :table)
+function TunerCity:GetCurrentlyBuilding(pCity :table)
+  pCity = pCity or self:GetSelectedCity()
+  if not pCity then  return ""  end
+
+  local pBuildQueue = pCity:GetBuildQueue()
   if pBuildQueue.CurrentlyBuilding then  return pBuildQueue:CurrentlyBuilding()  end
   return "<not accessible>"
 end
 
-function SetBuildingPillaged(pCity :table, buildingType :string, isPillaged :boolean)
+function TunerCity:SetBuildingPillaged(selBuilding :string, isPillaged :boolean)
+  local pCity = self:GetSelectedCity()
   if not pCity then  return  end
 
   -- Change the display name back to the full text key and look for it.
-  local building  = GameInfo.Buildings[buildingType];
-  if building then
-    pCity:GetBuildings():SetPillaged(building.Index, isPillaged);
+  local buildingType = self:GetBuildingType(selBuilding)
+  local dbBuildingInfo = GameInfo.Buildings[buildingType];
+  if dbBuildingInfo then
+    pCity:GetBuildings():SetPillaged(dbBuildingInfo.Index, isPillaged);
   end
 end
 
@@ -443,7 +486,7 @@ function OnPrintCityInfo(pCity)
 
   local pBuildQueue = pCity:GetBuildQueue()
   print( ':GetBuildQueue()' , pBuildQueue )
-  print( ':CurrentlyBuilding()'  , GetBQCurrentlyBuilding(pBuildQueue) )
+  print( ':CurrentlyBuilding()'  , TunerCity:GetCurrentlyBuilding(pCity) )
   print( '.GetTurnsLeft'         , pBuildQueue.GetTurnsLeft )
   print( '.GetProductionYield'   , pBuildQueue.GetProductionYield )
   --print( ':GetTurnsLeft()'       , pBuildQueue:GetTurnsLeft() )

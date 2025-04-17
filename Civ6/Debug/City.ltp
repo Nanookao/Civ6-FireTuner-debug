@@ -2,23 +2,18 @@
 <PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>City</Name>
   <App>Civ6</App>
+
   <EnterAction>
 include("TunerCityPanel");
 --include("TunerWorldBuilderPanel");
 --include("TunerAssetPreviewPanel");
-g_PanelHasFocus = true;
-if (g_PlacementSettings.Active) then
-    LuaEvents.TunerEnterDebugMode();
-end
+TunerCity and TunerCity:SetFocused(true)
   </EnterAction>
+
   <ExitAction>
-if (g_PanelHasFocus) then
-  g_PanelHasFocus = false;
-  if (g_PlacementSettings.Active) then
-      LuaEvents.TunerExitDebugMode();
-  end
-end
+TunerCity and TunerCity:SetFocused(false)
   </ExitAction>
+
   <CompatibleStates>
     <string>GameCore_Tuner</string>
     <string>TunerCityPanel</string>
@@ -29,414 +24,467 @@ end
   <LoadStates>
     <string>TunerCityPanel</string>
   </LoadStates>
-  <Actions>
-    <ActionData>
-      <Name>Increase Pop</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  pCity:ChangePopulation(1);
-end
-      </Action>
+
+
+
+
+  <SelectionLists>
+
+    <SelectionListData>
+      <Name>PID,CityID:-1;Original:70;Owner:90;Idx:40;Name:100;X,Y:40;Building:150</Name>
+      <Sorted>false</Sorted>
+
       <Location>
-        <X>170</X>
-        <Y>354</Y>
+        <X>0</X>
+        <Y>30</Y>
       </Location>
-    </ActionData>
-    <ActionData>
-      <Name>Decrease Pop</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  pCity:ChangePopulation(-1);
+      <Size>
+        <Width>680</Width>
+        <Height>300</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,City)
+  if not TunerCity then  return { "Error: ;;1 TunerCityPanel.lua not loaded" }  end
+  return TunerCity:ListCities()
 end
-      </Action>
+      </PopulateList>
+
+      <OnSelection>function(selCity)
+  local pCity = TunerCity and TunerCity:SelectCity(selCity)
+  if not pCity then  return  end
+end
+      </OnSelection>
+    </SelectionListData>
+
+
+    <SelectionListData>
+      <Name>Order:0;Stat:80;Value:40</Name>
+      <Sorted>false</Sorted>
+
       <Location>
-        <X>170</X>
-        <Y>379</Y>
+        <X>700</X>
+        <Y>30</Y>
       </Location>
-    </ActionData>
-    <ActionData>
-      <Name>AI Focus: None</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.NO_CITY_AI_FOCUS_TYPE);
+      <Size>
+        <Width>180</Width>
+        <Height>150</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,CityStat)
+  if not TunerCity then  return { "Error: ;3 TunerCityPanel.lua not loaded" }  end
+  local items = {}
+  items[0] = "-0;Population;"
+  items[1] = "-1;Housing;"
+  items[2] = "-2;Food Surplus;"
+  -- items[3] = "-3;Gold Yield Modifier;"
+  -- items[4] = "-4;Remaining Attacks;"
+
+  local pCity = GetSelectedCity()
+  if not pCity then  return items  end
+
+  items[0] = items[0] .. pCity:GetPopulation()
+  items[1] = items[1] .. pCity:GetGrowth():GetHousing()
+  items[2] = items[2] .. pCity:GetGrowth():GetFoodSurplus()
+  -- items[3] = items[3] .. pCity:GetGoldYieldModifier()
+  -- items[4] = items[4] .. pCity:GetRemainingAttacks()
+  return items;
 end
-      </Action>
+      </PopulateList>
+
+      <OnSelection>function(selCityStat)
+end
+      </OnSelection>
+    </SelectionListData>
+
+
+    <SelectionListData>
+      <Name>City Property;Value</Name>
+      <Sorted>false</Sorted>
+
       <Location>
-        <X>10</X>
-        <Y>729</Y>
+        <X>700</X>
+        <Y>180</Y>
       </Location>
-    </ActionData>
-    <ActionData>
-      <Name>AI Focus: Food</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_FOOD);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>756</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>AI Focus: Production</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_PRODUCTION);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>782</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>AI Focus: Gold</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_GOLD);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>808</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>DESTROY CITY</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  Cities.DestroyCity(pCity);
-end
-      </Action>
-      <Location>
-        <X>140</X>
-        <Y>521</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>+ Production</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  local pCityBuildQueue = pCity:GetBuildQueue();
-  pCityBuildQueue:AddProgress(g_PlacementSettings.AddProduction or 1);
-end
-      </Action>
-      <Location>
-        <X>850</X>
-        <Y>396</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>+25 Damage Garrison</Name>
-      <Action>
-local pCityCenter = GetSelectedCityCenter and GetSelectedCityCenter();
-if pCityCenter then
-  pCityCenter:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>589</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>-25 Damage Garrison</Name>
-      <Action>
-local pCityCenter = GetSelectedCityCenter and GetSelectedCityCenter();
-if pCityCenter then
-  pCityCenter:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, -25);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>613</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>+25 Damage Outer</Name>
-      <Action>
-local pCityCenter = GetSelectedCityCenter and GetSelectedCityCenter();
-if pCityCenter then
-  pCityCenter:ChangeDamage(DefenseTypes.DISTRICT_OUTER, 25);
-end
-      </Action>
-      <Location>
-        <X>150</X>
-        <Y>590</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>-25 Damage Outer</Name>
-      <Action>
-local pCityCenter = GetSelectedCityCenter and GetSelectedCityCenter();
-if pCityCenter then
-  pCityCenter:ChangeDamage(DefenseTypes.DISTRICT_OUTER, -25);
-end
-      </Action>
-      <Location>
-        <X>150</X>
-        <Y>614</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>-25 Damage Garrison (ENC)</Name>
-      <Action>
-local pDistrict = GetDistrictOfSelectedCity and GetDistrictOfSelectedCity("DISTRICT_ENCAMPMENT");
-if pDistrict then
-  pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, -25);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>678</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>+25 Damage Garrison (ENC)</Name>
-      <Action>
-local pDistrict = GetDistrictOfSelectedCity and GetDistrictOfSelectedCity("DISTRICT_ENCAMPMENT");
-if pDistrict then
-  pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>654</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>+10 Loyalty</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  pCity:ChangeLoyalty(10);
-end
-      </Action>
-      <Location>
-        <X>190</X>
-        <Y>654</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>-10 Loyalty</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  pCity:ChangeLoyalty(-10);
-end
-      </Action>
-      <Location>
-        <X>190</X>
-        <Y>677</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>MAKE FREE CITY</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  CityManager.TransferCityToFreeCities(pCity);
-end
-      </Action>
-      <Location>
-        <X>130</X>
-        <Y>486</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>Set Property</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  pCity:SetProperty( g_PlacementSettings.EditKey, g_PlacementSettings.EditVal )
-end
-      </Action>
-      <Location>
-        <X>910</X>
-        <Y>646</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>Clear Property</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  pCity:SetProperty( g_PlacementSettings.EditKey, nil )
-end
-      </Action>
-      <Location>
-        <X>910</X>
-        <Y>670</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>Set As Capital</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  CityManager.SetAsCapital(pCity);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>487</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>Set As Original Capital</Name>
-      <Action>
-local pCity = GetSelectedCity and GetSelectedCity();
-if pCity then
-  CityManager.SetAsOriginalCapital(pCity);
-end
-      </Action>
-      <Location>
-        <X>10</X>
-        <Y>521</Y>
-      </Location>
-    </ActionData>
-    <ActionData>
-      <Name>Toggle Pillaged</Name>
-      <Action>
-local pDistrict = GetSelectedDistrict();
-if pDistrict then
-  local pillaged = pDistrict:IsPillaged()
-  pDistrict:SetPillaged( not pillaged )
-end
-      </Action>
-      <Location>
-        <X>1130</X>
-        <Y>399</Y>
-      </Location>
-    </ActionData>
-  </Actions>
-  <StringControls>
-    <StringControlData>
-      <Name>Place Building</Name>
-      <GetFunction>function(PlaceBuilding)
-  if (g_PlacementSettings and g_BuildingPlacement and g_PlacementSettings.Active and g_PlacementSettings.PlacementHandler == g_BuildingPlacement) then
-    local buildingInfo = GameInfo.Buildings[g_BuildingPlacement.BuildingTypeName];
-    return Locale.Lookup( buildingInfo.Name );
-    --return g_BuildingPlacement.BuildingTypeName:gsub("BUILDING_", "");
-  else
-    return "";
-  end
-end
-      </GetFunction>
-      <SetFunction>function(PlaceBuilding)
-end
-      </SetFunction>
-      <Location>
-        <X>270</X>
-        <Y>397</Y>
-      </Location>
-    </StringControlData>
-    <StringControlData>
-      <Name>Currently Building</Name>
-      <GetFunction>function(CurrentlyBuilding)
-  local pCity = GetSelectedCity and GetSelectedCity();
-  return pCity and GetBQCurrentlyBuilding( pCity:GetBuildQueue() ) or "";
-end
-      </GetFunction>
-      <SetFunction>function(CurrentlyBuilding)
-end
-      </SetFunction>
-      <Location>
-        <X>270</X>
-        <Y>357</Y>
-      </Location>
-    </StringControlData>
-    <StringControlData>
-      <Name>Property Key:100</Name>
-      <GetFunction>function(PropertyKey)
-  return g_PlacementSettings and g_PlacementSettings.EditKey;
-end
-      </GetFunction>
-      <SetFunction>function(PropertyKey)
-  g_PlacementSettings.EditKey = PropertyKey;
-end
-      </SetFunction>
-      <Location>
-        <X>910</X>
-        <Y>585</Y>
-      </Location>
-    </StringControlData>
-    <StringControlData>
-      <Name>Property Value:91</Name>
-      <GetFunction>function(PropertyValue)
-  return g_PlacementSettings and g_PlacementSettings.EditVal;
-end
-      </GetFunction>
-      <SetFunction>function(PropertyValue)
-  g_PlacementSettings.EditVal = PropertyValue;
-end
-      </SetFunction>
-      <Location>
-        <X>910</X>
-        <Y>616</Y>
-      </Location>
-    </StringControlData>
-    <StringControlData>
-      <Name>City:200</Name>
-      <GetFunction>function(CityName)
-  local pCity = GetSelectedCity and GetSelectedCity();
-  if not pCity then  return "- select city -"  end
-  return Locale.Lookup( pCity:GetName() )
-end
-      </GetFunction>
-      <SetFunction>function(CityName)
-  local pCity = GetSelectedCity and GetSelectedCity();
+      <Size>
+        <Width>180</Width>
+        <Height>150</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,CityProperty)
+  if not TunerCity then  return { "Error: 4 TunerCityPanel.lua not loaded" }  end
+  local pCity = TunerCity:GetSelectedCity()
   if not pCity then  return  end
 
-  pCity:SetName(CityName)
+  local props = pCity:GetProperties();
+  local items = {};
+  for k,v in pairs(props) do
+    local line = k .. ";" .. tostring(v);
+    table.insert(items, line);
+    if ( k == TunerCity.options.PropertyKey ) then
+      items.selected = #items;
+    end
+  end
+
+  return items;
 end
-      </SetFunction>
+      </PopulateList>
+
+      <OnSelection>function(selCityProperty)
+  if not TunerCity then  return  end
+  TunerCity.options.PropertyKey = selCityProperty;
+end
+      </OnSelection>
+    </SelectionListData>
+
+
+    <SelectionListData>
+      <Name>Revealed to Civ;NickName</Name>
+      <Sorted>false</Sorted>
+
       <Location>
-        <X>10</X>
-        <Y>321</Y>
+        <X>1000</X>
+        <Y>0</Y>
       </Location>
-    </StringControlData>
-    <StringControlData>
-      <Name>Place District</Name>
-      <GetFunction>function(PlaceDistrict)
-  if (g_PlacementSettings and g_PlacementSettings.Active and g_PlacementSettings.PlacementHandler == g_DistrictPlacement) then
-    return Locale.Lookup( g_DistrictPlacement.DistrictTypeName );
-    --return g_DistrictPlacement.DistrictTypeName:gsub("DISTRICT_", "");
-  else
-    return "";
+      <Size>
+        <Width>200</Width>
+        <Height>300</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,RevealedToCiv)
+  if not TunerCity then  return { "Error: 2 TunerCityPanel.lua not loaded" }  end
+  local pCity = TunerCity:GetSelectedCity()
+  if not pCity then  return  end
+
+  local listItems = {};
+  if pCity ~= nil then
+    for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+      local pPlayer = Players[i];
+      if pPlayer:WasEverAlive() and PlayersVisibility[i]:IsRevealed(pCity:GetX(), pCity:GetY()) then
+        local pPlayerConfig = PlayerConfigurations[i];
+        local properCivName = Locale.Lookup( pPlayerConfig:GetCivilizationShortDescription() );
+        local str = properCivName .. ";" .. pPlayerConfig:GetNickName();
+        table.insert( listItems, str );
+      end
+    end
+  end
+
+  return listItems;
+end
+      </PopulateList>
+
+      <OnSelection>function(selRevealedToCiv)
+end
+      </OnSelection>
+    </SelectionListData>
+
+    <SelectionListData>
+      <Name>Type:0;Name:90;X,Y:40;Complete:60;Pillaged:60;DistrictID:60;</Name>
+      <Sorted>false</Sorted>
+
+      <Location>
+        <X>0</X>
+        <Y>320</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>300</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,DistrictState)
+  if not TunerCity then  return { "Error: 5 TunerCityPanel.lua not loaded" }  end
+  local pCity = TunerCity:GetSelectedCity()
+  if not pCity then  return  end
+
+  local items = {};
+  local pDistricts = pCity:GetDistricts();
+  local numDistricts = pDistricts:GetNumDistricts();
+  for districtInfo in GameInfo.Districts() do
+    if pDistricts:HasDistrict(districtInfo.Index) then
+      local name = districtInfo.DistrictType:gsub("DISTRICT_", "");
+      local nameLoc = Locale.Lookup( districtInfo.Name );
+      local prev = nil;
+      -- numDistricts= max iterations as a safeguard against infinite loop
+      for i = 0, numDistricts, 1 do
+        local pDistrict = pDistricts:GetDistrict(districtInfo.Index, i);
+        if pDistrict == nil or pDistrict == prev then  break  end
+        prev = pDistrict
+        local str = name
+          .. ";" .. nameLoc
+          .. ";" .. pDistrict:GetX() .. "," .. pDistrict:GetY()
+          .. ";" .. tostring(pDistrict:IsComplete())
+          .. ";" .. tostring(pDistrict:IsPillaged())
+          .. ";" .. pDistrict:GetID()
+        table.insert(items, str)
+      end
+    end
+  end
+  return items;
+end
+      </PopulateList>
+
+      <OnSelection>function(selDistrictState)
+  return TunerCity and TunerCity:SelectDistrictByID(selDistrictState)
+end
+      </OnSelection>
+
+    </SelectionListData>
+
+
+    <SelectionListData>
+      <Name>Type:1;Building:90;State</Name>
+
+      <Location>
+        <X>320</X>
+        <Y>320</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>300</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,Building)
+  if not TunerCity then  return { { Text = "6 TunerCityPanel.lua not loaded" } }  end
+  local items = {}
+  --TunerCity:ListCityDistrictsOrBuildings( items, 'district'  , true )
+  TunerCity:ListCityDistrictsOrBuildings( items, 'building'  , true )
+  TunerCity:ListCityDistrictsOrBuildings( items, 'wonder'    , true )
+  return items
+end
+      </PopulateList>
+      <OnSelected>function(selBuilding)
+  return TunerCity and TunerCity:SelectBuilding(selBuilding, 'building')
+end
+      </OnSelected>
+
+      <OnDeselected>function(deselBuilding)
+end
+      </OnDeselected>
+
+    </SelectionListData>
+
+  </SelectionLists>
+
+
+
+
+  <MultiselectLists>
+
+    <MultiselectListData>
+      <Name>Districts</Name>
+
+      <Location>
+        <X>500</X>
+        <Y>431</Y>
+      </Location>
+      <Size>
+        <Width>228</Width>
+        <Height>416</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,District)
+  if not TunerCity then  return { { Text = "Error: 7 TunerCityPanel.lua not loaded" } }  end
+  return TunerCity:ListCityDistrictsOrBuildings( nil, nil, { category = 'district', unbuilt = true } )
+end
+      </PopulateList>
+
+      <OnSelected>function(selDistrict)
+  return TunerCity and TunerCity:SelectBuilding(selDistrict, 'district')
+end
+      </OnSelected>
+
+      <OnDeselected>function(deselDistrict)
+end
+      </OnDeselected>
+
+    </MultiselectListData>
+
+
+    <MultiselectListData>
+      <Name>Pillaged Buildings</Name>
+
+      <Location>
+        <X>730</X>
+        <Y>431</Y>
+      </Location>
+      <Size>
+        <Width>175</Width>
+        <Height>417</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,PillagedBuilding)
+  if not TunerCity then  return { { Text = "Error: 8 TunerCityPanel.lua not loaded" } }  end
+  local pCity = TunerCity:GetSelectedCity()
+  if not pCity then  return  end
+
+  local listItems = {};
+  local pCityBuildings = pCity:GetBuildings();
+  local i = 1;
+  for buildingInfo in GameInfo.Buildings() do
+    local item = {};
+    local name = Locale.Lookup( buildingInfo.Name );
+    --local name = buildingInfo.BuildingType:gsub("BUILDING_", "");
+    if pCityBuildings:HasBuilding(buildingInfo.Index) then
+      --item.Text = name;
+      item.Text = name .. ";;;;" .. buildingInfo.BuildingType;
+      item.Selected =  pCityBuildings:IsPillaged(buildingInfo.Index)
+      listItems[i] = item;
+      i = i + 1;
+    end
+  end
+
+  return listItems;
+end
+      </PopulateList>
+
+      <OnSelected>function(selPillagedBuilding)
+  if not TunerCity then  return  end
+  TunerCity:SetBuildingPillaged( selPillagedBuilding , true)
+end
+      </OnSelected>
+
+      <OnDeselected>function(deselPillagedBuilding)
+  if not TunerCity then  return  end
+  TunerCity:SetBuildingPillaged( deselPillagedBuilding , false)
+end
+      </OnDeselected>
+
+    </MultiselectListData>
+
+
+    <MultiselectListData>
+      <Name>Spoof City Civilization</Name>
+
+      <Location>
+        <X>1120</X>
+        <Y>34</Y>
+      </Location>
+      <Size>
+        <Width>137</Width>
+        <Height>283</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,SpoofToCiv)
+  if not TunerCity then  return { { Text = "Error: 9 TunerCityPanel.lua not loaded" } }  end
+  local pCity = TunerCity:GetSelectedCity()
+  if not pCity then  return  end
+
+  local ownerIdx = pCity:GetOwner();
+  local ownerCivName = PlayerConfigurations[ownerIdx]:GetCivilizationShortDescription();
+  local listItems = {};
+  --for civ, i in GameInfo.Civilizations() do
+  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+    local pPlayer = Players[i];
+    if pPlayer:WasEverAlive() then
+      local spoofCivName = PlayerConfigurations[i]:GetCivilizationShortDescription()
+      local item = {
+        Text = Locale.Lookup( spoofCivName ),
+        Selected = (spoofCivName == ownerCivName),
+      }
+      table.insert( listItems, item );
+    end
+  end
+
+  return listItems;
+end
+      </PopulateList>
+
+      <OnSelected>function(selSpoofToCiv)
+  local pCity = TunerCity and TunerCity:GetSelectedCity()
+  if not pCity then  return  end
+
+  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+    local pPlayer = Players[i];
+    local spoofCivName = pPlayer:WasEverAlive() and PlayerConfigurations[i]:GetCivilizationShortDescription()
+    if spoofCivName and Locale.Lookup( spoofCivName ) == selSpoofToCiv then
+      print('----');
+      print('ContextPtr[panel]' , ContextPtr);
+      print( 'LuaEvents.SetCityCiv(city):' )
+      LuaEvents.SetCityCiv(pCity:GetX(), pCity:GetY(), civ.Index );
+      print('----');
+      break;
+    end
   end
 end
+      </OnSelected>
+
+      <OnDeselected>function(deselSpoofToCiv)
+end
+      </OnDeselected>
+
+    </MultiselectListData>
+
+  </MultiselectLists>
+
+
+
+
+  <BooleanControls>
+    <BooleanControlData>
+      <Name>Place District</Name>
+      <GetFunction>function(IsPlaceDistrict)
+  return TunerCity and TunerCity:GetPlacementBuilding('district')
+end
       </GetFunction>
-      <SetFunction>function(PlaceDistrict)
+      <SetFunction>function(IsPlaceDistrict)
+  if not TunerCity then  return  end
+  if IsPlaceDistrict then
+    return TunerCity:StartPlacement('building')
+  else
+    return TunerCity:CancelPlacementMode()
+  end
 end
       </SetFunction>
       <Location>
         <X>500</X>
-        <Y>397</Y>
+        <Y>320</Y>
       </Location>
-    </StringControlData>
-  </StringControls>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Place Building</Name>
+      <GetFunction>function(IsPlaceBuilding)
+  return TunerCity and TunerCity:GetPlacementBuilding('building')
+end
+      </GetFunction>
+      <SetFunction>function(IsPlaceBuilding)
+  if not TunerCity then  return  end
+  if IsPlaceBuilding then
+    return TunerCity:StartPlacement('building')
+  else
+    return TunerCity:CancelPlacementMode()
+  end
+end
+      </SetFunction>
+      <Location>
+        <X>390</X>
+        <Y>320</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Pick City</Name>
+      <GetFunction>function(IsPickCity)
+end
+      </GetFunction>
+      <SetFunction>function(IsPickCity)
+end
+      </SetFunction>
+      <Location>
+        <X>240</X>
+        <Y>320</Y>
+      </Location>
+    </BooleanControlData>
+  </BooleanControls>
+
   <IntegerControls>
     <IntegerControlData>
       <Name>Outer Damage</Name>
       <GetFunction>function(OuterDamage)
-  local pCityCenter = GetSelectedCityCenter and GetSelectedCityCenter();
-  return pCityCenter and pCityCenter.GetDamage and pCityCenter:GetDamage(DefenseTypes.DISTRICT_OUTER);
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict.GetDamage and pDistrict:GetDamage(DefenseTypes.DISTRICT_OUTER);
 end
       </GetFunction>
       <SetFunction>function(OuterDamage)
-  local pCityCenter = GetSelectedCityCenter and GetSelectedCityCenter();
-  if not pCityCenter then  return  end
-  pCityCenter:SetDamage(DefenseTypes.DISTRICT_OUTER, OuterDamage);
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_OUTER, OuterDamage)
 end
       </SetFunction>
       <Location>
@@ -448,14 +496,13 @@ end
     <IntegerControlData>
       <Name>Garrison Damage</Name>
       <GetFunction>function(GarrisonDamage)
-  local pCityCenter = GetSelectedCityCenter and GetSelectedCityCenter();
-  return pCityCenter and pCityCenter.GetDamage and pCityCenter:GetDamage(DefenseTypes.DISTRICT_GARRISON);
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict.GetDamage and pDistrict:GetDamage(DefenseTypes.DISTRICT_GARRISON);
 end
       </GetFunction>
       <SetFunction>function(GarrisonDamage)
-  local pCityCenter = GetSelectedCityCenter and GetSelectedCityCenter();
-  if not pCityCenter then  return  end
-  pCityCenter:SetDamage(DefenseTypes.DISTRICT_GARRISON, GarrisonDamage);
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_GARRISON, GarrisonDamage);
 end
       </SetFunction>
       <Location>
@@ -529,11 +576,11 @@ end
     <IntegerControlData>
       <Name>Add Production</Name>
       <GetFunction>function(AddProduction)
-  return g_PlacementSettings and g_PlacementSettings.AddProduction or 1;
+  return TunerCity and TunerCity.options.AddProduction or 1;
 end
       </GetFunction>
       <SetFunction>function(AddProduction)
-  g_PlacementSettings.AddProduction = AddProduction;
+  TunerCity.options.AddProduction = AddProduction;
 end
       </SetFunction>
       <Location>
@@ -543,502 +590,382 @@ end
       <DefaultValue>10</DefaultValue>
     </IntegerControlData>
   </IntegerControls>
-  <FloatControls />
-  <BooleanControls>
-    <BooleanControlData>
-      <Name>Place District</Name>
-      <GetFunction>function(IsPlaceDistrict)
-  return g_PlacementSettings and g_PlacementSettings.Active and
-         g_PlacementSettings.PlacementHandler == g_DistrictPlacement;
-end
-      </GetFunction>
-      <SetFunction>function(IsPlaceDistrict)
-  if IsPlaceDistrict then
-      g_PlacementSettings.PlacementHandler = g_DistrictPlacement;
-      LuaEvents.TunerEnterDebugMode();
-  else
-    if (g_PlacementSettings.PlacementHandler == g_DistrictPlacement) then
-      g_PlacementSettings.Active = false;
-      LuaEvents.TunerExitDebugMode();
-    end
-  end
-end
-      </SetFunction>
-      <Location>
-        <X>500</X>
-        <Y>320</Y>
-      </Location>
-    </BooleanControlData>
-    <BooleanControlData>
+
+  <StringControls>
+    <StringControlData>
       <Name>Place Building</Name>
-      <GetFunction>function(IsPlaceBuilding)
-  return g_PlacementSettings and g_PlacementSettings.Active and
-         g_PlacementSettings.PlacementHandler == g_BuildingPlacement;
+      <GetFunction>function(PlaceBuilding)
+  local dbBuildingInfo = TunerCity and TunerCity:GetPlacementBuilding('building')
+  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or ""
 end
       </GetFunction>
-      <SetFunction>function(IsPlaceBuilding)
-  if IsPlaceBuilding then
-      g_PlacementSettings.PlacementHandler = g_BuildingPlacement;
-      LuaEvents.TunerEnterDebugMode();
-  else
-    if (g_PlacementSettings.PlacementHandler == g_BuildingPlacement) then
-      g_PlacementSettings.Active = false;
-      LuaEvents.TunerExitDebugMode();
-    end
-  end
+      <SetFunction>function(PlaceBuilding)
 end
       </SetFunction>
-      <Location>
-        <X>390</X>
-        <Y>320</Y>
-      </Location>
-    </BooleanControlData>
-    <BooleanControlData>
-      <Name>Pick City</Name>
-      <GetFunction>function(IsPickCity)
-  return g_PlacementSettings and g_PlacementSettings.Active and
-         g_PlacementSettings.PlacementHandler == g_CityPicker;
-end
-      </GetFunction>
-      <SetFunction>function(IsPickCity)
-  if IsPickCity then
-      g_PlacementSettings.PlacementHandler = g_CityPicker;
-      LuaEvents.TunerEnterDebugMode();
-  else
-    if (g_PlacementSettings.PlacementHandler == g_CityPicker) then
-      g_PlacementSettings.Active = false;
-      LuaEvents.TunerExitDebugMode();
-    end
-  end
-end
-      </SetFunction>
-      <Location>
-        <X>240</X>
-        <Y>320</Y>
-      </Location>
-    </BooleanControlData>
-  </BooleanControls>
-  <TableViews />
-  <DataViews />
-  <StatTrackers />
-  <SelectionLists>
-    <SelectionListData>
-      <Location>
-        <X>10</X>
-        <Y>35</Y>
-      </Location>
-      <Size>
-        <Width>800</Width>
-        <Height>280</Height>
-      </Size>
-      <Name>O,CityID:1;Original Owner:90;Owner:90;Name:110;X,Y:40;Building:250</Name>
-
-
-
-
-      <PopulateList>function(PopulateList,City)
-  if not ListCities then  return { "Error: ;;1 TunerCityPanel.lua not loaded" }  end
-  return ListCities()
-end
-      </PopulateList>
-
-
-
-
-
-      <OnSelection>function(selCity)
-  if not g_PlacementSettings then  return  end
-  if not selCity then  return  end
-
-  -- No split available
-  local playerIdx, cityID = selCity:match("(%d+).(%d+)");
-  g_PlacementSettings.Player = tonumber(playerIdx);
-  g_PlacementSettings.CityID = tonumber(cityID);
-
-  local pCity = GetSelectedCity();
-  if not pCity then  return  end
-
-  print('----');
-  print('Cities.OnSelection("' .. selCity .. '"):', pCity:GetName());
-  print('ContextPtr[panel]' , ContextPtr);
-  print('city[panel]' , pCity);
-  --print( '.GetBuildQueue[panel]' , pCity.GetBuildQueue )
-  if  pCity.GetBuildQueue  then
-    local pBuildQueue = pCity:GetBuildQueue()
-    print( ':GetBuildQueue' , pBuildQueue )
-    print( ':CurrentlyBuilding'  , GetBQCurrentlyBuilding(pBuildQueue) )
-    print( '.GetTurnsLeft'       , pBuildQueue.GetTurnsLeft )
-    print( '.GetProductionYield' , pBuildQueue.GetProductionYield )
-  end
-  print( 'LuaEvents.PrintCityInfo(pCity):' )
-  LuaEvents.PrintCityInfo(pCity);
-  print('----');
-end
-      </OnSelection>
-      <Sorted>false</Sorted>
-    </SelectionListData>
-    <SelectionListData>
-      <Location>
-        <X>840</X>
-        <Y>33</Y>
-      </Location>
-      <Size>
-        <Width>275</Width>
-        <Height>285</Height>
-      </Size>
-      <Name>Revealed to Civ;NickName</Name>
-
-
-
-
-
-
-
-
-      <PopulateList>function(PopulateList,RevealedToCiv)
-  if not GetSelectedCity then  return { "Error: 2 TunerCityPanel.lua not loaded" }  end
-  local pCity = GetSelectedCity();
-  if not pCity then  return  end
-
-  local listItems = {};
-  if pCity ~= nil then
-    for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
-      local pPlayer = Players[i];
-      if pPlayer:WasEverAlive() and PlayersVisibility[i]:IsRevealed(pCity:GetX(), pCity:GetY()) then
-        local pPlayerConfig = PlayerConfigurations[i];
-        local properCivName = Locale.Lookup( pPlayerConfig:GetCivilizationShortDescription() );
-        local str = properCivName .. ";" .. pPlayerConfig:GetNickName();
-        table.insert( listItems, str );
-      end
-    end
-  end
-
-  return listItems;
-end
-      </PopulateList>
-      <OnSelection>function(selRevealedToCiv)
-end
-      </OnSelection>
-      <Sorted>false</Sorted>
-    </SelectionListData>
-    <SelectionListData>
-      <Location>
-        <X>10</X>
-        <Y>353</Y>
-      </Location>
-      <Size>
-        <Width>156</Width>
-        <Height>126</Height>
-      </Size>
-      <Name>.:0;City Stat;Value</Name>
-
-
-
-
-
-      <PopulateList>function(PopulateList,CityStat)
-  if not GetSelectedCity then  return { "Error: ;3 TunerCityPanel.lua not loaded" }  end
-  local items = {}
-  items[0] = "-0;Population;"
-  items[1] = "-1;Housing;"
-  items[2] = "-2;Food Surplus;"
-  -- items[3] = "-3;Gold Yield Modifier;"
-  -- items[4] = "-4;Remaining Attacks;"
-
-  local pCity = GetSelectedCity()
-  if not pCity then  return items  end
-
-  items[0] = items[0] .. pCity:GetPopulation()
-  items[1] = items[1] .. pCity:GetGrowth():GetHousing()
-  items[2] = items[2] .. pCity:GetGrowth():GetFoodSurplus()
-  -- items[3] = items[3] .. pCity:GetGoldYieldModifier()
-  -- items[4] = items[4] .. pCity:GetRemainingAttacks()
-  return items;
-end
-      </PopulateList>
-      <OnSelection>function(selCityStat)
-end
-      </OnSelection>
-      <Sorted>true</Sorted>
-    </SelectionListData>
-    <SelectionListData>
-      <Location>
-        <X>910</X>
-        <Y>431</Y>
-      </Location>
-      <Size>
-        <Width>207</Width>
-        <Height>150</Height>
-      </Size>
-      <Name>City Property;Value</Name>
-
-
-
-
-
-      <PopulateList>function(PopulateList,CityProperty)
-  if not GetSelectedCity then  return { "Error: 4 TunerCityPanel.lua not loaded" }  end
-  local pCity = GetSelectedCity();
-  if not pCity then  return  end
-
-  local props = pCity:GetProperties();
-  local items = {};
-  for k,v in pairs(props) do
-    local line = k .. ";" .. tostring(v);
-    table.insert(items, line);
-    if ( k == g_PlacementSettings.EditKey ) then
-      items.selected = #items;
-    end
-  end
-
-  return items;
-end
-      </PopulateList>
-      <OnSelection>function(selCityProperty)
-  if not g_PlacementSettings then  return  end
-  g_PlacementSettings.EditKey = selCityProperty;
-end
-      </OnSelection>
-      <Sorted>true</Sorted>
-    </SelectionListData>
-    <SelectionListData>
-      <Location>
-        <X>1120</X>
-        <Y>430</Y>
-      </Location>
-      <Size>
-        <Width>452</Width>
-        <Height>416</Height>
-      </Size>
-      <Name>Type:1;Name:90;X,Y:40;Complete:60;Pillaged:60;DistrictID:60;</Name>
-
-
-
-
-
-      <PopulateList>function(PopulateList,DistrictState)
-  if not GetSelectedCity then  return { "Error: 5 TunerCityPanel.lua not loaded" }  end
-  local pCity = GetSelectedCity();
-  if not pCity then  return  end
-
-  local items = {};
-  local pCityDistricts = pCity:GetDistricts();
-  local numDistricts = pCityDistricts:GetNumDistricts();
-  for districtInfo in GameInfo.Districts() do
-    if pCityDistricts:HasDistrict(districtInfo.Index) then
-      local name = districtInfo.DistrictType:gsub("DISTRICT_", "");
-      local nameLoc = Locale.Lookup( districtInfo.Name );
-      local prev = nil;
-      -- numDistricts= max iterations as a safeguard against infinite loop
-      for i = 0, numDistricts, 1 do
-        local pDistrict = pCityDistricts:GetDistrict(districtInfo.Index, i);
-        if pDistrict == nil or pDistrict == prev then  break  end
-        prev = pDistrict
-        local str = name
-          .. ";" .. nameLoc
-          .. ";" .. pDistrict:GetX() .. "," .. pDistrict:GetY()
-          .. ";" .. tostring(pDistrict:IsComplete())
-          .. ";" .. tostring(pDistrict:IsPillaged())
-          .. ";" .. pDistrict:GetID()
-        table.insert(items, str)
-      end
-    end
-  end
-  return items;
-end
-      </PopulateList>
-      <OnSelection>function(selDistrictState)
-  if not g_PlacementSettings then  return  end
-  if not selDistrictState then  return  end
-  local selectionParts = {};
-  local str1 = string.match(selDistrictState, "%d+");
-  g_PlacementSettings.DistrictID = tonumber(str1);
-end
-      </OnSelection>
-      <Sorted>false</Sorted>
-    </SelectionListData>
-  </SelectionLists>
-  <MultiselectLists>
-    <MultiselectListData>
       <Location>
         <X>270</X>
-        <Y>431</Y>
+        <Y>397</Y>
       </Location>
-      <Size>
-        <Width>224</Width>
-        <Height>416</Height>
-      </Size>
-      <Name>Type:1;Building:90;State</Name>
-
-
-
-
-
-
-
-
-      <PopulateList>function(PopulateList,Building)
-  if not TunerCity then  return { { Text = "6 TunerCityPanel.lua not loaded" } }  end
-  local items = {}
-  --TunerCity:ListCityDistrictsOrBuildings( TunerCity:GetSelectedCity(), items, { category = 'district', unbuilt = true } )
-  TunerCity:ListCityDistrictsOrBuildings( TunerCity:GetSelectedCity(), items, { category = 'building', unbuilt = true } )
-  TunerCity:ListCityDistrictsOrBuildings( TunerCity:GetSelectedCity(), items, { category = 'wonder', unbuilt = true } )
-  return items
+    </StringControlData>
+    <StringControlData>
+      <Name>Currently Building</Name>
+      <GetFunction>function(CurrentlyBuilding)
+  return TunerCity and TunerCity:GetCurrentlyBuilding() or ""
 end
-      </PopulateList>
-      <OnSelected>function(selBuilding)
-  return TunerCity and TunerCity:SelectBuilding(selBuilding)
+      </GetFunction>
+      <SetFunction>function(CurrentlyBuilding)
 end
-      </OnSelected>
-      <OnDeselected>function(deselBuilding)
+      </SetFunction>
+      <Location>
+        <X>270</X>
+        <Y>357</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Property Key:100</Name>
+      <GetFunction>function(PropertyKey)
+  return TunerCity and TunerCity.options.PropertyKey;
 end
-      </OnDeselected>
-    </MultiselectListData>
-    <MultiselectListData>
+      </GetFunction>
+      <SetFunction>function(PropertyKey)
+  TunerCity.options.PropertyKey = PropertyKey;
+end
+      </SetFunction>
+      <Location>
+        <X>910</X>
+        <Y>585</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Property Value:91</Name>
+      <GetFunction>function(PropertyValue)
+  return TunerCity and TunerCity.options.PropertyValue;
+end
+      </GetFunction>
+      <SetFunction>function(PropertyValue)
+  TunerCity.options.PropertyValue = PropertyValue;
+end
+      </SetFunction>
+      <Location>
+        <X>910</X>
+        <Y>616</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>City:200</Name>
+      <GetFunction>function(CityName)
+  local pCity = TunerCity and TunerCity:GetSelectedCity()
+  if not pCity then  return "- select city -"  end
+  return Locale.Lookup( pCity:GetName() )
+end
+      </GetFunction>
+      <SetFunction>function(CityName)
+  local pCity = TunerCity and TunerCity:GetSelectedCity()
+  return pCity and pCity:SetName(CityName)
+end
+      </SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>321</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Place District</Name>
+      <GetFunction>function(PlaceDistrict)
+  local dbBuildingInfo = TunerCity and TunerCity:GetPlacementBuilding('district')
+  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or ""
+end
+      </GetFunction>
+      <SetFunction>function(PlaceDistrict)
+end
+      </SetFunction>
       <Location>
         <X>500</X>
-        <Y>431</Y>
+        <Y>397</Y>
       </Location>
-      <Size>
-        <Width>228</Width>
-        <Height>416</Height>
-      </Size>
-      <Name>Districts</Name>
+    </StringControlData>
+  </StringControls>
 
+  <Actions>
 
-
-
-
-
-      <PopulateList>function(PopulateList,District)
-  if not TunerCity then  return { { Text = "Error: 7 TunerCityPanel.lua not loaded" } }  end
-  return TunerCity:ListCityDistrictsOrBuildings( TunerCity:GetSelectedCity(), nil, { category = 'district', unbuilt = true } )
-end
-      </PopulateList>
-      <OnSelected>function(selDistrict)
-  return TunerCity and TunerCity:SelectDistrict(selDistrict)
-end
-      </OnSelected>
-      <OnSelected>function(selDistrict)
-      </OnSelected>
-      <OnDeselected>function(deselDistrict)
-  local pCity = GetSelectedCity and GetSelectedCity();
-  if not pCity then  return  end
-
-end
-      </OnDeselected>
-    </MultiselectListData>
-    <MultiselectListData>
+    <ActionData>
+      <Name>Increase Pop</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:ChangePopulation(1);
+      </Action>
       <Location>
-        <X>730</X>
-        <Y>431</Y>
+        <X>170</X>
+        <Y>354</Y>
       </Location>
-      <Size>
-        <Width>175</Width>
-        <Height>417</Height>
-      </Size>
-      <Name>Pillaged Buildings</Name>
+    </ActionData>
 
-
-
-
-      <PopulateList>function(PopulateList,PillagedBuilding)
-  if not GetSelectedCity then  return { { Text = "Error: 8 TunerCityPanel.lua not loaded" } }  end
-  local pCity = GetSelectedCity();
-  if not pCity then  return  end
-
-  local listItems = {};
-  local pCityBuildings = pCity:GetBuildings();
-  local i = 1;
-  for buildingInfo in GameInfo.Buildings() do
-    local item = {};
-    local name = Locale.Lookup( buildingInfo.Name );
-    --local name = buildingInfo.BuildingType:gsub("BUILDING_", "");
-    if pCityBuildings:HasBuilding(buildingInfo.Index) then
-      --item.Text = name;
-      item.Text = name .. ";;;;" .. buildingInfo.BuildingType;
-      item.Selected =  pCityBuildings:IsPillaged(buildingInfo.Index)
-      listItems[i] = item;
-      i = i + 1;
-    end
-  end
-
-  return listItems;
-end
-      </PopulateList>
-      <OnSelected>function(selPillagedBuilding)
-  if not GetSelectedCity then  return  end
-  SetBuildingPillaged( GetSelectedCity() , "BUILDING_" .. selPillagedBuilding , false);
-end
-      </OnSelected>
-      <OnDeselected>function(deselPillagedBuilding)
-  if not GetSelectedCity then  return  end
-  SetBuildingPillaged( GetSelectedCity() , "BUILDING_" .. deselPillagedBuilding , false);
-end
-      </OnDeselected>
-    </MultiselectListData>
-    <MultiselectListData>
+    <ActionData>
+      <Name>Decrease Pop</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:ChangePopulation(-1);
+      </Action>
       <Location>
-        <X>1120</X>
-        <Y>34</Y>
+        <X>170</X>
+        <Y>379</Y>
       </Location>
-      <Size>
-        <Width>137</Width>
-        <Height>283</Height>
-      </Size>
-      <Name>Spoof City Civilization</Name>
+    </ActionData>
 
-
-
-
-
-
-
-      <PopulateList>function(PopulateList,SpoofToCiv)
-  if not GetSelectedCity then  return { { Text = "Error: 9 TunerCityPanel.lua not loaded" } }  end
-  local pCity = GetSelectedCity();
-  if not pCity then  return  end
-
-  local ownerIdx = pCity:GetOwner();
-  local ownerCivName = PlayerConfigurations[ownerIdx]:GetCivilizationShortDescription();
-  local listItems = {};
-  --for civ, i in GameInfo.Civilizations() do
-  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
-    local pPlayer = Players[i];
-    if pPlayer:WasEverAlive() then
-      local spoofCivName = PlayerConfigurations[i]:GetCivilizationShortDescription()
-      local item = {
-        Text = Locale.Lookup( spoofCivName ),
-        Selected = (spoofCivName == ownerCivName),
-      }
-      table.insert( listItems, item );
-    end
-  end
-
-  return listItems;
+    <ActionData>
+      <Name>AI Focus: None</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+if pCity then
+  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.NO_CITY_AI_FOCUS_TYPE);
 end
-      </PopulateList>
-      <OnSelected>function(selSpoofToCiv)
-  local pCity = GetSelectedCity and GetSelectedCity();
-  if not pCity then  return  end
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>729</Y>
+      </Location>
+    </ActionData>
 
-  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
-    local pPlayer = Players[i];
-    local spoofCivName = pPlayer:WasEverAlive() and PlayerConfigurations[i]:GetCivilizationShortDescription()
-    if spoofCivName and Locale.Lookup( spoofCivName ) == selSpoofToCiv then
-      print('----');
-      print('ContextPtr[panel]' , ContextPtr);
-      print( 'LuaEvents.SetCityCiv(city):' )
-      LuaEvents.SetCityCiv(pCity:GetX(), pCity:GetY(), civ.Index );
-      print('----');
-      break;
-    end
-  end
+    <ActionData>
+      <Name>AI Focus: Food</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+if pCity then
+  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_FOOD);
 end
-      </OnSelected>
-      <OnDeselected>function(deselSpoofToCiv)
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>756</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>AI Focus: Production</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+if pCity then
+  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_PRODUCTION);
 end
-      </OnDeselected>
-    </MultiselectListData>
-  </MultiselectLists>
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>782</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>AI Focus: Gold</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+if pCity then
+  -- Network.SendSetCityAIFocus(pCity :GetID(), CityAIFocusTypes.CITY_AI_FOCUS_TYPE_GOLD);
+end
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>808</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>DESTROY CITY</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and Cities.DestroyCity(pCity);
+      </Action>
+      <Location>
+        <X>140</X>
+        <Y>521</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>+ Production</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+if pCity then
+  local pBuildQueue = pCity:GetBuildQueue();
+  pBuildQueue:AddProgress(TunerCity.options.AddProduction or 1);
+end
+      </Action>
+      <Location>
+        <X>850</X>
+        <Y>396</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>+25 Damage Garrison</Name>
+      <Action>
+local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>589</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>-25 Damage Garrison</Name>
+      <Action>
+local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, -25);
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>613</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>+25 Damage Outer</Name>
+      <Action>
+local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_OUTER, 25);
+      </Action>
+      <Location>
+        <X>150</X>
+        <Y>590</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>-25 Damage Outer</Name>
+      <Action>
+local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_OUTER, -25);
+      </Action>
+      <Location>
+        <X>150</X>
+        <Y>614</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>-25 Damage Garrison (ENC)</Name>
+      <Action>
+local pDistrict = TunerCity and TunerCity:GetDistrictOfSelectedCity("DISTRICT_ENCAMPMENT");
+return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, -25);
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>678</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>+25 Damage Garrison (ENC)</Name>
+      <Action>
+local pDistrict = TunerCity and TunerCity:GetDistrictOfSelectedCity("DISTRICT_ENCAMPMENT");
+return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>654</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>+10 Loyalty</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:ChangeLoyalty(10);
+      </Action>
+      <Location>
+        <X>190</X>
+        <Y>654</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>-10 Loyalty</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:ChangeLoyalty(-10);
+      </Action>
+      <Location>
+        <X>190</X>
+        <Y>677</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>MAKE FREE CITY</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and CityManager.TransferCityToFreeCities(pCity);
+      </Action>
+      <Location>
+        <X>130</X>
+        <Y>486</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>Set Property</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:SetProperty( TunerCity.options.PropertyKey, TunerCity.options.PropertyValue )
+      </Action>
+      <Location>
+        <X>910</X>
+        <Y>646</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>Clear Property</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and pCity:SetProperty( TunerCity.options.PropertyKey, nil )
+      </Action>
+      <Location>
+        <X>910</X>
+        <Y>670</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>Set As Capital</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and CityManager.SetAsCapital(pCity);
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>487</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>Set As Original Capital</Name>
+      <Action>
+local pCity = TunerCity and TunerCity:GetSelectedCity()
+return pCity and CityManager.SetAsOriginalCapital(pCity);
+      </Action>
+      <Location>
+        <X>10</X>
+        <Y>521</Y>
+      </Location>
+    </ActionData>
+
+    <ActionData>
+      <Name>Toggle Pillaged</Name>
+      <Action>
+local pDistrict = GetSelectedDistrict();
+if pDistrict then
+  local pillaged = pDistrict:IsPillaged()
+  pDistrict:SetPillaged( not pillaged )
+end
+      </Action>
+      <Location>
+        <X>1130</X>
+        <Y>399</Y>
+      </Location>
+    </ActionData>
+
+  </Actions>
+
 </PanelData>
