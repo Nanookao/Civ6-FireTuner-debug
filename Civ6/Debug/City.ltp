@@ -4,15 +4,15 @@
   <App>Civ6</App>
 
   <EnterAction>
-include("TunerCityPanel");
+if TunerCity and TunerCity.Shutdown then  TunerCity:Shutdown()  end
+include("TunerCityPanel")
 --include("TunerWorldBuilderPanel");
 --include("TunerAssetPreviewPanel");
-TunerCity and TunerCity:SetFocused(true)
+if TunerCity and TunerCity.SetFocused then  TunerCity:SetFocused(true)  end
   </EnterAction>
 
   <ExitAction>
-TunerCity and TunerCity:SetFocused(false)
-TunerCity and TunerCity:Shutdown()
+--if TunerCity and TunerCity.SetFocused then  TunerCity:SetFocused(false)  end
   </ExitAction>
 
   <CompatibleStates>
@@ -161,7 +161,7 @@ end
 
 
     <SelectionListData>
-      <Name>Constructed:0;Building:90;X,Y:40;Complete:60;Pillaged:60;DistrictID:60;</Name>
+      <Name>Constructed:0;Building:90;X,Y:40;Complete:80;Pillaged:60;DistrictID:60;</Name>
       <Sorted>false</Sorted>
 
       <Location>
@@ -173,13 +173,14 @@ end
         <Height>300</Height>
       </Size>
 
-      <PopulateList>function(PopulateList,DistrictState)
-  return TunerCity and TunerCity:ListCityBuildingsDetailed( {}, false )
+      <PopulateList>function(PopulateList,Grouped)
+  return TunerCity and TunerCity:ListCityBuildingsGrouped( {}, false )
 end
       </PopulateList>
 
-      <OnSelection>function(selBuildingDetailed)
-  return TunerCity and TunerCity:SelectDistrictByID(selBuildingDetailed)
+      <OnSelection>function(selGrouped)
+  return TunerCity and TunerCity:SelectBuilding(selGrouped, 'grouped')
+  --return TunerCity and TunerCity:SelectDistrictByID(selGrouped)
 end
       </OnSelection>
 
@@ -199,14 +200,14 @@ end
         <Height>300</Height>
       </Size>
 
-      <PopulateList>function(PopulateList,Building)
+      <PopulateList>function(PopulateList,District)
   return TunerCity and TunerCity:ListCityDistrictsOrBuildings( {}, 'district', true )  -- district | building | wonder
 end
       </PopulateList>
 
       <OnSelection>function(selDistrict)
-  --return TunerCity and TunerCity:SelectDistrictByID(selDistrict)
   return TunerCity and TunerCity:SelectBuilding(selDistrict, 'district')
+  --return TunerCity and TunerCity:SelectDistrictByID(selDistrict)
 end
       </OnSelection>
 
@@ -252,7 +253,7 @@ end
         <Height>300</Height>
       </Size>
 
-      <PopulateList>function(PopulateList,Building)
+      <PopulateList>function(PopulateList,Wonder)
   return TunerCity and TunerCity:ListCityDistrictsOrBuildings( {}, 'wonder', true )  -- district | building | wonder
 end
       </PopulateList>
@@ -315,12 +316,12 @@ end
       </Location>
 
       <GetFunction>function(IsPlaceDistrict)
-  return TunerCity and TunerCity:GetPlacementBuilding('district')
+  return TunerCity and TunerCity:InPlacementMode('district')
 end
       </GetFunction>
 
       <SetFunction>function(IsPlaceDistrict)
-  return TunerCity and TunerCity:SetPlacementMode(IsPlaceDistrict, 'district')
+  return TunerCity and TunerCity:SetPlacementMode('district', IsPlaceDistrict)
 end
       </SetFunction>
     </BooleanControlData>
@@ -333,12 +334,12 @@ end
       </Location>
 
       <GetFunction>function(IsPlaceBuilding)
-  return TunerCity and TunerCity:GetPlacementBuilding('building')
+  return TunerCity and TunerCity:InPlacementMode('building')
 end
       </GetFunction>
 
       <SetFunction>function(IsPlaceBuilding)
-  return TunerCity and TunerCity:SetPlacementMode(IsPlaceBuilding, 'building')
+  return TunerCity and TunerCity:SetPlacementMode('building', IsPlaceBuilding)
 end
       </SetFunction>
     </BooleanControlData>
@@ -351,12 +352,12 @@ end
       </Location>
 
       <GetFunction>function(IsPlaceWonder)
-  return TunerCity and TunerCity:GetPlacementBuilding('wonder')
+  return TunerCity and TunerCity:InPlacementMode('wonder')
 end
       </GetFunction>
 
       <SetFunction>function(IsPlaceWonder)
-  return TunerCity and TunerCity:SetPlacementMode(IsPlaceWonder, 'wonder')
+  return TunerCity and TunerCity:SetPlacementMode('wonder', IsPlaceWonder)
 end
       </SetFunction>
     </BooleanControlData>
@@ -580,55 +581,17 @@ end
     <StringControlData>
       <Name></Name>
       <Location>
-        <X>630</X>
-        <Y>690</Y>
-      </Location>
-
-      <GetFunction>function(PlaceDistrict)
-  local dbBuildingInfo = TunerCity and TunerCity:GetPlacementBuilding('district')
-  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or ""
-end
-      </GetFunction>
-
-      <SetFunction>function(PlaceDistrict)
-end
-      </SetFunction>
-    </StringControlData>
-
-
-    <StringControlData>
-      <Name></Name>
-      <Location>
         <X>830</X>
         <Y>690</Y>
       </Location>
 
       <GetFunction>function(PlaceBuilding)
-  local dbBuildingInfo = TunerCity and TunerCity:GetPlacementBuilding('building')
-  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or ""
+  local dbBuildingInfo = TunerCity and TunerCity:GetPlacementModeBuilding()
+  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name )
 end
       </GetFunction>
 
       <SetFunction>function(PlaceBuilding)
-end
-      </SetFunction>
-    </StringControlData>
-
-
-    <StringControlData>
-      <Name></Name>
-      <Location>
-        <X>1030</X>
-        <Y>690</Y>
-      </Location>
-
-      <GetFunction>function(PlaceWonder)
-  local dbBuildingInfo = TunerCity and TunerCity:GetPlacementBuilding('wonder')
-  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or ""
-end
-      </GetFunction>
-
-      <SetFunction>function(PlaceWonder)
 end
       </SetFunction>
     </StringControlData>
