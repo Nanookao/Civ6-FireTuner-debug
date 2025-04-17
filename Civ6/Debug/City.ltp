@@ -3,21 +3,23 @@
   <Name>City</Name>
   <App>Civ6</App>
   <EnterAction>
-include("TunerCityPanel")
+include("TunerWorldBuilderPanel");
+include("TunerCityPanel");
+include("TunerAssetPreviewPanel");
 g_PanelHasFocus = true;
 if (g_PlacementSettings.Active) then
 		LuaEvents.TunerEnterDebugMode();
 end
-  </EnterAction>
-  <ExitAction>
-if (g_PanelHasFocus) then
+</EnterAction>
+  <ExitAction>if (g_PanelHasFocus) then
 	g_PanelHasFocus = false;
 	if (g_PlacementSettings.Active) then
 			LuaEvents.TunerExitDebugMode();
 	end
 end
-  </ExitAction>
+</ExitAction>
   <CompatibleStates>
+    <string>GameCore_Tuner</string>
     <string>TunerCityPanel</string>
   </CompatibleStates>
   <LoadStates>
@@ -94,7 +96,7 @@ end</Action>
     <ActionData>
       <Name>DESTROY CITY</Name>
       <Action>local pCity = GetSelectedCity();
-if pCity ~= nil then
+if (pCity ~= nil) then
 	Cities.DestroyCity(pCity);
 end</Action>
       <Location>
@@ -276,7 +278,7 @@ end</Action>
     <ActionData>
       <Name>MAKE FREE CITY</Name>
       <Action>local pCity = GetSelectedCity();
-if pCity ~= nil then
+if (pCity ~= nil) then
 	CityManager.TransferCityToFreeCities(pCity);
 end</Action>
       <Location>
@@ -286,9 +288,9 @@ end</Action>
     </ActionData>
     <ActionData>
       <Name>Set Property</Name>
-      <Action>city = GetSelectedCity()
-if ( city ~= nil ) then
-	city:SetProperty( g_PlacementSettings.EditKey, g_PlacementSettings.EditVal )
+      <Action>pCity = GetSelectedCity()
+if (pCity ~= nil) then
+	pCity:SetProperty( g_PlacementSettings.EditKey, g_PlacementSettings.EditVal )
 end
 
 </Action>
@@ -299,9 +301,9 @@ end
     </ActionData>
     <ActionData>
       <Name>Clear Property</Name>
-      <Action>city = GetSelectedCity()
-if ( city ~= nil ) then
-	city:SetProperty( g_PlacementSettings.EditKey, nil )
+      <Action>pCity = GetSelectedCity()
+if ( pCity ~= nil ) then
+	pCity:SetProperty( g_PlacementSettings.EditKey, nil )
 end
 
 </Action>
@@ -313,7 +315,7 @@ end
     <ActionData>
       <Name>Set As Capital</Name>
       <Action>local pCity = GetSelectedCity();
-if pCity ~= nil then
+if ( pCity ~= nil ) then
 	CityManager.SetAsCapital(pCity);
 end</Action>
       <Location>
@@ -324,7 +326,7 @@ end</Action>
     <ActionData>
       <Name>Set As Original Capital</Name>
       <Action>local pCity = GetSelectedCity();
-if pCity ~= nil then
+if ( pCity ~= nil ) then
 	CityManager.SetAsOriginalCapital(pCity);
 end</Action>
       <Location>
@@ -350,7 +352,7 @@ end
     <StringControlData>
       <Name>Building</Name>
       <GetFunction>function(value)
-	if (g_PlacementSettings.Active == true and g_PlacementSettings.PlacementHandler == g_BuildingPlacement) then
+	if (g_PlacementSettings and g_BuildingPlacement and g_PlacementSettings.Active == true and g_PlacementSettings.PlacementHandler == g_BuildingPlacement) then
 		return g_BuildingPlacement.BuildingTypeName:gsub("BUILDING_", "");
 	else
 		return "";
@@ -384,7 +386,7 @@ end</SetFunction>
     <StringControlData>
       <Name>Property Key:100</Name>
       <GetFunction>function()
-	return g_PlacementSettings.EditKey;
+	return g_PlacementSettings and g_PlacementSettings.EditKey;
 end</GetFunction>
       <SetFunction>function(value)
 	g_PlacementSettings.EditKey = value;
@@ -397,7 +399,7 @@ end</SetFunction>
     <StringControlData>
       <Name>Property Value:91</Name>
       <GetFunction>function()
-	return g_PlacementSettings.EditVal;
+	return g_PlacementSettings and g_PlacementSettings.EditVal;
 end</GetFunction>
       <SetFunction>function(value)
 	g_PlacementSettings.EditVal = value;
@@ -509,7 +511,7 @@ end</SetFunction>
     <IntegerControlData>
       <Name>Construction Percentage</Name>
       <GetFunction>function()
-	return g_PlacementSettings.PlacementConstruction;
+	return g_PlacementSettings and g_PlacementSettings.PlacementConstruction;
 end</GetFunction>
       <SetFunction>function(value)
 	if (value &gt; 100) then
@@ -545,8 +547,8 @@ end</GetFunction>
 
 end</SetFunction>
       <Location>
-        <X>1110</X>
-        <Y>38</Y>
+        <X>920</X>
+        <Y>323</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
     </IntegerControlData>
@@ -567,8 +569,8 @@ end</GetFunction>
 
 end</SetFunction>
       <Location>
-        <X>1110</X>
-        <Y>75</Y>
+        <X>1030</X>
+        <Y>323</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
     </IntegerControlData>
@@ -578,7 +580,7 @@ end</SetFunction>
     <BooleanControlData>
       <Name>Place District</Name>
       <GetFunction>function()
-	return g_PlacementSettings.Active and
+	return g_PlacementSettings and g_PlacementSettings.Active and
 	       g_PlacementSettings.PlacementHandler == g_DistrictPlacement;
 end</GetFunction>
       <SetFunction>function(value)
@@ -600,7 +602,7 @@ end</SetFunction>
     <BooleanControlData>
       <Name>Place Building</Name>
       <GetFunction>function()
-	return g_PlacementSettings.Active and
+	return g_PlacementSettings and g_PlacementSettings.Active and
 	       g_PlacementSettings.PlacementHandler == g_BuildingPlacement;
 end</GetFunction>
       <SetFunction>function(value)
@@ -622,7 +624,7 @@ end</SetFunction>
     <BooleanControlData>
       <Name>Pick City</Name>
       <GetFunction>function()
-	return g_PlacementSettings.Active and
+	return g_PlacementSettings and g_PlacementSettings.Active and
 	       g_PlacementSettings.PlacementHandler == g_CityPicker;
 end</GetFunction>
       <SetFunction>function(value)
@@ -637,8 +639,8 @@ end</GetFunction>
 	end
 end</SetFunction>
       <Location>
-        <X>260</X>
-        <Y>321</Y>
+        <X>240</X>
+        <Y>320</Y>
       </Location>
     </BooleanControlData>
   </BooleanControls>
@@ -649,13 +651,13 @@ end</SetFunction>
     <SelectionListData>
       <Location>
         <X>10</X>
-        <Y>33</Y>
+        <Y>35</Y>
       </Location>
       <Size>
-        <Width>655</Width>
-        <Height>285</Height>
+        <Width>800</Width>
+        <Height>280</Height>
       </Size>
-      <Name>ID:0;Plot;Name;Owner;Original Owner</Name>
+      <Name>O,CityID:60;X,Y:50;Original Owner:90;Owner:90;Name:150;Building:250</Name>
       <PopulateList>function()
 	local items = {};
 	for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
@@ -672,7 +674,7 @@ end</SetFunction>
 			local pCity;
 			for ii, pCity in pCities:Members() do
 				
-				if ( g_PlacementSettings.Player == -1 or g_PlacementSettings.CityID == -1 ) then
+				if ( g_PlacementSettings.Player == nil or g_PlacementSettings.CityID == nil ) then
 					g_PlacementSettings.Player = pPlayer:GetID();
 					g_PlacementSettings.CityID = pCity:GetID();
 				end
@@ -694,31 +696,34 @@ end</SetFunction>
 				
 				origOwnerStr = string.gsub(origOwnerStr, "LOC_CIVILIZATION_", "");
 
-				local str = pPlayer:GetID() .. "," .. pCity:GetID() .. ";" .. pCity:GetX() .. ", " .. pCity:GetY() .. ";" .. cityName .. ";" .. strPlayer .. ";" .. origOwnerStr;
+        local building = pCity:GetBuildQueue():CurrentlyBuilding();
+				--local str = pCity:GetID() .. ";" .. pCity:GetX() .. ", " .. pCity:GetY() .. ";" .. cityName .. ";" .. strPlayer .. ";" .. pPlayer:GetID() .. ";" .. origOwnerStr .. ";" .. building;
+				local str = pPlayer:GetID() .. "," .. pCity:GetID()
+        .. ";" .. pCity:GetX() .. ", " .. pCity:GetY()
+        .. ";" .. origOwnerStr .. ";" .. strPlayer
+        .. ";" .. cityName .. ";" .. building;
 				table.insert(items, str);
 				if ( pPlayer:GetID() == g_PlacementSettings.Player and pCity:GetID() == g_PlacementSettings.CityID ) then
 					items.selected = #items;
 				end
-			end		
+			end
 		end
 	end
 
 	return items;
-end</PopulateList>
+end</PopulateList> 
       <OnSelection>function(selection)
-	local selectionParts = {};
-	-- No split available?
-	local str1 = string.match(selection, "%d+");
-	local str2 = string.match(selection, "%d+", string.len(str1) + 1);
-	
-	g_PlacementSettings.Player = tonumber(str1);
-	g_PlacementSettings.CityID = tonumber(str2);	
+  -- No split available?
+  local pl, city = selection:match("(%d+).(%d+)");
+  print("OnSelection('" .. selection .. "'):", pl, ";", city);
+  g_PlacementSettings.Player = tonumber(pl);
+  g_PlacementSettings.CityID = tonumber(city);
 end</OnSelection>
       <Sorted>false</Sorted>
     </SelectionListData>
     <SelectionListData>
       <Location>
-        <X>670</X>
+        <X>840</X>
         <Y>33</Y>
       </Location>
       <Size>
@@ -1104,7 +1109,7 @@ end</OnDeselected>
     </MultiselectListData>
     <MultiselectListData>
       <Location>
-        <X>950</X>
+        <X>1120</X>
         <Y>34</Y>
       </Location>
       <Size>
@@ -1113,20 +1118,24 @@ end</OnDeselected>
       </Size>
       <Name>Spoof City Civilization</Name>
       <PopulateList>function()
-	local pCity = GetSelectedCity();
-	if ( pCity == nil ) then
-		return {};
-	end
-	local listItems = {};
-	for civ in GameInfo.Civilizations() do
-		table.insert( listItems, {
-			Text = Locale.Lookup( civ.Name ):upper(),
-			Selected = false
-		} );
-	end
-	
-	return listItems;
-end</PopulateList>
+  local pCity = GetSelectedCity();
+  if ( pCity == nil ) then
+    return {};
+  end
+  local civs = GameInfo.Civilizations();
+  local ownerIdx = pCity:GetOwner();
+  local ownerCiv = (0 &lt;= ownerIdx) and PlayerConfigurations[ownerIdx]:GetCivilizationShortDescription();
+  local listItems = {};
+  for civ, i in civs do
+    table.insert( listItems, {
+      Text = Locale.Lookup( civ.Name ):upper(),
+      Selected = (civ.Name == ownerCiv);
+    } );
+  end
+  
+  return listItems;
+end
+</PopulateList>
       <OnSelected>function(selection)
 	local pCity = GetSelectedCity();
 	if ( pCity == nil ) then

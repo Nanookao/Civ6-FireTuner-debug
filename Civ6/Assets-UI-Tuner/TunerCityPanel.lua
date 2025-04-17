@@ -4,9 +4,9 @@ g_PanelHasFocus = false;
 g_PlacementSettings =
 {
 	Active = false,
-	Player = -1,
-	CityID = -1,
-	DistrictID = -1,
+	Player = nil,
+	CityID = nil,
+	DistrictID = nil,
 	PlacementConstruction = 100,
 	PlacementHandler = nil,
 
@@ -16,7 +16,7 @@ g_PlacementSettings =
 
 -------------------------------------------------------------------------------
 function GetSelectedCity()
-	if (g_PlacementSettings.Player >= 0 and g_PlacementSettings.CityID >= 0) then
+	if (g_PlacementSettings.Player and g_PlacementSettings.CityID) then
 		local pPlayer = Players[g_PlacementSettings.Player];
 		if pPlayer ~= nil then
 			local cities = pPlayer:GetCities();
@@ -29,9 +29,39 @@ function GetSelectedCity()
 end
 
 -------------------------------------------------------------------------------
+function GetCityBuildProgress(pCity)
+  --local pCity = GetSelectedCity();
+  if (not pCity) then  return "<select city>";  end
+  local pCityBuildQueue = pCity:GetBuildQueue();
+  local current = pCityBuildQueue:GetAt(0);
+  local prodType = pCityBuildQueue:GetCurrentProductionTypeHash();
+  if (prodType == 0) then  return "<not building>";  end
+--[[
+  local d1 = current.BuildingType;
+  local d2 = current.DistrictType;
+  local d3 = current.UnitType;
+  local d4 = current.ProjectType;
+--]]
+--[
+  local d1 = GameInfo.Buildings[prodType];
+  local d2 = GameInfo.Districts[prodType];
+  local d3 = GameInfo.Units[prodType];
+  local d4 = GameInfo.Projects[prodType];
+--]]
+
+  local progress =
+    d1 and pCityBuildQueue:GetBuildingProgress(d1) / pCityBuildQueue:GetBuildingCost(d1) or
+    d2 and pCityBuildQueue:GetDistrictProgress(d2) / pCityBuildQueue:GetDistrictCost(d2) or
+    d3 and pCityBuildQueue:GetUnitProgress(d3)     / pCityBuildQueue:GetUnitCost(d3)     or
+    d4 and pCityBuildQueue:GetProjectProgress(d4)  / pCityBuildQueue:GetProjectCost(d4)
+
+  return progress or "<unknown>";
+end
+
+-------------------------------------------------------------------------------
 function GetSelectedDistrict()
 	local pCity = GetSelectedCity();
-	if pCity ~= nil and g_PlacementSettings.DistrictID >= 0 then
+	if pCity ~= nil and g_PlacementSettings.DistrictID then
 		local pCityDistricts = pCity:GetDistricts();
 		if pCityDistricts ~= nil then
 			return pCityDistricts:GetDistrictByID(g_PlacementSettings.DistrictID);
