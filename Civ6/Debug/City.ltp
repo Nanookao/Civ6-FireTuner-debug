@@ -31,7 +31,7 @@ TunerCity and TunerCity:SetFocused(false)
   <SelectionLists>
 
     <SelectionListData>
-      <Name>PID,CityID:-1;Original:70;Owner:90;Idx:40;Name:100;X,Y:40;Building:150</Name>
+      <Name>Cities-PID,CityID:-1;Original:70;Owner:90;Idx:40;Name:100;X,Y:40;Building:150</Name>
       <Sorted>false</Sorted>
 
       <Location>
@@ -58,7 +58,7 @@ end
 
 
     <SelectionListData>
-      <Name>Order:0;Stat:80;Value:40</Name>
+      <Name>Stats-Order:0;Stat:80;Value:40</Name>
       <Sorted>false</Sorted>
 
       <Location>
@@ -142,8 +142,8 @@ end
       <Sorted>false</Sorted>
 
       <Location>
-        <X>1000</X>
-        <Y>0</Y>
+        <X>900</X>
+        <Y>30</Y>
       </Location>
       <Size>
         <Width>200</Width>
@@ -177,16 +177,76 @@ end
       </OnSelection>
     </SelectionListData>
 
+
     <SelectionListData>
-      <Name>Type:0;Name:90;X,Y:40;Complete:60;Pillaged:60;DistrictID:60;</Name>
+      <Name>Spoof City Owner</Name>
+
+      <Location>
+        <X>1120</X>
+        <Y>30</Y>
+      </Location>
+      <Size>
+        <Width>200</Width>
+        <Height>300</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,SpoofToCiv)
+  if not TunerCity then  return { { Text = "Error: 9 TunerCityPanel.lua not loaded" } }  end
+  local pCity = TunerCity:GetSelectedCity()
+  if not pCity then  return  end
+
+  local ownerIdx = pCity:GetOwner();
+  local ownerCivName = PlayerConfigurations[ownerIdx]:GetCivilizationShortDescription();
+  local listItems = {};
+  --for civ, i in GameInfo.Civilizations() do
+  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+    local pPlayer = Players[i];
+    if pPlayer:WasEverAlive() then
+      local spoofCivName = PlayerConfigurations[i]:GetCivilizationShortDescription()
+      local item = {
+        Text = Locale.Lookup( spoofCivName ),
+        Selected = (spoofCivName == ownerCivName),
+      }
+      table.insert( listItems, item );
+    end
+  end
+
+  return listItems;
+end
+      </PopulateList>
+
+      <OnSelection>function(selSpoofToCiv)
+  local pCity = TunerCity and TunerCity:GetSelectedCity()
+  if not pCity then  return  end
+
+  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+    local pPlayer = Players[i];
+    local spoofCivName = pPlayer:WasEverAlive() and PlayerConfigurations[i]:GetCivilizationShortDescription()
+    if spoofCivName and Locale.Lookup( spoofCivName ) == selSpoofToCiv then
+      print('----');
+      print('ContextPtr[panel]' , ContextPtr);
+      print( 'LuaEvents.SetCityCiv(city):' )
+      LuaEvents.SetCityCiv(pCity:GetX(), pCity:GetY(), civ.Index );
+      print('----');
+      break;
+    end
+  end
+end
+      </OnSelection>
+
+    </SelectionListData>
+
+
+    <SelectionListData>
+      <Name>Constructed:0;Building:90;X,Y:40;Complete:60;Pillaged:60;DistrictID:60;</Name>
       <Sorted>false</Sorted>
 
       <Location>
         <X>0</X>
-        <Y>320</Y>
+        <Y>340</Y>
       </Location>
       <Size>
-        <Width>300</Width>
+        <Width>580</Width>
         <Height>300</Height>
       </Size>
 
@@ -231,34 +291,76 @@ end
 
 
     <SelectionListData>
-      <Name>Type:1;Building:90;State</Name>
+      <Name>Districts:0;District:90;Note:60</Name>
 
       <Location>
-        <X>320</X>
-        <Y>320</Y>
+        <X>600</X>
+        <Y>340</Y>
       </Location>
       <Size>
-        <Width>300</Width>
+        <Width>180</Width>
         <Height>300</Height>
       </Size>
 
       <PopulateList>function(PopulateList,Building)
-  if not TunerCity then  return { { Text = "6 TunerCityPanel.lua not loaded" } }  end
-  local items = {}
-  --TunerCity:ListCityDistrictsOrBuildings( items, 'district'  , true )
-  TunerCity:ListCityDistrictsOrBuildings( items, 'building'  , true )
-  TunerCity:ListCityDistrictsOrBuildings( items, 'wonder'    , true )
-  return items
+  return TunerCity and TunerCity:ListCityDistrictsOrBuildings( items, 'district', true )  -- district | building | wonder
 end
       </PopulateList>
-      <OnSelected>function(selBuilding)
+
+      <OnSelection>function(selBuilding)
+  return TunerCity and TunerCity:SelectBuilding(selBuilding, 'district')
+end
+      </OnSelection>
+
+    </SelectionListData>
+
+
+    <SelectionListData>
+      <Name>Buildings:0;Building:90;Note:60</Name>
+
+      <Location>
+        <X>800</X>
+        <Y>340</Y>
+      </Location>
+      <Size>
+        <Width>180</Width>
+        <Height>300</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,Building)
+  return TunerCity and TunerCity:ListCityDistrictsOrBuildings( items, 'building', true )  -- district | building | wonder
+end
+      </PopulateList>
+
+      <OnSelection>function(selBuilding)
   return TunerCity and TunerCity:SelectBuilding(selBuilding, 'building')
 end
-      </OnSelected>
+      </OnSelection>
 
-      <OnDeselected>function(deselBuilding)
+    </SelectionListData>
+
+
+    <SelectionListData>
+      <Name>Wonders:0;Wonder:90;Note:60</Name>
+
+      <Location>
+        <X>1000</X>
+        <Y>340</Y>
+      </Location>
+      <Size>
+        <Width>180</Width>
+        <Height>300</Height>
+      </Size>
+
+      <PopulateList>function(PopulateList,Building)
+  return TunerCity and TunerCity:ListCityDistrictsOrBuildings( items, 'wonder', true )  -- district | building | wonder
 end
-      </OnDeselected>
+      </PopulateList>
+
+      <OnSelection>function(selBuilding)
+  return TunerCity and TunerCity:SelectBuilding(selBuilding, 'wonder')
+end
+      </OnSelection>
 
     </SelectionListData>
 
@@ -270,45 +372,15 @@ end
   <MultiselectLists>
 
     <MultiselectListData>
-      <Name>Districts</Name>
-
-      <Location>
-        <X>500</X>
-        <Y>431</Y>
-      </Location>
-      <Size>
-        <Width>228</Width>
-        <Height>416</Height>
-      </Size>
-
-      <PopulateList>function(PopulateList,District)
-  if not TunerCity then  return { { Text = "Error: 7 TunerCityPanel.lua not loaded" } }  end
-  return TunerCity:ListCityDistrictsOrBuildings( nil, nil, { category = 'district', unbuilt = true } )
-end
-      </PopulateList>
-
-      <OnSelected>function(selDistrict)
-  return TunerCity and TunerCity:SelectBuilding(selDistrict, 'district')
-end
-      </OnSelected>
-
-      <OnDeselected>function(deselDistrict)
-end
-      </OnDeselected>
-
-    </MultiselectListData>
-
-
-    <MultiselectListData>
       <Name>Pillaged Buildings</Name>
 
       <Location>
-        <X>730</X>
-        <Y>431</Y>
+        <X>1200</X>
+        <Y>340</Y>
       </Location>
       <Size>
-        <Width>175</Width>
-        <Height>417</Height>
+        <Width>180</Width>
+        <Height>300</Height>
       </Size>
 
       <PopulateList>function(PopulateList,PillagedBuilding)
@@ -345,69 +417,6 @@ end
       <OnDeselected>function(deselPillagedBuilding)
   if not TunerCity then  return  end
   TunerCity:SetBuildingPillaged( deselPillagedBuilding , false)
-end
-      </OnDeselected>
-
-    </MultiselectListData>
-
-
-    <MultiselectListData>
-      <Name>Spoof City Civilization</Name>
-
-      <Location>
-        <X>1120</X>
-        <Y>34</Y>
-      </Location>
-      <Size>
-        <Width>137</Width>
-        <Height>283</Height>
-      </Size>
-
-      <PopulateList>function(PopulateList,SpoofToCiv)
-  if not TunerCity then  return { { Text = "Error: 9 TunerCityPanel.lua not loaded" } }  end
-  local pCity = TunerCity:GetSelectedCity()
-  if not pCity then  return  end
-
-  local ownerIdx = pCity:GetOwner();
-  local ownerCivName = PlayerConfigurations[ownerIdx]:GetCivilizationShortDescription();
-  local listItems = {};
-  --for civ, i in GameInfo.Civilizations() do
-  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
-    local pPlayer = Players[i];
-    if pPlayer:WasEverAlive() then
-      local spoofCivName = PlayerConfigurations[i]:GetCivilizationShortDescription()
-      local item = {
-        Text = Locale.Lookup( spoofCivName ),
-        Selected = (spoofCivName == ownerCivName),
-      }
-      table.insert( listItems, item );
-    end
-  end
-
-  return listItems;
-end
-      </PopulateList>
-
-      <OnSelected>function(selSpoofToCiv)
-  local pCity = TunerCity and TunerCity:GetSelectedCity()
-  if not pCity then  return  end
-
-  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
-    local pPlayer = Players[i];
-    local spoofCivName = pPlayer:WasEverAlive() and PlayerConfigurations[i]:GetCivilizationShortDescription()
-    if spoofCivName and Locale.Lookup( spoofCivName ) == selSpoofToCiv then
-      print('----');
-      print('ContextPtr[panel]' , ContextPtr);
-      print( 'LuaEvents.SetCityCiv(city):' )
-      LuaEvents.SetCityCiv(pCity:GetX(), pCity:GetY(), civ.Index );
-      print('----');
-      break;
-    end
-  end
-end
-      </OnSelected>
-
-      <OnDeselected>function(deselSpoofToCiv)
 end
       </OnDeselected>
 
