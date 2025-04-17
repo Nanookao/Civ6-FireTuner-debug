@@ -112,7 +112,8 @@ end
 -------------------------------------------------------------------------------
 function TunerCity:SelectCity(selCity: string)
   -- No split available
-  local playerIDStr, cityIDStr = selCity:match("^(%d+),(%d+);");
+  local playerIDStr, cityIDStr = selCity:match("^(%d+),(0x%x+)");
+  print("TunerCity:SelectCity()  selCity, playerIDStr, cityIDStr=", selCity, playerIDStr, cityIDStr)
   local pPlayer = Players[ tonumber(playerIDStr) ];
   self.selected.pPlayer = pPlayer;
 
@@ -213,7 +214,7 @@ end
 
 
 -------------------------------------------------------------------------------
-function TunerCity:ListCityDistrictsOrBuildings(items :table, category :string)  -- , formatFunc :function
+function TunerCity:ListCityDistrictsOrBuildings(items :table, category :string, unbuilt :boolean)  -- , formatFunc :function
   items = items or {}
   local pCity = self:GetSelectedCity()
   if not pCity then  return items  end
@@ -226,17 +227,18 @@ function TunerCity:ListCityDistrictsOrBuildings(items :table, category :string) 
   for dbBuildingInfo in dbBuildings do
     -- Add wonders only to wonder category, add rest to other category
     local add = (dbBuildingInfo.IsWonder == wonder)
-    local str = add and self:FormatDistrictOrBuilding(pBuildings, pBuildQueue, dbBuildingInfo, options)
+    local str = add and self:FormatDistrictOrBuilding(pBuildings, pBuildQueue, dbBuildingInfo, unbuilt)
     if str then
       local item = { Text = str }
       if self.selected.BuildingType == dbBuildingInfo.BuildingType then  item.Selected = true  end
       table.insert(items, item)
+      break
     end
   end
   return items
 end
 
-function TunerCity:FormatDistrictOrBuilding(pBuildings :table, pBuildQueue :table, dbBuildingInfo :table, options :table)
+function TunerCity:FormatDistrictOrBuilding(pBuildings :table, pBuildQueue :table, dbBuildingInfo :table, unbuilt :boolean)
   local buildingID = dbBuildingInfo.Index
   local built, placed, name
 
@@ -251,7 +253,7 @@ function TunerCity:FormatDistrictOrBuilding(pBuildings :table, pBuildQueue :tabl
   end
 
   -- List unbuilt buildings?
-  if not built and not options.unbuilt then  return  end
+  if not built and not unbuilt then  return  end
 
   local nameLoc = Locale.Lookup( dbBuildingInfo.Name )
   local str = name
@@ -259,7 +261,7 @@ function TunerCity:FormatDistrictOrBuilding(pBuildings :table, pBuildQueue :tabl
 
   local pillaged = pBuildings.IsPillaged and pBuildings:IsPillaged(buildingID)
 
-  if options.unbuilt then
+  if unbuilt then
     -- List also unbuilt buildings: add a column for build state
     stateStr = built and "✅ built"  -- 🗹🗹☐☑✅🗹
       or placed and "🗹 construction"  -- ☑
@@ -391,7 +393,7 @@ LuaEvents.TunerMapLButtonUp.Add( TunerCity.OnLButtonUp )
 -------------------------------------------------------------------------------
 function TunerCity:SetFocused(focused)
   self.focused = focused
-  LuaEvents.SetDebugMode[focused]()
+  self.SetDebugMode[focused]()
 end
 
 TunerCity.SetDebugMode = {}

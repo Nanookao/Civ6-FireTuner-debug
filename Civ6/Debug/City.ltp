@@ -307,7 +307,7 @@ end
       </Size>
 
       <PopulateList>function(PopulateList,Building)
-  return TunerCity and TunerCity:ListCityDistrictsOrBuildings( items, 'district', true )  -- district | building | wonder
+  return TunerCity and TunerCity:ListCityDistrictsOrBuildings( {}, 'district', true )  -- district | building | wonder
 end
       </PopulateList>
 
@@ -333,7 +333,7 @@ end
       </Size>
 
       <PopulateList>function(PopulateList,Building)
-  return TunerCity and TunerCity:ListCityDistrictsOrBuildings( items, 'building', true )  -- district | building | wonder
+  return TunerCity and TunerCity:ListCityDistrictsOrBuildings( {}, 'building', true )  -- district | building | wonder
 end
       </PopulateList>
 
@@ -359,7 +359,7 @@ end
       </Size>
 
       <PopulateList>function(PopulateList,Building)
-  return TunerCity and TunerCity:ListCityDistrictsOrBuildings( items, 'wonder', true )  -- district | building | wonder
+  return TunerCity and TunerCity:ListCityDistrictsOrBuildings( {}, 'wonder', true )  -- district | building | wonder
 end
       </PopulateList>
 
@@ -438,7 +438,7 @@ end
     <BooleanControlData>
       <Name>Place District</Name>
       <Location>
-        <X>600</X>
+        <X>630</X>
         <Y>660</Y>
       </Location>
 
@@ -461,8 +461,8 @@ end
     <BooleanControlData>
       <Name>Place Building</Name>
       <Location>
-        <X>800</X>
-        <Y>690</Y>
+        <X>830</X>
+        <Y>660</Y>
       </Location>
 
       <GetFunction>function(IsPlaceBuilding)
@@ -482,21 +482,32 @@ end
     </BooleanControlData>
 
     <BooleanControlData>
-      <Name>Pick City</Name>
+      <Name>Place Wonder</Name>
       <Location>
-        <X>240</X>
-        <Y>320</Y>
+        <X>1030</X>
+        <Y>660</Y>
       </Location>
 
-      <GetFunction>function(IsPickCity)
+      <GetFunction>function(IsPlaceWonder)
+  return TunerCity and TunerCity:GetPlacementBuilding('wonder')
 end
       </GetFunction>
 
-      <SetFunction>function(IsPickCity)
+      <SetFunction>function(IsPlaceWonder)
+  if not TunerCity then  return  end
+  if IsPlaceWonder then
+    return TunerCity:StartPlacement('wonder')
+  else
+    return TunerCity:CancelPlacementMode()
+  end
 end
       </SetFunction>
     </BooleanControlData>
+
   </BooleanControls>
+
+
+
 
   <IntegerControls>
 
@@ -598,32 +609,11 @@ end
 
 
     <IntegerControlData>
-      <Name>CityCenter Outer Damage</Name>
-      <DefaultValue>0</DefaultValue>
-      <Location>
-        <X>10</X>
-        <Y>800</Y>
-      </Location>
-
-      <GetFunction>function(OuterDamage)
-  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-  return pDistrict and pDistrict.GetDamage and pDistrict:GetDamage(DefenseTypes.DISTRICT_OUTER);
-end
-      </GetFunction>
-
-      <SetFunction>function(OuterDamage)
-  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_OUTER, OuterDamage)
-end
-      </SetFunction>
-    </IntegerControlData>
-
-    <IntegerControlData>
       <Name>CityCenter Garrison Damage</Name>
       <DefaultValue>0</DefaultValue>
       <Location>
-        <X>10</X>
-        <Y>830</Y>
+        <X>200</X>
+        <Y>750</Y>
       </Location>
 
       <GetFunction>function(GarrisonDamage)
@@ -634,17 +624,38 @@ end
 
       <SetFunction>function(GarrisonDamage)
   local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
-  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_GARRISON, GarrisonDamage);
+  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_GARRISON, GarrisonDamage)
 end
       </SetFunction>
     </IntegerControlData>
 
     <IntegerControlData>
-      <Name>Encampement Garrison Damage</Name>
+      <Name>CityCenter Wall Damage</Name>
       <DefaultValue>0</DefaultValue>
       <Location>
-        <X>10</X>
-        <Y>860</Y>
+        <X>200</X>
+        <Y>780</Y>
+      </Location>
+
+      <GetFunction>function(OuterDamage)
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict.GetDamage and pDistrict:GetDamage(DefenseTypes.DISTRICT_OUTER);
+end
+      </GetFunction>
+
+      <SetFunction>function(OuterDamage)
+  local pDistrict = TunerCity and TunerCity:GetSelectedCityCenter()
+  return pDistrict and pDistrict:SetDamage(DefenseTypes.DISTRICT_OUTER, OuterDamage);
+end
+      </SetFunction>
+    </IntegerControlData>
+
+    <IntegerControlData>
+      <Name>Encamp. Garrison Damage</Name>
+      <DefaultValue>0</DefaultValue>
+      <Location>
+        <X>200</X>
+        <Y>810</Y>
       </Location>
 
       <GetFunction>function(GarrisonDamage)
@@ -710,9 +721,9 @@ end
 
 
     <StringControlData>
-      <Name>Place District</Name>
+      <Name></Name>
       <Location>
-        <X>600</X>
+        <X>630</X>
         <Y>690</Y>
       </Location>
 
@@ -729,9 +740,9 @@ end
 
 
     <StringControlData>
-      <Name>Place Building</Name>
+      <Name></Name>
       <Location>
-        <X>700</X>
+        <X>830</X>
         <Y>690</Y>
       </Location>
 
@@ -742,6 +753,25 @@ end
       </GetFunction>
 
       <SetFunction>function(PlaceBuilding)
+end
+      </SetFunction>
+    </StringControlData>
+
+
+    <StringControlData>
+      <Name></Name>
+      <Location>
+        <X>1030</X>
+        <Y>690</Y>
+      </Location>
+
+      <GetFunction>function(PlaceWonder)
+  local dbBuildingInfo = TunerCity and TunerCity:GetPlacementBuilding('wonder')
+  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or ""
+end
+      </GetFunction>
+
+      <SetFunction>function(PlaceWonder)
 end
       </SetFunction>
     </StringControlData>
@@ -883,10 +913,10 @@ end
 
 
     <ActionData>
-      <Name>+25 Damage Garrison</Name>
+      <Name>dmg +25</Name>
       <Location>
-        <X>220</X>
-        <Y>800</Y>
+        <X>400</X>
+        <Y>750</Y>
       </Location>
 
       <Action>
@@ -896,10 +926,10 @@ return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
     </ActionData>
 
     <ActionData>
-      <Name>+25 Damage Outer</Name>
+      <Name>dmg +25</Name>
       <Location>
-        <X>220</X>
-        <Y>830</Y>
+        <X>400</X>
+        <Y>780</Y>
       </Location>
 
       <Action>
@@ -909,10 +939,10 @@ return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_OUTER, 25);
     </ActionData>
 
     <ActionData>
-      <Name>+25 Damage Garrison (ENC)</Name>
+      <Name>dmg +25</Name>
       <Location>
-        <X>220</X>
-        <Y>860</Y>
+        <X>400</X>
+        <Y>810</Y>
       </Location>
 
       <Action>
@@ -925,10 +955,10 @@ return pDistrict and pDistrict:ChangeDamage(DefenseTypes.DISTRICT_GARRISON, 25);
 
 
     <ActionData>
-      <Name>AI Focus: None</Name>
+      <Name>AI Focus: none</Name>
       <Location>
-        <X>400</X>
-        <Y>800</Y>
+        <X>10</X>
+        <Y>750</Y>
       </Location>
 
       <Action>
@@ -940,10 +970,10 @@ end
     </ActionData>
 
     <ActionData>
-      <Name>AI Focus: Food</Name>
+      <Name>AI Focus: food</Name>
       <Location>
-        <X>400</X>
-        <Y>830</Y>
+        <X>10</X>
+        <Y>780</Y>
       </Location>
 
       <Action>
@@ -955,10 +985,10 @@ end
     </ActionData>
 
     <ActionData>
-      <Name>AI Focus: Production</Name>
+      <Name>AI Focus: prod</Name>
       <Location>
-        <X>400</X>
-        <Y>860</Y>
+        <X>10</X>
+        <Y>810</Y>
       </Location>
 
       <Action>
@@ -970,10 +1000,10 @@ end
     </ActionData>
 
     <ActionData>
-      <Name>AI Focus: Gold</Name>
+      <Name>AI Focus: gold</Name>
       <Location>
-        <X>400</X>
-        <Y>890</Y>
+        <X>10</X>
+        <Y>840</Y>
       </Location>
 
       <Action>
@@ -991,7 +1021,7 @@ end
       <Name>Set Property</Name>
       <Location>
         <X>1000</X>
-        <Y>330</Y>
+        <Y>333</Y>
       </Location>
 
       <Action>
@@ -1003,8 +1033,8 @@ return pCity and pCity:SetProperty( TunerCity.options.PropertyKey, TunerCity.opt
     <ActionData>
       <Name>Clear Property</Name>
       <Location>
-        <X>1100</X>
-        <Y>330</Y>
+        <X>1080</X>
+        <Y>333</Y>
       </Location>
 
       <Action>
