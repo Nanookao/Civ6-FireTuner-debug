@@ -12,6 +12,7 @@ TunerCity and TunerCity:SetFocused(true)
 
   <ExitAction>
 TunerCity and TunerCity:SetFocused(false)
+TunerCity and TunerCity:Shutdown()
   </ExitAction>
 
   <CompatibleStates>

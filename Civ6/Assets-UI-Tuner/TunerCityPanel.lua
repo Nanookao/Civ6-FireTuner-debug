@@ -2,36 +2,35 @@ print( "loading TunerCityPanel.lua" );
 --return
 
 TunerCity = TunerCity or {}
-g_PanelHasFocus = false;
-
--------------------------------------------------------------------------------
 TunerCity.selected = TunerCity.selected or {}
-TunerCity.options  = TunerCity.options  or {}
+TunerCity.options  = TunerCity.options  or { BuildPercent = 100 }
 
-g_PlacementSettings =
-{
-  Player = nil,
-  CityID = nil,
-  DistrictID = nil,
-  PlacementHandler = nil,
-
-  EditKey = "",
-  EditVal = ""
-}
 
 -------------------------------------------------------------------------------
 function TunerCity:MapClickHandler(plot)
+  local msg = "TunerCity:MapClickHandler()  x,y= "..plot:GetX()..","..plot:GetY().."  "
+
   if self:InPlacementMode() then
-    TunerCity:FinishPlacement(plot)
-    return
+    return self:FinishPlacement(plot)
   end
-  
 
-  local pCity = Cities.GetPlotWorkingCity(plot:GetIndex())
-  if not pCity then  return  end
+  local pDistrict = self:SelectDistrictAt(plot)
+  if pDistrict then
+    -- local dbBuildingInfo = GameInfo.Districts[pDistrict:GetType()]
+    local pCity = pDistrict:GetCity()
+    local cityLoc = Locale.Lookup( pCity:GetName() )
+    print( msg .. pDistrict:GetType() .. " of city " .. cityLoc .. " at "..pCity:GetX()..","..pCity:GetY() )
+    return true
+  end
 
-  g_PlacementSettings.Player = pCity:GetOwner();
-  g_PlacementSettings.CityID = pCity:GetID();
+  local pCity = self:SelectCityAt(plot)
+  if pCity then
+    local cityLoc = Locale.Lookup( pCity:GetName() )
+    print( msg .. "plot of city " .. cityLoc .. " at "..pCity:GetX()..","..pCity:GetY() )
+    return true
+  end
+
+  print( msg .. "plot not owned by any city" )
 end
 
 
@@ -39,8 +38,6 @@ function TunerCity.OnLButtonUp(X,Y)
   return TunerCity:MapClickHandler( Map.GetPlot(X,Y) )
 end
 
-LuaEvents.TunerMapLButtonUp.Add( TunerCity.OnLButtonUp )
---LuaEvents.TunerMapRButtonUp.Add( TunerCity.OnRButtonUp );
 
 
 
@@ -61,9 +58,6 @@ end
 function OnUIDebugModeExited()
   TunerCity.inDebugMode = false;
 end
-
-LuaEvents.UIDebugModeEntered.Add(OnUIDebugModeEntered);
-LuaEvents.UIDebugModeExited.Add(OnUIDebugModeExited);
 
 
 
@@ -96,8 +90,10 @@ function TunerCity:ListPlayerCities(pPlayer :table, items :table)
     local str = self:FormatCity(pCity, playerLoc)
     table.insert(items, str)
 
-    if playerID == self.selected.PlayerID and pCity:GetID() == self.selected.CityID then
+    if pCity == self.selected.pCity then
       items.selected = #items;
+      local cityNameLoc = Locale.Lookup( pCity:GetName() )
+      print("TunerCity:ListPlayerCities()  found selected city #"..items.selected.." "..cityNameLoc )
     end
   end
   return items
@@ -149,11 +145,12 @@ function TunerCity:SelectCity(selCity: string)
   local playerIDStr, cityIDStr = selCity:match("^(%d+),(0x%x+)");
   --print("TunerCity:SelectCity()  selCity, playerIDStr, cityIDStr=", selCity, playerIDStr, cityIDStr)
   local pPlayer = Players[ tonumber(playerIDStr) ];
-  self.selected.pPlayer = pPlayer;
+  -- self.selected.pPlayer = pPlayer;
 
   local cityID = tonumber(cityIDStr)
   local pCity = cityID and pPlayer and pPlayer:GetCities():FindID(cityID);
-  self.selected.pCity = pCity;
+  self:SetSelectedCity(pCity);
+  -- UI.LookAtPlot( pCity:GetX(), pCity:GetY() )
   if not pCity then  return pCity  end
 
   --[[
@@ -207,14 +204,30 @@ function TunerCity:SelectDistrictByID(selDistrictState: string)
   local pCity = self:GetSelectedCity()
   local pDistricts = pCity and pCity:GetDistricts()
   local pDistrict = pDistricts and pDistricts.GetDistrictByID and pDistricts:GetDistrictByID(districtID)
-  self.selected.pDistrict = pDistrict
+  if pDistrict then
+    -- TODO: fix
+    -- self:SetSelectedDistrict(pDistrict)
+    -- UI.LookAtPlot( pDistrict:GetX(), pDistrict:GetY() )
+  end
   return pDistrict
+end
+
+
+function TunerCity:SelectCityAt(plot: table, onlyCityCenter :boolean)
+  local GetCityAt = onlyCityCenter and Cities.GetCityAt or Cities.GetPlotWorkingCity
+  local pCity = GetCityAt(plot:GetIndex())
+  if pCity then
+    self:SetSelectedCity(pCity)
+  end
+  return pCity
 end
 
 
 function TunerCity:SelectDistrictAt(plot: table)
   local pDistrict = CityManager.GetDistrictAt(plot)
-  self.selected.pDistrict = pDistrict
+  if pDistrict then
+    self:SetSelectedDistrict(pDistrict)
+  end
   return pDistrict
 end
 
@@ -225,6 +238,31 @@ end
 function TunerCity:GetSelectedCity()
   return self.selected.pCity
 end
+
+function TunerCity:SetSelectedCity(pCity :table)
+  local cityNameLoc = pCity and Locale.Lookup( pCity:GetName() ) or "nil"
+  print("TunerCity:SetSelectedCity()  "..cityNameLoc)
+  self.selected.pCity = pCity
+
+  -- Unselect district if choosing a different city
+  local pDistrict = self.selected.pDistrict
+  if pDistrict and pDistrict:GetCity() ~= pCity then
+    self.selected.pDistrict = nil
+  end
+end
+
+function TunerCity:GetSelectedDistrict()
+  return self.selected.pDistrict
+end
+
+function TunerCity:SetSelectedDistrict(pDistrict :table)
+  local pCity = pDistrict:GetCity()
+  local cityNameLoc = pCity and Locale.Lookup( pCity:GetName() ) or "nil"
+  print("TunerCity:SetSelectedDistrict()  "..cityNameLoc.." "..pDistrict:GetType())
+  self.selected.pCity = pDistrict:GetCity()
+  self.selected.pDistrict = pDistrict
+end
+
 
 function TunerCity:GetSelectedCityCenter()
   local pCity = self:GetSelectedCity()
@@ -239,10 +277,6 @@ function TunerCity:GetDistrictOfSelectedCity(districtType :string)
   local pCity = self:GetSelectedCity()
   local pDistricts = pCity and pCity:GetDistricts();
   return pDistricts and pDistricts.GetDistrict and pDistricts:GetDistrict(dbBuildingInfo.Index);
-end
-
-function TunerCity:GetSelectedDistrict()
-  return self.selected.pDistrict
 end
 
 
@@ -264,9 +298,8 @@ function TunerCity:ListCityDistrictsOrBuildings(items :table, category :string, 
     local add = (dbBuildingInfo.IsWonder == wonder)
     local str = add and self:FormatDistrictOrBuilding(pBuildings, pBuildQueue, dbBuildingInfo, unbuilt)
     if str then
-      local item = { Text = str }
-      if self.selected.BuildingType == dbBuildingInfo.BuildingType then  item.Selected = true  end
-      table.insert(items, item)
+      table.insert(items, str)
+      if self.selected.BuildingType == dbBuildingInfo.BuildingType then  items.selected = #items  end
       break
     end
   end
@@ -355,7 +388,7 @@ function TunerCity:ListCityBuildingsPillage(items :table)
   local i = 1;
   for buildingInfo in GameInfo.Buildings() do
     local item = {};
-    local name = Locale.Lookup( buildingInfo.Name );
+    --local name = Locale.Lookup( buildingInfo.Name );
     local name = buildingInfo.BuildingType:gsub("BUILDING_", "");
     if pBuildings:HasBuilding(buildingInfo.Index) then
       item.Text = name;
@@ -399,13 +432,11 @@ function TunerCity:StartPlacementMode(category :string)
   local dbBuildingInfo = self.selected[category]
   if not dbBuildingInfo then  return  end
 
+  -- Enter building placement mode
   self.selected.placeBuilding = dbBuildingInfo
-  if dbBuildingInfo.RequiresPlacement then
-    -- Enter building placement mode.
-    self.PlacementHandler = self.FinishPlacement
-    LuaEvents.TunerEnterDebugMode();
-  else
-    -- Just create it, it will go in its district.
+
+  if not dbBuildingInfo.RequiresPlacement then
+    -- Create it in its district, no need for placement
     self:FinishPlacement()
   end
 end
@@ -418,7 +449,7 @@ function TunerCity:FinishPlacement(plot)
   if not dbBuildingInfo then  return  end
 
   local buildingID = dbBuildingInfo.Index
-  local percent = self.options.buildPercent
+  local percent = self.options.BuildPercent
   local pBuildQueue = pCity:GetBuildQueue();
 
   if dbBuildingInfo.DistrictType then
@@ -429,7 +460,9 @@ function TunerCity:FinishPlacement(plot)
     pBuildQueue:CreateIncompleteBuilding(buildingID, percent);
   end
 
+  -- Exit building placement mode
   self.selected.placeBuilding = nil
+  return true
 end
 
 
@@ -513,12 +546,12 @@ end
 
 -------------------------------------------------------------------------------
 function TunerCity:GetCurrentlyBuildingLoc(pCity :table)
-  local buildingType = self:GetCurrentlyBuilding(pCity)
-  local dbBuildingInfo = GameInfo.Buildings[buildingType]
-    or GameInfo.Districts[buildingType]
-    or GameInfo.Units[buildingType]
-    or GameInfo.Projects[buildingType]
-  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or buildingType
+  local prodType = self:GetCurrentlyBuilding(pCity)
+  local dbBuildingInfo = GameInfo.Buildings[prodType]
+    or GameInfo.Districts[prodType]
+    or GameInfo.Units[prodType]
+    or GameInfo.Projects[prodType]
+  return dbBuildingInfo and Locale.Lookup( dbBuildingInfo.Name ) or prodType
 end
 
 function TunerCity:GetCurrentlyBuilding(pCity :table)
@@ -541,11 +574,11 @@ function minmax(value, minimum, maximum)
 end
 
 function TunerCity:GetBuildPercent()
-  return self.options.buildPercent
+  return self.options.BuildPercent
 end
 
-function TunerCity:SetBuildPercent(buildPercent)
-  self.options.buildPercent = minmax(buildPercent, 0, 100)
+function TunerCity:SetBuildPercent(BuildPercent)
+  self.options.BuildPercent = minmax(BuildPercent, 0, 100)
 end
 
 
@@ -707,7 +740,28 @@ function OnPrintCityInfo(pCity)
   print('-- /event OnPrintCityInfo');
 end
 
-LuaEvents.PrintCityInfo.RemoveAll();
-LuaEvents.PrintCityInfo.Add(OnPrintCityInfo);
 
+
+function TunerCity:Initialize()
+  -- TODO: remove before hot reload
+  LuaEvents.UIDebugModeEntered.Add(OnUIDebugModeEntered);
+  LuaEvents.UIDebugModeExited.Add(OnUIDebugModeExited);
+  LuaEvents.TunerMapLButtonUp.RemoveAll()
+  LuaEvents.TunerMapLButtonUp.Add( TunerCity.OnLButtonUp )
+  --LuaEvents.TunerMapRButtonUp.Add( TunerCity.OnRButtonUp );
+  LuaEvents.PrintCityInfo.RemoveAll();
+  LuaEvents.PrintCityInfo.Add(OnPrintCityInfo);
+end
+
+-- Called by City.ltp <ExitAction>
+function TunerCity:Shutdown()
+  LuaEvents.UIDebugModeEntered.Remove(OnUIDebugModeEntered);
+  LuaEvents.UIDebugModeExited.Remove(OnUIDebugModeExited);
+  LuaEvents.TunerMapLButtonUp.Remove( TunerCity.OnLButtonUp )
+  --LuaEvents.TunerMapRButtonUp.Remove( TunerCity.OnRButtonUp );
+  LuaEvents.PrintCityInfo.Remove(OnPrintCityInfo)
+end
+
+
+TunerCity:Initialize()
 
