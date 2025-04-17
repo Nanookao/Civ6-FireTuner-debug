@@ -20,25 +20,59 @@ g_PlacementSettings =
 }
 
 -------------------------------------------------------------------------------
-function minmax(value, minimum, maximum)
-  if value < minimum then  return minimum  end
-  if value > maximum then  return maximum  end
-  return value
+function TunerCity:MapClickHandler(plot)
+  if self:InPlacementMode() then
+    TunerCity:FinishPlacement(plot)
+    return
+  end
+  
+
+  local pCity = Cities.GetPlotWorkingCity(plot:GetIndex())
+  if not pCity then  return  end
+
+  g_PlacementSettings.Player = pCity:GetOwner();
+  g_PlacementSettings.CityID = pCity:GetID();
 end
 
-function TunerCity:GetBuildPercent()
-  return self.options.buildPercent
+
+function TunerCity.OnLButtonUp(X,Y)
+  return TunerCity:MapClickHandler( Map.GetPlot(X,Y) )
 end
 
-function TunerCity:SetBuildPercent(buildPercent)
-  self.options.buildPercent = minmax(buildPercent, 0, 100)
+LuaEvents.TunerMapLButtonUp.Add( TunerCity.OnLButtonUp )
+--LuaEvents.TunerMapRButtonUp.Add( TunerCity.OnRButtonUp );
+
+
+
+-------------------------------------------------------------------------------
+function TunerCity:SetFocused(focused)
+  self.focused = focused
+  self.SetDebugMode[focused]()
 end
+
+TunerCity.SetDebugMode = {}
+TunerCity.SetDebugMode[true] = LuaEvents.TunerEnterDebugMode
+TunerCity.SetDebugMode[false] = LuaEvents.TunerExitDebugMode
+
+function OnUIDebugModeEntered()
+  TunerCity.inDebugMode = true;
+end
+
+function OnUIDebugModeExited()
+  TunerCity.inDebugMode = false;
+end
+
+LuaEvents.UIDebugModeEntered.Add(OnUIDebugModeEntered);
+LuaEvents.UIDebugModeExited.Add(OnUIDebugModeExited);
+
 
 
 
 -------------------------------------------------------------------------------
 function TunerCity:ListCities(items :table)
   items = items or {}
+  -- local numPlayers = PlayerManager.GetWasEverAliveCount()
+  -- for playerID = 0, numPlayers-1, 1 do
   for playerID = 0, GameDefines.MAX_PLAYERS-1, 1 do
     local pPlayer = Players[playerID]
     if pPlayer:WasEverAlive() then
@@ -278,7 +312,75 @@ end
 
 
 -------------------------------------------------------------------------------
-function TunerCity:StartPlacement(category :string)
+function TunerCity:ListCityBuildingsDetailed(items :table, unbuilt :boolean)  -- , formatFunc :function
+  local pCity = self:GetSelectedCity()
+  if not pCity then  return  end
+
+  local items = {};
+  local pDistricts = pCity:GetDistricts();
+  local numDistricts = pDistricts:GetNumDistricts();
+  for districtInfo in GameInfo.Districts() do
+    if pDistricts:HasDistrict(districtInfo.Index) then
+      local name = districtInfo.DistrictType:gsub("DISTRICT_", "");
+      local nameLoc = Locale.Lookup( districtInfo.Name );
+      local prev = nil;
+      -- numDistricts= max iterations as a safeguard against infinite loop
+      for i = 0, numDistricts, 1 do
+        local pDistrict = pDistricts:GetDistrict(districtInfo.Index, i);
+        if pDistrict == nil or pDistrict == prev then  break  end
+        prev = pDistrict
+        local str = name
+          .. ";" .. nameLoc
+          .. ";" .. pDistrict:GetX() .. "," .. pDistrict:GetY()
+          .. ";" .. tostring(pDistrict:IsComplete())
+          .. ";" .. tostring(pDistrict:IsPillaged())
+          .. ";" .. pDistrict:GetID()
+        table.insert(items, str)
+      end
+    end
+  end
+  return items;
+end
+
+
+
+-------------------------------------------------------------------------------
+function TunerCity:ListCityBuildingsPillage(items :table)
+  local pCity = self:GetSelectedCity()
+  if not pCity then  return  end
+
+  local items = {};
+  local pBuildings = pCity:GetBuildings();
+  local i = 1;
+  for buildingInfo in GameInfo.Buildings() do
+    local item = {};
+    local name = Locale.Lookup( buildingInfo.Name );
+    --local name = buildingInfo.BuildingType:gsub("BUILDING_", "");
+    if pBuildings:HasBuilding(buildingInfo.Index) then
+      --item.Text = name;
+      item.Text = name .. ";;;;" .. buildingInfo.BuildingType;
+      item.Selected =  pBuildings:IsPillaged(buildingInfo.Index)
+      items[i] = item;
+      i = i + 1;
+    end
+  end
+
+  return items;
+end
+
+
+
+
+-------------------------------------------------------------------------------
+function TunerCity:SetPlacementMode(start :boolean, category :string)
+  if start then
+    return self:StartPlacementMode(category)
+  else
+    return self:CancelPlacementMode()
+  end
+end
+
+function TunerCity:StartPlacementMode(category :string)
   --if self:InPlacementMode() then  return  end
   local dbBuildingInfo = self.selected[category]
   if not dbBuildingInfo then  return  end
@@ -363,57 +465,6 @@ end
 
 
 -------------------------------------------------------------------------------
-function TunerCity:MapClickHandler(plot)
-  if self:InPlacementMode() then
-    TunerCity:FinishPlacement(plot)
-    return
-  end
-  
-
-  local pCity = Cities.GetPlotWorkingCity(plot:GetIndex())
-  if not pCity then  return  end
-
-  g_PlacementSettings.Player = pCity:GetOwner();
-  g_PlacementSettings.CityID = pCity:GetID();
-end
-
-
-
-
--------------------------------------------------------------------------------
-function TunerCity.OnLButtonUp(X,Y)
-  return TunerCity:MapClickHandler( Map.GetPlot(X,Y) )
-end
-
-LuaEvents.TunerMapLButtonUp.Add( TunerCity.OnLButtonUp )
---LuaEvents.TunerMapRButtonUp.Add( TunerCity.OnRButtonUp );
-
-
-
--------------------------------------------------------------------------------
-function TunerCity:SetFocused(focused)
-  self.focused = focused
-  self.SetDebugMode[focused]()
-end
-
-TunerCity.SetDebugMode = {}
-TunerCity.SetDebugMode[true] = LuaEvents.TunerEnterDebugMode
-TunerCity.SetDebugMode[false] = LuaEvents.TunerExitDebugMode
-
-function OnUIDebugModeEntered()
-  TunerCity.inDebugMode = true;
-end
-
-function OnUIDebugModeExited()
-  TunerCity.inDebugMode = false;
-end
-
-LuaEvents.UIDebugModeEntered.Add(OnUIDebugModeEntered);
-LuaEvents.UIDebugModeExited.Add(OnUIDebugModeExited);
-
-
-
--------------------------------------------------------------------------------
 function GetCityBuildProgress(pCity)
   --local pCity = GetSelectedCity();
   if not pCity then  return "<select city>"  end
@@ -467,6 +518,140 @@ function TunerCity:SetBuildingPillaged(selBuilding :string, isPillaged :boolean)
     pCity:GetBuildings():SetPillaged(dbBuildingInfo.Index, isPillaged);
   end
 end
+
+
+
+
+-------------------------------------------------------------------------------
+function minmax(value, minimum, maximum)
+  if value < minimum then  return minimum  end
+  if value > maximum then  return maximum  end
+  return value
+end
+
+function TunerCity:GetBuildPercent()
+  return self.options.buildPercent
+end
+
+function TunerCity:SetBuildPercent(buildPercent)
+  self.options.buildPercent = minmax(buildPercent, 0, 100)
+end
+
+
+
+
+-------------------------------------------------------------------------------
+function TunerCity:ListCityStat()
+  local items = {}
+  items[0] = "-0;Population;"
+  items[1] = "-1;Housing;"
+  items[2] = "-2;Food Surplus;"
+  -- items[3] = "-3;Gold Yield Modifier;"
+  -- items[4] = "-4;Remaining Attacks;"
+
+  local pCity = self:GetSelectedCity()
+  if not pCity then  return items  end
+
+  items[0] = items[0] .. pCity:GetPopulation()
+  items[1] = items[1] .. pCity:GetGrowth():GetHousing()
+  items[2] = items[2] .. pCity:GetGrowth():GetFoodSurplus()
+  -- items[3] = items[3] .. pCity:GetGoldYieldModifier()
+  -- items[4] = items[4] .. pCity:GetRemainingAttacks()
+  return items;
+end
+
+
+
+
+-------------------------------------------------------------------------------
+function TunerCity:ListCityProperty()
+  local pCity = self:GetSelectedCity()
+  if not pCity then  return  end
+
+  local props = pCity:GetProperties();
+  local items = {};
+  for k,v in pairs(props) do
+    local line = k .. ";" .. tostring(v);
+    table.insert(items, line);
+    if ( k == TunerCity.options.PropertyKey ) then
+      items.selected = #items;
+    end
+  end
+
+  return items;
+end
+
+
+
+
+-------------------------------------------------------------------------------
+function TunerCity:ListRevealedToCiv()
+  local pCity = self:GetSelectedCity()
+  if true or not pCity then  return  end
+
+  local items = {};
+  if pCity ~= nil then
+    for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+      local pPlayer = Players[i];
+      if pPlayer:WasEverAlive() and PlayersVisibility[i]:IsRevealed(pCity:GetX(), pCity:GetY()) then
+        local pPlayerConfig = PlayerConfigurations[i];
+        local properCivName = Locale.Lookup( pPlayerConfig:GetCivilizationShortDescription() );
+        local str = properCivName .. ";" .. pPlayerConfig:GetNickName();
+        table.insert( items, str );
+      end
+    end
+  end
+
+  return items;
+end
+
+
+
+
+-------------------------------------------------------------------------------
+function TunerCity:ListSpoofToCiv()
+  local pCity = self:GetSelectedCity()
+  if true or not pCity then  return  end
+
+  local ownerIdx = pCity:GetOwner();
+  local ownerCivName = PlayerConfigurations[ownerIdx]:GetCivilizationShortDescription();
+  local items = {};
+  --for civ, i in GameInfo.Civilizations() do
+  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+      if true then return end
+    local pPlayer = Players[i];
+    if pPlayer:WasEverAlive() then
+      local spoofCivName = PlayerConfigurations[i]:GetCivilizationShortDescription()
+      local item = {
+        Text = Locale.Lookup( spoofCivName ),
+        Selected = (spoofCivName == ownerCivName),
+      }
+      table.insert( items, item );
+    end
+  end
+
+  return items;
+end
+
+
+function TunerCity:SelectSpoofToCiv(selSpoofToCiv)
+  local pCity = self:GetSelectedCity()
+  if not pCity then  return  end
+
+  for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+    local pPlayer = Players[i];
+    local spoofCivName = pPlayer:WasEverAlive() and PlayerConfigurations[i]:GetCivilizationShortDescription()
+    if spoofCivName and Locale.Lookup( spoofCivName ) == selSpoofToCiv then
+      print('----');
+      print('ContextPtr[panel]' , ContextPtr);
+      print( 'LuaEvents.SetCityCiv(city):' )
+      LuaEvents.SetCityCiv(pCity:GetX(), pCity:GetY(), civ.Index );
+      print('----');
+      break;
+    end
+  end
+end
+
 
 
 
