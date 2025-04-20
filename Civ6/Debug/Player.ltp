@@ -19,7 +19,7 @@ for tech in GameInfo.Technologies() do
 	playerTechs:SetResearchProgress(tech.Index, playerTechs:GetResearchCost(tech.Index));
 end</Action>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>189</Y>
       </Location>
     </ActionData>
@@ -35,7 +35,7 @@ for tech in GameInfo.Technologies() do
 end
 </Action>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>216</Y>
       </Location>
     </ActionData>
@@ -63,7 +63,7 @@ for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
 end
 </Action>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>282</Y>
       </Location>
     </ActionData>
@@ -91,7 +91,7 @@ for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
 end
 </Action>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>310</Y>
       </Location>
     </ActionData>
@@ -99,7 +99,7 @@ end
       <Name>1000 Gold</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetTreasury():ChangeGoldBalance(1000);</Action>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>64</Y>
       </Location>
     </ActionData>
@@ -107,7 +107,7 @@ end
       <Name>1000 Culture</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetCulture():ChangeCurrentCulturalProgress(1000);</Action>
       <Location>
-        <X>650</X>
+        <X>305</X>
         <Y>64</Y>
       </Location>
     </ActionData>
@@ -138,7 +138,7 @@ if(quickestToResearchTechID ~= -1) then
 	playerTechs:SetResearchProgress(quickestToResearchTechID, playerTechs:GetResearchCost(quickestToResearchTechID));
 end</Action>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>243</Y>
       </Location>
     </ActionData>
@@ -147,7 +147,7 @@ end</Action>
       <Action>Players[g_TunerSelectedPlayer]:GetReligion():ChangeFaithBalance(5);
 </Action>
       <Location>
-        <X>730</X>
+        <X>385</X>
         <Y>64</Y>
       </Location>
     </ActionData>
@@ -159,7 +159,7 @@ if (playerTechs:GetResearchingTech() ~= -1) then
 	playerTechs:ChangeCurrentResearchProgress(playerTechs:GetResearchCost(playerTechs:GetResearchingTech()) - playerTechs:GetResearchProgress());
 end</Action>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>163</Y>
       </Location>
     </ActionData>
@@ -174,7 +174,7 @@ if (pPlayer ~= nil) then
 	end
 end</Action>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>339</Y>
       </Location>
     </ActionData>
@@ -183,7 +183,7 @@ end</Action>
       <Action>Players[g_TunerSelectedPlayer]:GetReligion():ChangeFaithBalance(1000);
 </Action>
       <Location>
-        <X>780</X>
+        <X>435</X>
         <Y>64</Y>
       </Location>
     </ActionData>
@@ -201,7 +201,7 @@ end</Action>
 	end
 end</Action>
       <Location>
-        <X>700</X>
+        <X>355</X>
         <Y>190</Y>
       </Location>
     </ActionData>
@@ -209,7 +209,7 @@ end</Action>
       <Name>+50 Great General Points</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetGreatPeoplePoints():ChangePointsTotal(0,50);</Action>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>269</Y>
       </Location>
     </ActionData>
@@ -217,7 +217,7 @@ end</Action>
       <Name>+50 Great Admiral Points</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetGreatPeoplePoints():ChangePointsTotal(1,50);</Action>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>299</Y>
       </Location>
     </ActionData>
@@ -225,7 +225,7 @@ end</Action>
       <Name>+50 Great Engineer Points</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetGreatPeoplePoints():ChangePointsTotal(2,50);</Action>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>328</Y>
       </Location>
     </ActionData>
@@ -233,7 +233,7 @@ end</Action>
       <Name>+50 Great Merchant Points</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetGreatPeoplePoints():ChangePointsTotal(3,50);</Action>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>357</Y>
       </Location>
     </ActionData>
@@ -241,7 +241,7 @@ end</Action>
       <Name>+50 Great Prophet Points</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetGreatPeoplePoints():ChangePointsTotal(4,50);</Action>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>387</Y>
       </Location>
     </ActionData>
@@ -249,7 +249,7 @@ end</Action>
       <Name>+50 Great Scientist Points</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetGreatPeoplePoints():ChangePointsTotal(5,50);</Action>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>416</Y>
       </Location>
     </ActionData>
@@ -257,7 +257,7 @@ end</Action>
       <Name>+50 Great Writer Points</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetGreatPeoplePoints():ChangePointsTotal(6,50);</Action>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>444</Y>
       </Location>
     </ActionData>
@@ -265,7 +265,7 @@ end</Action>
       <Name>+50 Great Artist Points</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetGreatPeoplePoints():ChangePointsTotal(7,50);</Action>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>472</Y>
       </Location>
     </ActionData>
@@ -273,7 +273,7 @@ end</Action>
       <Name>+50 Great Musician Points</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetGreatPeoplePoints():ChangePointsTotal(8,50);</Action>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>500</Y>
       </Location>
     </ActionData>
@@ -281,7 +281,7 @@ end</Action>
       <Name>Grant Envoy</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetInfluence():ChangeTokensToGive(1);</Action>
       <Location>
-        <X>790</X>
+        <X>445</X>
         <Y>341</Y>
       </Location>
     </ActionData>
@@ -297,7 +297,7 @@ end</Action>
 			  end
 		  </Action>
       <Location>
-        <X>1090</X>
+        <X>745</X>
         <Y>110</Y>
       </Location>
     </ActionData>
@@ -307,7 +307,7 @@ end</Action>
 	Game.GetEras():ChangePlayerEraScore(g_TunerSelectedPlayer, 5);
 end</Action>
       <Location>
-        <X>830</X>
+        <X>485</X>
         <Y>94</Y>
       </Location>
     </ActionData>
@@ -317,7 +317,7 @@ end</Action>
 	Game.GetEras():ChangePlayerEraScore(g_TunerSelectedPlayer, 1);
 end</Action>
       <Location>
-        <X>830</X>
+        <X>485</X>
         <Y>117</Y>
       </Location>
     </ActionData>
@@ -327,7 +327,7 @@ end</Action>
 	Game.GetEras():ChangePlayerEraScore(g_TunerSelectedPlayer, -1);
 end</Action>
       <Location>
-        <X>830</X>
+        <X>485</X>
         <Y>139</Y>
       </Location>
     </ActionData>
@@ -337,7 +337,7 @@ end</Action>
 	Game.GetEras():ChangePlayerEraScore(g_TunerSelectedPlayer, -5);
 end</Action>
       <Location>
-        <X>830</X>
+        <X>485</X>
         <Y>161</Y>
       </Location>
     </ActionData>
@@ -353,12 +353,12 @@ for tech in GameInfo.Civics() do
 end
 </Action>
       <Location>
-        <X>690</X>
+        <X>345</X>
         <Y>216</Y>
       </Location>
     </ActionData>
     <ActionData>
-      <Name>+10 Favor</Name>
+      <Name>+ Favor</Name>
       <Action>local pPlayer = Players[g_TunerSelectedPlayer];
 if pPlayer ~= nil then
 	if pPlayer:GetDiplomacy().ChangeFavor ~= nil then
@@ -367,7 +367,7 @@ if pPlayer ~= nil then
 end
 </Action>
       <Location>
-        <X>1190</X>
+        <X>845</X>
         <Y>161</Y>
       </Location>
     </ActionData>
@@ -381,77 +381,77 @@ if pPlayer ~= nil then
 end
 </Action>
       <Location>
-        <X>1190</X>
+        <X>845</X>
         <Y>189</Y>
       </Location>
     </ActionData>
     <ActionData>
-      <Name>+10 Horses</Name>
+      <Name>+ Horses</Name>
       <Action>local resourceInfo = GameInfo.Resources["RESOURCE_HORSES"];
 local playerResources = Players[g_TunerSelectedPlayer]:GetResources();
-playerResources:ChangeResourceAmount(resourceInfo.Index, 10);</Action>
+playerResources:ChangeResourceAmount(resourceInfo.Index, g_PlacementSettings.AddQuantity or 1);</Action>
       <Location>
-        <X>1120</X>
+        <X>775</X>
         <Y>270</Y>
       </Location>
     </ActionData>
     <ActionData>
-      <Name>+10 Iron</Name>
+      <Name>+ Iron</Name>
       <Action>local resourceInfo = GameInfo.Resources["RESOURCE_IRON"];
 local playerResources = Players[g_TunerSelectedPlayer]:GetResources();
-playerResources:ChangeResourceAmount(resourceInfo.Index, 10);</Action>
+playerResources:ChangeResourceAmount(resourceInfo.Index, g_PlacementSettings.AddQuantity or 1);</Action>
       <Location>
-        <X>1120</X>
+        <X>775</X>
         <Y>300</Y>
       </Location>
     </ActionData>
     <ActionData>
-      <Name>+10 Niter</Name>
+      <Name>+ Niter</Name>
       <Action>local resourceInfo = GameInfo.Resources["RESOURCE_NITER"];
 local playerResources = Players[g_TunerSelectedPlayer]:GetResources();
-playerResources:ChangeResourceAmount(resourceInfo.Index, 10);</Action>
+playerResources:ChangeResourceAmount(resourceInfo.Index, g_PlacementSettings.AddQuantity or 1);</Action>
       <Location>
-        <X>1120</X>
+        <X>775</X>
         <Y>329</Y>
       </Location>
     </ActionData>
     <ActionData>
-      <Name>+10 Coal</Name>
+      <Name>+ Coal</Name>
       <Action>local resourceInfo = GameInfo.Resources["RESOURCE_COAL"];
 local playerResources = Players[g_TunerSelectedPlayer]:GetResources();
-playerResources:ChangeResourceAmount(resourceInfo.Index, 10);</Action>
+playerResources:ChangeResourceAmount(resourceInfo.Index, g_PlacementSettings.AddQuantity or 1);</Action>
       <Location>
-        <X>1120</X>
+        <X>775</X>
         <Y>359</Y>
       </Location>
     </ActionData>
     <ActionData>
-      <Name>+10 Oil</Name>
+      <Name>+ Oil</Name>
       <Action>local resourceInfo = GameInfo.Resources["RESOURCE_OIL"];
 local playerResources = Players[g_TunerSelectedPlayer]:GetResources();
-playerResources:ChangeResourceAmount(resourceInfo.Index, 10);</Action>
+playerResources:ChangeResourceAmount(resourceInfo.Index, g_PlacementSettings.AddQuantity or 1);</Action>
       <Location>
-        <X>1210</X>
+        <X>865</X>
         <Y>269</Y>
       </Location>
     </ActionData>
     <ActionData>
-      <Name>+10 Aluminum</Name>
+      <Name>+ Aluminum</Name>
       <Action>local resourceInfo = GameInfo.Resources["RESOURCE_ALUMINUM"];
 local playerResources = Players[g_TunerSelectedPlayer]:GetResources();
-playerResources:ChangeResourceAmount(resourceInfo.Index, 10);</Action>
+playerResources:ChangeResourceAmount(resourceInfo.Index, g_PlacementSettings.AddQuantity or 1);</Action>
       <Location>
-        <X>1210</X>
+        <X>865</X>
         <Y>300</Y>
       </Location>
     </ActionData>
     <ActionData>
-      <Name>+10 Uranium</Name>
+      <Name>+ Uranium</Name>
       <Action>local resourceInfo = GameInfo.Resources["RESOURCE_URANIUM"];
 local playerResources = Players[g_TunerSelectedPlayer]:GetResources();
-playerResources:ChangeResourceAmount(resourceInfo.Index, 10);</Action>
+playerResources:ChangeResourceAmount(resourceInfo.Index, g_PlacementSettings.AddQuantity or 1);</Action>
       <Location>
-        <X>1210</X>
+        <X>865</X>
         <Y>332</Y>
       </Location>
     </ActionData>
@@ -460,7 +460,7 @@ playerResources:ChangeResourceAmount(resourceInfo.Index, 10);</Action>
       <Action>local playerStats = Players[g_TunerSelectedPlayer]:GetStats();
 playerStats:ChangeDiplomaticVictoryPoints(1);</Action>
       <Location>
-        <X>1120</X>
+        <X>775</X>
         <Y>419</Y>
       </Location>
     </ActionData>
@@ -469,7 +469,7 @@ playerStats:ChangeDiplomaticVictoryPoints(1);</Action>
       <Action>local playerStats = Players[g_TunerSelectedPlayer]:GetStats();
 playerStats:ChangeScienceVictoryPoints(1);</Action>
       <Location>
-        <X>1120</X>
+        <X>775</X>
         <Y>444</Y>
       </Location>
     </ActionData>
@@ -484,7 +484,7 @@ playerStats:ChangeScienceVictoryPoints(1);</Action>
 	playerWMDs:ChangeWeaponCount(g_SelectedWMDType, 1);
 end</Action>
       <Location>
-        <X>10</X>
+        <X>-335</X>
         <Y>627</Y>
       </Location>
     </ActionData>
@@ -499,7 +499,7 @@ end</Action>
 	playerWMDs:ChangeWeaponCount(g_SelectedWMDType, -1);
 end</Action>
       <Location>
-        <X>80</X>
+        <X>-265</X>
         <Y>627</Y>
       </Location>
     </ActionData>
@@ -507,7 +507,7 @@ end</Action>
       <Name>Recompute Unit Costs</Name>
       <Action>Players[g_TunerSelectedPlayer]:GetUnits():RecomputeAllCosts();</Action>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>491</Y>
       </Location>
     </ActionData>
@@ -529,7 +529,7 @@ end</GetFunction>
    -- Players[g_TunerSelectedPlayer]:PushResearch(value, 1);
 end</SetFunction>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>95</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
@@ -544,7 +544,7 @@ end</GetFunction>
   Players[g_TunerSelectedPlayer]:GetTechs():SetResearchProgress(value);
 end</SetFunction>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>129</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
@@ -560,7 +560,7 @@ end</GetFunction>
    Players[g_TunerSelectedPlayer]:GetTreasury():SetGoldBalance(value);
 end</SetFunction>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>28</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
@@ -575,7 +575,7 @@ end</GetFunction>
    -- Players[g_TunerSelectedPlayer]:GetCulture():SetCultureTotal();
 end</SetFunction>
       <Location>
-        <X>650</X>
+        <X>305</X>
         <Y>25</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
@@ -589,7 +589,7 @@ end</GetFunction>
 	Game.SetRandomSeed(value);
 end</SetFunction>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>374</Y>
       </Location>
       <DefaultValue>-1</DefaultValue>
@@ -603,7 +603,7 @@ end</GetFunction>
       <SetFunction>function(value)
 end</SetFunction>
       <Location>
-        <X>810</X>
+        <X>465</X>
         <Y>27</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
@@ -623,7 +623,7 @@ end</GetFunction>
    -- Players[g_TunerSelectedPlayer]:PushResearch(value, 1);
 end</SetFunction>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>410</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
@@ -638,7 +638,7 @@ end</GetFunction>
   --Players[g_TunerSelectedPlayer]:GetCulture():SetResearchProgress(value);
 end</SetFunction>
       <Location>
-        <X>580</X>
+        <X>235</X>
         <Y>443</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
@@ -660,7 +660,7 @@ end</GetFunction>
       <SetFunction>function(value)
 end</SetFunction>
       <Location>
-        <X>1090</X>
+        <X>745</X>
         <Y>33</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
@@ -680,7 +680,7 @@ end</GetFunction>
       <SetFunction>function(value)
 end</SetFunction>
       <Location>
-        <X>1090</X>
+        <X>745</X>
         <Y>71</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
@@ -699,22 +699,35 @@ end</GetFunction>
       <SetFunction>function(value)
 end</SetFunction>
       <Location>
-        <X>1090</X>
+        <X>745</X>
         <Y>157</Y>
       </Location>
       <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Add quantity</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.AddQuantity or 1;
+end</GetFunction>
+      <SetFunction>function(value)
+  g_PlacementSettings.AddQuantity = value;
+end</SetFunction>
+      <Location>
+        <X>775</X>
+        <Y>237</Y>
+      </Location>
+      <DefaultValue>10</DefaultValue>
     </IntegerControlData>
   </IntegerControls>
   <FloatControls />
   <BooleanControls />
   <TableViews />
-  <TreeViews />
   <DataViews />
   <StatTrackers />
   <SelectionLists>
     <SelectionListData>
       <Location>
-        <X>10</X>
+        <X>-335</X>
         <Y>23</Y>
       </Location>
       <Size>
@@ -752,7 +765,7 @@ end</OnSelection>
     </SelectionListData>
     <SelectionListData>
       <Location>
-        <X>10</X>
+        <X>-335</X>
         <Y>494</Y>
       </Location>
       <Size>
@@ -791,7 +804,7 @@ end</OnSelection>
   <MultiselectLists>
     <MultiselectListData>
       <Location>
-        <X>220</X>
+        <X>-125</X>
         <Y>25</Y>
       </Location>
       <Size>
@@ -855,7 +868,7 @@ end</OnDeselected>
     </MultiselectListData>
     <MultiselectListData>
       <Location>
-        <X>410</X>
+        <X>65</X>
         <Y>25</Y>
       </Location>
       <Size>
@@ -921,7 +934,7 @@ end
     </MultiselectListData>
     <MultiselectListData>
       <Location>
-        <X>920</X>
+        <X>575</X>
         <Y>31</Y>
       </Location>
       <Size>

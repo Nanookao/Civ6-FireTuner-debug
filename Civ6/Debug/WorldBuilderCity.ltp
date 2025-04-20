@@ -220,7 +220,10 @@ end</SetFunction>
 						origOwnerStr = "Player " .. tostring(origOwner);
 					end
 				end
-				local str = pPlayer:GetID() .. "," .. pCity:GetID() .. ";" .. pCity:GetName() .. ";" .. pCity:GetX() .. ";" .. pCity:GetY() .. ";" .. strPlayer .. ";" .. prevOwnerStr .. ";" .. origOwnerStr;
+				local str = pPlayer:GetID() .. "," .. pCity:GetID()
+        .. ";" .. pCity:GetName()
+        .. ";" .. pCity:GetX() .. ";" .. pCity:GetY()
+        .. ";" .. strPlayer .. ";" .. prevOwnerStr .. ";" .. origOwnerStr;
 				listItems[z] = str;
 				z = z + 1;			
 			end		
@@ -230,13 +233,10 @@ end</SetFunction>
   return listItems;
 end</PopulateList>
       <OnSelection>function(selection)
-	local selectionParts = {};
-	-- No split available?
-	local str1 = string.match(selection, "%d+");
-	local str2 = string.match(selection, "%d+", string.len(str1) + 1);
-	
-	g_PlacementSettings.Player = tonumber(str1);
-	g_PlacementSettings.CityID = tonumber(str2);	
+  local pl, city = selection:match("(%d+).(%d+)");
+  print("OnSelection('" .. selection .. "'):", pl, ";", city);
+  g_PlacementSettings.Player = tonumber(pl);
+  g_PlacementSettings.CityID = tonumber(city);
 end</OnSelection>
       <Sorted>false</Sorted>
     </SelectionListData>
