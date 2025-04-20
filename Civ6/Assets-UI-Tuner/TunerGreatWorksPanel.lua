@@ -35,19 +35,19 @@ function ListAllGreatWorkSlots()
 end
 
 
-function AppendCityGreatWorkSlots(pCityBldgs :table, prefix :string, items :table)
+function AppendCityGreatWorkSlots(pBuildings :table, prefix :string, items :table)
   for buildingInfo in GameInfo.Buildings() do
     local buildingIndex:number = buildingInfo.Index
-    if pCityBldgs:HasBuilding(buildingIndex) then
-      local numSlots:number = pCityBldgs:GetNumGreatWorkSlots(buildingIndex)
+    if pBuildings:HasBuilding(buildingIndex) then
+      local numSlots:number = pBuildings:GetNumGreatWorkSlots(buildingIndex)
       if (numSlots and numSlots > 0) then
         for slotIndex:number=0, numSlots - 1 do
-          local bldgNameLoc = Locale.Lookup(buildingInfo.Name)
+          local bldgNameLoc = Locale.Lookup( buildingInfo.Name )
           local slotStr = prefix .. bldgNameLoc
           if 1<numSlots then  slotStr = slotStr .. " #" .. tostring(slotIndex+1)  end
-          local gwIndex:number = pCityBldgs:GetGreatWorkInSlot(buildingIndex, slotIndex)
+          local gwIndex:number = pBuildings:GetGreatWorkInSlot(buildingIndex, slotIndex)
           if gwIndex ~= -1 then
-            local gwType = pCityBldgs:GetGreatWorkTypeFromIndex(gwIndex)
+            local gwType = pBuildings:GetGreatWorkTypeFromIndex(gwIndex)
             local gwInfo = GameInfo.GreatWorks[gwType]
             local name = Locale.Lookup( gwInfo.Name )
             local objType = gwInfo.GreatWorkObjectType
@@ -56,7 +56,7 @@ function AppendCityGreatWorkSlots(pCityBldgs :table, prefix :string, items :tabl
             local str = slotStr .. ";" .. objTypeNameLoc .. ";" .. name
             table.insert(items, str)
           elseif not m_hideEmptyGreatWorkSlots then
-            local slotType = pCityBldgs:GetGreatWorkSlotType(buildingIndex, slotIndex)
+            local slotType = pBuildings:GetGreatWorkSlotType(buildingIndex, slotIndex)
             local slotTypeStr = GameInfo.GreatWorkSlotTypes[slotType].GreatWorkSlotType
             local slotTypeStrLoc = slotTypeStr:gsub("GREATWORKSLOT_", ""):gsub("PALACE", "ANY"):lower()
             --local slotTypeStrLoc = Locale.Lookup( slotTypeStr:gsub("GREATWORKSLOT_", "LOC_TYPE_TRAIT_GREAT_WORKS_") .. "_SLOTS", numSlots )
