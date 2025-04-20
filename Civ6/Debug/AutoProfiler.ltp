@@ -15,6 +15,7 @@ end
 end
 </ExitAction>
   <CompatibleStates>
+    <string>GameCore_Tuner</string>
     <string>TunerAssetPreviewPanel</string>
   </CompatibleStates>
   <LoadStates>

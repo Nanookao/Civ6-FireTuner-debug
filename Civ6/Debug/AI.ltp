@@ -2,9 +2,15 @@
 <PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>AI</Name>
   <App>Civ6</App>
-  <EnterAction />
-  <ExitAction>		UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, false);</ExitAction>
+  <EnterAction>
+include("TunerAiPanel")
+include("UI")
+  </EnterAction>
+  <ExitAction>
+UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, false);
+  </ExitAction>
   <CompatibleStates>
+    <string>GameCore_Tuner</string>
     <string>InGame</string>
   </CompatibleStates>
   <LoadStates>

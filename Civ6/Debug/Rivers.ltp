@@ -2,7 +2,9 @@
 <PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Rivers</Name>
   <App>Civ6</App>
-  <EnterAction />
+  <EnterAction>
+include("TunerUIRiverPanel")
+  </EnterAction>
   <ExitAction />
   <CompatibleStates>
     <string>GameCore_Tuner</string>

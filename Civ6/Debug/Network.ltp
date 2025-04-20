@@ -5,6 +5,7 @@
   <EnterAction />
   <ExitAction />
   <CompatibleStates>
+    <string>GameCore_Tuner</string>
     <string>MainMenu</string>
     <string>InGame</string>
   </CompatibleStates>

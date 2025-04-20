@@ -2,7 +2,9 @@
 <PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Map</Name>
   <App>Civ5</App>
-  <EnterAction>g_PanelHasFocus = true;
+  <EnterAction>
+include("TunerMapPanel")
+g_PanelHasFocus = true;
 if (g_PlacementSettings.Active) then
 		LuaEvents.TunerEnterDebugMode();
 end
@@ -15,6 +17,7 @@ end
 end
 </ExitAction>
   <CompatibleStates>
+    <string>GameCore_Tuner</string>
     <string>TunerMapPanel</string>
   </CompatibleStates>
   <LoadStates>

@@ -2,9 +2,12 @@
 <PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Heroes</Name>
   <App>Civ6</App>
-  <EnterAction />
+  <EnterAction>
+include("TunerHeroesPanel")
+  </EnterAction>
   <ExitAction />
   <CompatibleStates>
+    <string>GameCore_Tuner</string>
     <string>TunerHeroesPanel</string>
   </CompatibleStates>
   <LoadStates>

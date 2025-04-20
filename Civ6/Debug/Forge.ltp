@@ -2,9 +2,12 @@
 <PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Forge</Name>
   <App>Civ6</App>
-  <EnterAction>include("TunerUtilities")</EnterAction>
+  <EnterAction>
+include("TunerUtilities")
+  </EnterAction>
   <ExitAction />
   <CompatibleStates>
+    <string>GameCore_Tuner</string>
     <string>FrontEnd</string>
     <string>InGame</string>
     <string>WorldBuilder</string>

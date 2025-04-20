@@ -2,11 +2,13 @@
 <PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>WorldBuilder</Name>
   <App>Civ5</App>
-  <EnterAction>g_PanelHasFocus = true;
+  <EnterAction>
+include("TunerWorldBuilderPanel")
+g_PanelHasFocus = true;
 if (g_PlacementSettings.Active) then
 		LuaEvents.TunerEnterDebugMode();
 end
-	</EnterAction>
+  </EnterAction>
   <ExitAction>if (g_PanelHasFocus) then
 	g_PanelHasFocus = false;
 	if (g_PlacementSettings.Active) then
@@ -15,8 +17,9 @@ end
 			LuaEvents.TunerExitDebugMode();
 	end
 end
-</ExitAction>
+  </ExitAction>
   <CompatibleStates>
+    <string>GameCore_Tuner</string>
     <string>TunerWorldBuilderPanel</string>
   </CompatibleStates>
   <LoadStates>

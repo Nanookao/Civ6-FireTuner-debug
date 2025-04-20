@@ -2,14 +2,16 @@
 <PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Unit</Name>
   <App>Civ6</App>
-  <EnterAction>g_PanelHasFocus = true;
-
-</EnterAction>
+  <EnterAction>
+include("TunerUnitPanel")
+g_PanelHasFocus = true;
+  </EnterAction>
   <ExitAction>if (g_PanelHasFocus) then
 	g_PanelHasFocus = false;
 end
-</ExitAction>
+  </ExitAction>
   <CompatibleStates>
+    <string>GameCore_Tuner</string>
     <string>TunerUnitPanel</string>
   </CompatibleStates>
   <LoadStates>
