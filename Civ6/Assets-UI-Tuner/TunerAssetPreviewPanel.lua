@@ -133,6 +133,9 @@ g_AddCitySpacing = true;
 -- Exposure for City panel to be able to spoof different city civilizations without changing panels.
 -- (Spoofing is an app-side operation, while the City panel is game-side)
 function OnSetCityCiv( x, y, civ )
+	print('-- event OnSetCityCiv('..x..','..y..', '..civ..')');
+	print('ContextPtr[event]' , ContextPtr);
 	AssetPreview.SpoofCityCivAt( x, y, civ );
+	print('-- /event OnSetCityCiv');
 end
 LuaEvents.SetCityCiv.Add( OnSetCityCiv );
