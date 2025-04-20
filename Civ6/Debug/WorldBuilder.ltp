@@ -1,0 +1,910 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>WorldBuilder</Name>
+  <App>Civ5</App>
+  <EnterAction>g_PanelHasFocus = true;
+if (g_PlacementSettings.Active) then
+		LuaEvents.TunerEnterDebugMode();
+end
+	</EnterAction>
+  <ExitAction>if (g_PanelHasFocus) then
+	g_PanelHasFocus = false;
+	if (g_PlacementSettings.Active) then
+		 g_PlacementSettings.Active = false;
+		 g_PlacementSettings.PlacementHandler = nil;
+			LuaEvents.TunerExitDebugMode();
+	end
+end
+</ExitAction>
+  <CompatibleStates>
+    <string>TunerWorldBuilderPanel</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>TunerWorldBuilderPanel</string>
+  </LoadStates>
+  <Actions>
+    <ActionData>
+      <Name>Initialize Player As Human</Name>
+      <Action>if (g_PlacementSettings.Player ~= -1) then
+	WorldBuilder.PlayerManager():SetPlayerSlotStatus(g_PlacementSettings.Player, SlotStatus.HUMAN);
+	WorldBuilder.PlayerManager():InitializePlayer(g_PlacementSettings.Player);
+end</Action>
+      <Location>
+        <X>480</X>
+        <Y>523</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Initialize Player As AI</Name>
+      <Action>if (g_PlacementSettings.Player ~= -1) then
+	WorldBuilder.PlayerManager():SetPlayerSlotStatus(g_PlacementSettings.Player, SlotStatus.AI);
+	WorldBuilder.PlayerManager():InitializePlayer(g_PlacementSettings.Player);
+end
+</Action>
+      <Location>
+        <X>480</X>
+        <Y>552</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Undo -</Name>
+      <Action>WorldBuilder.Undo();</Action>
+      <Location>
+        <X>10</X>
+        <Y>516</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Redo -</Name>
+      <Action>WorldBuilder.Redo();</Action>
+      <Location>
+        <X>10</X>
+        <Y>542</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Uninitialize Player</Name>
+      <Action>if (g_PlacementSettings.Player ~= -1) then
+	WorldBuilder.PlayerManager():UninitializePlayer(g_PlacementSettings.Player);
+end</Action>
+      <Location>
+        <X>660</X>
+        <Y>524</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Remove All Player Units</Name>
+      <Action>if (g_PlacementSettings.Player ~= -1) then
+	WorldBuilder.UnitManager():RemoveAll(g_PlacementSettings.Player);
+end</Action>
+      <Location>
+        <X>660</X>
+        <Y>552</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Remove All Player Cities</Name>
+      <Action>if (g_PlacementSettings.Player ~= -1) then
+	WorldBuilder.CityManager():RemoveAll(g_PlacementSettings.Player);
+end
+</Action>
+      <Location>
+        <X>660</X>
+        <Y>581</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls>
+    <StringControlData>
+      <Name>Reference Map Alpha</Name>
+      <GetFunction>function()
+	return StrategicView_GetReferenceMapAlpha();
+end</GetFunction>
+      <SetFunction>function(value)
+	StrategicView_SetReferenceMapAlpha(value);
+end</SetFunction>
+      <Location>
+        <X>1130</X>
+        <Y>560</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Reference Map</Name>
+      <GetFunction>function()
+	return g_ReferenceMap;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_ReferenceMap = value;
+	if g_ShowReferenceMap then
+		StrategicView_SetReferenceMap(g_ReferenceMap);
+	end
+end</SetFunction>
+      <Location>
+        <X>1130</X>
+        <Y>527</Y>
+      </Location>
+    </StringControlData>
+  </StringControls>
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Res. Amount</Name>
+      <GetFunction>function()
+	return g_ResourcePlacement.ResourceAmount;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_ResourcePlacement.ResourceAmount = value;
+end</SetFunction>
+      <Location>
+        <X>250</X>
+        <Y>71</Y>
+      </Location>
+      <DefaultValue>5</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Player Gold</Name>
+      <GetFunction>function()
+	local pPlayer = GetSelectedPlayer();
+	if (pPlayer ~= nil) then
+		return pPlayer:GetTreasury():GetGoldBalance();
+	end
+	
+	return 0;
+end</GetFunction>
+      <SetFunction>function(value)
+	local pPlayer = GetSelectedPlayer();
+	if (pPlayer ~= nil) then
+		WorldBuilder.PlayerManager():SetPlayerGold(g_PlacementSettings.Player, value);
+	end
+end</SetFunction>
+      <Location>
+        <X>820</X>
+        <Y>526</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Player Faith</Name>
+      <GetFunction>function()
+	local pPlayer = GetSelectedPlayer();
+	if (pPlayer ~= nil) then
+		return pPlayer:GetReligion():GetFaithBalance();
+	end
+	
+	return 0;
+end</GetFunction>
+      <SetFunction>function(value)
+	local pPlayer = GetSelectedPlayer();
+	if (pPlayer ~= nil) then
+		WorldBuilder.PlayerManager():SetPlayerFaith(g_PlacementSettings.Player, value);
+	end
+end</SetFunction>
+      <Location>
+        <X>820</X>
+        <Y>562</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls>
+    <BooleanControlData>
+      <Name>Improvement Placement Enabled</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_ImprovementPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_ImprovementPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_ImprovementPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>1120</X>
+        <Y>37</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Resource Placement Enabled</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_ResourcePlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_ResourcePlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_ResourcePlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>250</X>
+        <Y>37</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>City Placement Enabled</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_CityPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_CityPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_CityPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>480</X>
+        <Y>481</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Unit Placement Enabled</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_UnitPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_UnitPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_UnitPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>900</X>
+        <Y>36</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Place Improvement Pillaged</Name>
+      <GetFunction>function()
+	return g_ImprovementPlacement.Pillaged;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_ImprovementPlacement.Pillaged = value;
+end</SetFunction>
+      <Location>
+        <X>1120</X>
+        <Y>71</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Place Unit Embarked</Name>
+      <GetFunction>function()
+	return g_UnitPlacement.Embarked;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_UnitPlacement.Embarked = value;
+end</SetFunction>
+      <Location>
+        <X>900</X>
+        <Y>489</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Route Placement Enabled</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_RoutePlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_RoutePlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_RoutePlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>1340</X>
+        <Y>36</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Place Route Pillaged</Name>
+      <GetFunction>function()
+	return g_RoutePlacement.Pillaged;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_RoutePlacement.Pillaged = value;
+end</SetFunction>
+      <Location>
+        <X>1340</X>
+        <Y>69</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Terrain Placement Enabled</Name>
+      <GetFunction>function()
+	return WorldBuilder.IsActive() and 
+		g_PlacementSettings.Active and
+	 g_PlacementSettings.PlacementHandler == g_TerrainPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if (WorldBuilder.IsActive()) then
+		if value then
+			LuaEvents.TunerEnterDebugMode();
+			g_PlacementSettings.PlacementHandler = g_TerrainPlacement;
+		else
+			if (g_PlacementSettings.PlacementHandler == g_TerrainPlacement) then
+				g_PlacementSettings.Active = false;
+				LuaEvents.TunerExitDebugMode();
+			end
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>35</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Starting Plot Placement Enabled</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_StartingPlotPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_StartingPlotPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_StartingPlotPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>660</X>
+        <Y>480</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Feature Placement Enabled</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_FeaturePlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_FeaturePlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_FeaturePlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>250</X>
+        <Y>482</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>River Placement Enabled</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_RiverPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_RiverPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_RiverPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>1340</X>
+        <Y>346</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Cliff Placement Enabled</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_CliffPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_CliffPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_CliffPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>1340</X>
+        <Y>385</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Show Reference Map</Name>
+      <GetFunction>function()
+	return g_ShowReferenceMap;
+end</GetFunction>
+      <SetFunction>function(value)
+ g_ShowReferenceMap = value;
+	if g_ShowReferenceMap then
+		StrategicView_SetReferenceMap(g_ReferenceMap);
+	else
+		StrategicView_ClearReferenceMap();
+	end
+end</SetFunction>
+      <Location>
+        <X>1130</X>
+        <Y>495</Y>
+      </Location>
+    </BooleanControlData>
+  </BooleanControls>
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>1120</X>
+        <Y>104</Y>
+      </Location>
+      <Size>
+        <Width>184</Width>
+        <Height>336</Height>
+      </Size>
+      <Name>Improvements</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for improvement in GameInfo.Improvements() do
+		listItems [i + 1] = string.gsub( improvement.ImprovementType, "IMPROVEMENT_", "" );
+		i = i + 1;
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type name, change back to the full text key and look for it.
+	local improvementType = "IMPROVEMENT_" .. tostring(selection);
+		
+	local improvement = GameInfo.Improvements[improvementType];
+	if (improvement ~= nil) then
+		g_ImprovementPlacement.ImprovementType = improvement.Index;
+	end
+end</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>250</X>
+        <Y>108</Y>
+      </Location>
+      <Size>
+        <Width>176</Width>
+        <Height>338</Height>
+      </Size>
+      <Name>Resources</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for resource in GameInfo.Resources() do
+		listItems [i + 1] = string.gsub( resource.ResourceType, "RESOURCE_", "" );
+		i = i + 1;
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type  name, change back to the full text key and look for it.
+	local resourceType = "RESOURCE_" .. tostring(selection);
+		
+	local resource = GameInfo.Resources[resourceType];
+	if (resource ~= nil) then
+		g_ResourcePlacement.ResourceType = resource.Index;
+	end
+end</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>480</X>
+        <Y>36</Y>
+      </Location>
+      <Size>
+        <Width>408</Width>
+        <Height>434</Height>
+      </Size>
+      <Name>ID:30;Status; Leader:120; Civilization:120</Name>
+      <PopulateList>function()
+		
+	local listItems = {};
+	local i = 0;
+	for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+			local pPlayerConfig = PlayerConfigurations[i];
+		
+			local str = tostring(i) .. ";";
+		
+			local eStatus = pPlayerConfig:GetSlotStatus();
+			if (eStatus == SlotStatus.OPEN) then
+				str = str .. "OPEN";
+			else
+				if (eStatus == SlotStatus.AI) then
+					str = str .. "AI";
+				else
+					if (eStatus == SlotStatus.HUMAN) then
+						str = str .. "HUMAN";
+					else
+						if (eStatus == SlotStatus.CLOSED) then
+							str = str .. "CLOSED";
+						end
+					end
+				end
+			end
+		
+			if (pPlayerConfig:GetLeaderTypeName() ~= nil) then
+				str = str .. ";" .. pPlayerConfig:GetLeaderTypeName();
+			else
+				if (pPlayerConfig:GetLeaderTypeID() == -1) then
+				 str = str .. ";" .. "RANDOM";
+				else
+				 str = str .. ";" .. "UNDEFINED";
+			 end
+			end
+		
+			if (pPlayerConfig:GetCivilizationTypeName() ~= nil) then
+				str = str .. ";" .. pPlayerConfig:GetCivilizationTypeName();
+			else
+				if (pPlayerConfig:GetCivilizationTypeID() == -1) then
+			 		str = str .. ";" .. "RANDOM";
+				else
+			 		str = str .. ";" .. "UNDEFINED";
+				end
+			end		
+		
+			listItems[i + 1] = str;
+	end
+	
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+   local selectedPlayerIDStr = string.match(selection, "%d+");
+	  g_PlacementSettings.Player = tonumber(selectedPlayerIDStr);
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>900</X>
+        <Y>72</Y>
+      </Location>
+      <Size>
+        <Width>214</Width>
+        <Height>410</Height>
+      </Size>
+      <Name>Units</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for unit in GameInfo.Units() do
+		listItems [i + 1] = string.gsub( unit.UnitType, "UNIT_", "" );
+		i = i + 1;
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type name, change back to the full text key and look for it.
+	local unitType = "UNIT_" .. tostring(selection);
+		
+	local unit = GameInfo.Units[unitType];
+	if (unit ~= nil) then
+			g_UnitPlacement.UnitType = unit.Index;
+	end
+end</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>1340</X>
+        <Y>104</Y>
+      </Location>
+      <Size>
+        <Width>171</Width>
+        <Height>197</Height>
+      </Size>
+      <Name>Route</Name>
+      <PopulateList>function()
+ listItems = {};
+ local i = 0;
+ for route in GameInfo.Routes() do
+  listItems [i + 1] = string.gsub( route.RouteType, "ROUTE_", "" );
+  i = i + 1;
+ end
+ return listItems;
+end
+      </PopulateList>
+      <OnSelection>function(selection)
+ -- Searching by the type name, change back to the full text key and look for it.
+ local routeType = "ROUTE_" .. tostring(selection);
+ local route = GameInfo.Routes[routeType];
+ if (route ~= nil) then
+  g_RoutePlacement.Type = route.Index;
+ end
+end
+      </OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>10</X>
+        <Y>76</Y>
+      </Location>
+      <Size>
+        <Width>227</Width>
+        <Height>380</Height>
+      </Size>
+      <Name>Terrains</Name>
+      <PopulateList>function()
+ listItems = {};
+ local i = 0;
+ for route in GameInfo.Terrains() do
+  listItems [i + 1] = string.gsub( route.TerrainType, "TERRAIN_", "" );
+  i = i + 1;
+ end
+ return listItems;
+end
+      </PopulateList>
+      <OnSelection>function(selection)
+ -- Searching by the type name, change back to the full text key and look for it.
+ local type = "TERRAIN_" .. tostring(selection);
+ local def = GameInfo.Terrains[type];
+ if (def ~= nil) then
+  g_TerrainPlacement.AddType = def.Index;
+ end
+end
+      
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>250</X>
+        <Y>525</Y>
+      </Location>
+      <Size>
+        <Width>205</Width>
+        <Height>346</Height>
+      </Size>
+      <Name>Features</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for feature in GameInfo.Features() do
+		listItems [i + 1] = string.gsub( feature.FeatureType, "FEATURE_", "" );
+		i = i + 1;
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type name, change back to the full text key and look for it.
+	local featureType = "FEATURE_" .. tostring(selection);
+		
+	local feature = GameInfo.Features[featureType];
+	if (feature ~= nil) then
+		g_FeaturePlacement.FeatureType = feature.Index;
+	end
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists>
+    <MultiselectListData>
+      <Location>
+        <X>480</X>
+        <Y>613</Y>
+      </Location>
+      <Size>
+        <Width>254</Width>
+        <Height>254</Height>
+      </Size>
+      <Name>Player Era</Name>
+      <PopulateList>function()
+	local listItems = {};
+	if (g_PlacementSettings.Player ~= nil and PlayerManager.IsAlive(g_PlacementSettings.Player)) then
+		local player = PlayerManager.GetPlayer(g_PlacementSettings.Player);
+		local playerEra = player:GetEras();
+		local ID = 0;
+
+		if playerEra == nil then return; end
+	
+		for era in GameInfo.Eras() do
+			local item = {};
+			item["Text"] = string.gsub( era.EraType, "ERA_", "" );
+			if(playerEra:GetEra() == era.Index) then
+				item["Selected"] = true;
+			else
+				item["Selected"] = false;
+			end
+			ID = ID + 1;
+
+			listItems[ID] = item;
+		end
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)
+	if (g_PlacementSettings.Player ~= nil and PlayerManager.IsAlive(g_PlacementSettings.Player)) then
+		
+		-- Searching by the type name, change back to the full text key and look for it.
+		local eraType = "ERA_" .. tostring(selection);
+
+		local era = GameInfo.Eras[eraType];
+		if (era ~= nil) then
+			WorldBuilder.PlayerManager():SetPlayerEra(g_PlacementSettings.Player, era.Index);
+		end
+	end
+end
+</OnSelected>
+      <OnDeselected>function(selection)
+
+end
+</OnDeselected>
+    </MultiselectListData>
+    <MultiselectListData>
+      <Location>
+        <X>750</X>
+        <Y>615</Y>
+      </Location>
+      <Size>
+        <Width>254</Width>
+        <Height>254</Height>
+      </Size>
+      <Name>Techs</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local player = GetSelectedPlayer();
+	if (player ~= nil) then
+		local playerTechs = player:GetTechs();
+		local ID = 0;
+
+		if playerTechs == nil then return; end
+	
+		for tech in GameInfo.Technologies() do
+			local item = {};
+			item["Text"] = string.gsub( tech.TechnologyType, "TECH_", "" );
+			if (playerTechs:HasTech(tech.Index)) then
+				item["Selected"] = true;
+			else
+				item["Selected"] = false;
+			end
+			ID = ID + 1;
+
+			listItems[ID] = item;
+		end
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)
+	local player = GetSelectedPlayer();
+	if (player ~= nil) then
+		-- Searching by the type name, change back to the full text key and look for it.
+		local techType = "TECH_" .. tostring(selection);
+
+		local tech = GameInfo.Technologies[techType];
+		if (tech ~= nil) then
+			WorldBuilder.PlayerManager():SetPlayerHasTech(player:GetID(), tech.Index, true);
+		end
+	end
+end</OnSelected>
+      <OnDeselected>function(selection)
+	local player = GetSelectedPlayer();
+	if (player ~= nil) then
+		-- Searching by the type name, change back to the full text key and look for it.
+		local techType = "TECH_" .. tostring(selection);
+
+		local tech = GameInfo.Technologies[techType];
+		if (tech ~= nil) then
+			WorldBuilder.PlayerManager():SetPlayerHasTech(player:GetID(), tech.Index, false);
+		end
+	end
+end</OnDeselected>
+    </MultiselectListData>
+    <MultiselectListData>
+      <Location>
+        <X>1020</X>
+        <Y>615</Y>
+      </Location>
+      <Size>
+        <Width>254</Width>
+        <Height>254</Height>
+      </Size>
+      <Name>Civics</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local player = GetSelectedPlayer();
+	if (player ~= nil) then
+		local playerCulture = player:GetCulture();
+		local ID = 0;
+
+		if playerCulture == nil then return; end
+	
+		for def in GameInfo.Civics() do
+			local item = {};
+			item["Text"] = string.gsub( def.CivicType, "CIVIC_", "" );
+			if (playerCulture:HasCivic(def.Index)) then
+				item["Selected"] = true;
+			else
+				item["Selected"] = false;
+			end
+			ID = ID + 1;
+
+			listItems[ID] = item;
+		end
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)
+	local player = GetSelectedPlayer();
+	if (player ~= nil) then
+		-- Searching by the type name, change back to the full text key and look for it.
+		local defType = "CIVIC_" .. tostring(selection);
+
+		local def = GameInfo.Civics[defType];
+		if (def ~= nil) then
+			WorldBuilder.PlayerManager():SetPlayerHasCivic(player:GetID(), def.Index, 100);
+		end
+	end
+end</OnSelected>
+      <OnDeselected>function(selection)
+	local player = GetSelectedPlayer();
+	if (player ~= nil) then
+		-- Searching by the type name, change back to the full text key and look for it.
+		local defType = "CIVIC_" .. tostring(selection);
+
+		local def = GameInfo.Civics[defType];
+		if (def ~= nil) then
+			WorldBuilder.PlayerManager():SetPlayerHasCivic(player:GetID(), def.Index, -1);
+		end
+	end
+end</OnDeselected>
+    </MultiselectListData>
+  </MultiselectLists>
+</PanelData>

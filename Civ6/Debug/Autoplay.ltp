@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Autoplay</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>GameCore_Tuner</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions>
+    <ActionData>
+      <Name>Flush History Log</Name>
+      <Action>Game.WriteHistoryLog();</Action>
+      <Location>
+        <X>20</X>
+        <Y>460</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Turns</Name>
+      <GetFunction>function()
+	return AutoplayManager.GetTurns();
+end</GetFunction>
+      <SetFunction>function(value)
+	if (not Automation.IsActive()) then
+		AutoplayManager.SetTurns(value);
+	end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>82</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls>
+    <BooleanControlData>
+      <Name>Active</Name>
+      <GetFunction>function()
+	return AutoplayManager.IsActive();
+end</GetFunction>
+      <SetFunction>function(value)
+	if (not Automation.IsActive()) then
+		AutoplayManager.SetActive(value);
+	end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>45</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Disable Asserts</Name>
+      <GetFunction>function()
+	return AutoplayManager.GetDisableAssertsForAutoplay();
+end</GetFunction>
+      <SetFunction>function(value)
+  AutoplayManager.SetDisableAssertsForAutoplay(value);
+end</SetFunction>
+      <Location>
+        <X>130</X>
+        <Y>456</Y>
+      </Location>
+    </BooleanControlData>
+  </BooleanControls>
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>180</X>
+        <Y>44</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Return As:60;Civilization:360</Name>
+      <PopulateList>function()
+
+		
+	local listItems = {};
+	local i = 1;
+	local playerID = 0
+	for playerID = 0, GameDefines.MAX_PLAYERS-1, 1 do
+			local pPlayer = Players[playerID];
+			local pPlayerConfig = PlayerConfigurations[playerID];
+		
+			if (pPlayer:IsAlive()) then
+				local str = tostring(playerID) .. ";";
+				str = str .. pPlayerConfig:GetCivilizationShortDescription(playerID);
+				
+				listItems[i] = str;
+			 if (AutoplayManager.GetReturnAsPlayer() == playerID) then
+					listItems["selected"] = i;
+			 end
+				i = i + 1;
+			end
+	end
+	
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	if (not Automation.IsActive()) then
+	  AutoplayManager.SetReturnAsPlayer( tonumber(selection) );
+	end
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>116</Y>
+      </Location>
+      <Size>
+        <Width>148</Width>
+        <Height>325</Height>
+      </Size>
+      <Name>Turns</Name>
+      <PopulateList>function()
+	local listItems = {};
+		
+	listItems[1] = "No limit";
+	listItems[2] = "1";
+	listItems[3] = "5";
+	listItems[4] = "10";
+	listItems[5] = "15";
+	listItems[6] = "20";
+	listItems[7] = "25";
+	listItems[8] = "30";
+	listItems[9] = "40";
+	listItems[10] = "50";
+	listItems[11] = "75";
+	listItems[12] = "100";
+	listItems[13] = "150";
+	listItems[14] = "200";
+	listItems[15] = "300";
+	
+	local iCurrentTurns = AutoplayManager.GetTurns();
+	if (iCurrentTurns &lt; 0) then
+		listItems["selected"]=1;
+	else
+	  listItems["selected"]=-1;
+	end
+	
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	if (not Automation.IsActive()) then
+		if (selection == "No limit") then
+			AutoplayManager.SetTurns(-1);
+		else
+	  	AutoplayManager.SetTurns( tonumber(selection) );
+		end
+	end
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>490</X>
+        <Y>45</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Observe As:70;Civilization</Name>
+      <PopulateList>function()
+
+	local listItems = {};
+	listItems[1] = tostring(PlayerTypes.NONE) .."; No Player";
+	if (AutoplayManager.GetObserveAsPlayer() == PlayerTypes.NONE) then
+			listItems["selected"] = 1;
+	end
+	
+	listItems[2] = tostring(PlayerTypes.OBSERVER) .. "; Observer";
+	if (AutoplayManager.GetObserveAsPlayer() == PlayerTypes.OBSERVER) then
+			listItems["selected"] = 2;
+	end
+	
+	local i = 3;
+	local playerID = 0;
+	for playerID = 0, GameDefines.MAX_PLAYERS-1, 1 do
+			local pPlayer = Players[playerID];
+			local pPlayerConfig = PlayerConfigurations[playerID];
+		
+			if (pPlayer:IsAlive()) then
+				local str = tostring(playerID) .. ";";
+				str = str .. pPlayerConfig:GetCivilizationShortDescription(playerID);
+				
+				listItems[i] = str;
+			 if (AutoplayManager.GetObserveAsPlayer() == playerID) then
+					listItems["selected"] = i;
+			 end
+			 i = i + 1;
+			end
+	end
+	
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	if (not Automation.IsActive()) then	
+	  AutoplayManager.SetObserveAsPlayer( tonumber(selection) );
+	end
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

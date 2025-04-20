@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Great People</Name>
+  <App>Civ5</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>GameCore_Tuner</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>43</Y>
+      </Location>
+      <Size>
+        <Width>645</Width>
+        <Height>429</Height>
+      </Size>
+      <Name>Timeline Index:90;Owner:60;Individual:180;Class:80;Era:80;Cost:60</Name>
+      <PopulateList>function()
+	local listItems = {};
+  local timeline = Game.GetGreatPeople():GetTimeline();
+	if (timeline ~= nil) then
+		for i,entry in ipairs(timeline) do
+    	local item = i;
+				item = item .. ";" .. entry.Claimant;
+				item = item .. ";" .. string.gsub(GameInfo.GreatPersonIndividuals[entry.Individual].GreatPersonIndividualType, "GREAT_PERSON_INDIVIDUAL_", "");
+				item = item .. ";" .. string.gsub(GameInfo.GreatPersonClasses[entry.Class].GreatPersonClassType, "GREAT_PERSON_CLASS_", "");
+				item = item .. ";" .. string.gsub(GameInfo.Eras[entry.Era].EraType, "ERA_", "");
+				item = item .. ";" .. entry.Cost;
+    	table.insert(listItems, item);
+  	end
+	end
+	return listItems;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

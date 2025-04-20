@@ -1,0 +1,288 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Random Events</Name>
+  <App>Civ6</App>
+  <EnterAction>g_PanelHasFocus = true;
+if (g_PlacementSettings.Active) then
+		LuaEvents.TunerEnterDebugMode();
+end</EnterAction>
+  <ExitAction>if (g_PanelHasFocus) then
+	g_PanelHasFocus = false;
+end</ExitAction>
+  <CompatibleStates>
+    <string>TunerGameRandomEvents</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>TunerGameRandomEvents</string>
+  </LoadStates>
+  <Actions>
+    <ActionData>
+      <Name>Trigger Selected Event</Name>
+      <Action>if GameRandomEvents ~= nil then
+	if g_Selected ~= nil and g_Selected.RandomEvent ~= -1 then
+		local kEvent = {};
+		kEvent.EventType = g_Selected.RandomEvent;
+		kEvent.NamedRiver = g_Selected.NamedRiver;
+		kEvent.NamedVolcano = g_Selected.NamedVolcano;
+		local kEventDef = GameInfo.RandomEvents[kEvent.EventType];
+		if kEventDef ~= nil then
+			
+			if kEventDef.NaturalWonder ~= nil and kEventDef.NaturalWonder ~= "" then
+				kEvent.FeatureType = kEventDef.NaturalWonder;
+			end
+			
+			if g_RandomEventLocation ~= nil and g_RandomEventLocation &gt;= 0 then
+					kEvent.Location = g_RandomEventLocation;
+			end
+			
+			if kEventDef.EffectOperatorType ~= nil and kEventDef.EffectOperatorType == "NUCLEAR_ACCIDENT" then
+				if g_Selected.ReactorIndex ~= nil then
+					local reactor = Game.GetFalloutManager():GetReactorByIndex(g_Selected.ReactorIndex - 1);
+					if reactor ~= nil then
+						kEvent.Location = reactor.PlotIndex;
+					end
+				end
+			end				
+		end
+		GameRandomEvents.ApplyEvent(kEvent)
+	end
+end</Action>
+      <Location>
+        <X>20</X>
+        <Y>451</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Location</Name>
+      <GetFunction>function()
+	if g_RandomEventLocation ~= nil then
+		return g_RandomEventLocation;
+	else
+		return -1;
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+	g_RandomEventLocation = value;
+end</SetFunction>
+      <Location>
+        <X>230</X>
+        <Y>449</Y>
+      </Location>
+      <DefaultValue>-1</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <TreeViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>39</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Events</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for randomEvent in GameInfo.RandomEvents() do
+		listItems [i + 1] = string.gsub( randomEvent.RandomEventType, "RANDOM_EVENT_", "" );
+		i = i + 1;
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type name, change back to the full text key and look for it.
+	local randomEventType = "RANDOM_EVENT_" .. tostring(selection);
+		
+	if g_Selected == nil then
+			g_Selected = {}
+		end
+	local randomEvent = GameInfo.RandomEvents[randomEventType];
+	if (randomEvent ~= nil) then
+		g_Selected.RandomEvent = randomEvent.Index;
+	else
+		g_Selected.RandomEvent = -1;
+	end
+end</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>340</X>
+        <Y>39</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Named Rivers</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for z = 0, RiverManager.GetNumRivers() - 1, 1 do
+		local eRiverType = RiverManager.GetRiverTypeAtIndex(z);
+		local namedRiver = GameInfo.NamedRivers[eRiverType];
+		if namedRiver ~= nil then
+			listItems [i + 1] = string.gsub( namedRiver.NamedRiverType, "NAMED_RIVER_", "" );
+			i = i + 1;
+		end
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type name, change back to the full text key and look for it.
+	local selectionKey = "NAMED_RIVER_" .. tostring(selection);
+	
+	if g_Selected == nil then
+			g_Selected = {}
+		end
+			
+	local definition = GameInfo.NamedRivers[selectionKey];
+	if (definition ~= nil) then
+		g_Selected.NamedRiver = definition.Index;
+	else
+		g_Selected.NamedRiver = -1;
+	end
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>650</X>
+        <Y>39</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Named Volcanoes</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for z = 0, MapFeatureManager.GetNumVolcanoes() - 1, 1 do
+		local eVolcanoType = MapFeatureManager.GetVolcanoTypeAtIndex(z);
+		local namedVolcano = GameInfo.NamedVolcanoes[eVolcanoType];
+		if namedVolcano ~= nil then
+			listItems [i + 1] = string.gsub( namedVolcano.NamedVolcanoType, "NAMED_VOLCANO_", "" );
+			i = i + 1;
+		end
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type name, change back to the full text key and look for it.
+	local selectionKey = "NAMED_VOLCANO_" .. tostring(selection);
+	
+	if g_Selected == nil then
+			g_Selected = {}
+		end
+			
+	local definition = GameInfo.NamedVolcanoes[selectionKey];
+	if (definition ~= nil) then
+		g_Selected.NamedVolcano = definition.Index;
+	else
+		g_Selected.NamedVolcano = -1;
+	end
+end</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>960</X>
+        <Y>40</Y>
+      </Location>
+      <Size>
+        <Width>531</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>ID:0;Reactor Location:100;City Name:200;Owner:200</Name>
+      <PopulateList>function()
+	local items = {};
+	
+	local pFalloutManager = Game.GetFalloutManager();
+	if pFalloutManager.GetReactorCount ~= nil then
+		local iCount = pFalloutManager:GetReactorCount();
+
+		for i = 1, iCount, 1 do
+		
+			local reactor = pFalloutManager:GetReactorByIndex(i - 1);
+			
+			local playerIndex = reactor.Owner;
+			local pPlayer = Players[playerIndex];
+			local pPlayerConfig = PlayerConfigurations[playerIndex];
+			
+			if pPlayer ~= nil and pPlayer:WasEverAlive()  then
+				local strPlayer = Locale.Lookup(pPlayerConfig:GetCivilizationShortDescription());
+				if (#strPlayer == 0) then
+					strPlayer = "Player " .. tostring(playerIndex);
+				end
+				
+				local pCities = pPlayer:GetCities();
+				local pCity = pCities:FindID(reactor.CityID);
+				if pCity ~= nil then
+					
+					if ( g_Selected ~= nil and (g_Selected.ReactorIndex == nil or g_Selected.ReactorIndex == -1) ) then
+						g_Selected.ReactorIndex = i;
+					end
+									
+					local cityName = string.gsub(pCity:GetName(), "LOC_CITY_NAME_", "");
+					local cityLocName = string.upper(Locale.Lookup(pCity:GetName()))
+					if ( #cityName &gt; #cityLocName ) then
+						cityName = cityLocName;
+					end
+					
+					local x = 0;
+					local y = 0;
+					
+					local pPlot = Map.GetPlotByIndex(reactor.PlotIndex);
+					if pPlot ~= nil then
+						x = pPlot:GetX();
+						y = pPlot:GetY();
+					end
+					
+					local str = i .. ";" .. x .. ", " ..  y .. ";" .. cityName .. ";" .. strPlayer;
+					table.insert(items, str);
+					if ( g_Selected ~= nil and g_Selected.ReactorIndex == i ) then
+						items.selected = #items;
+					end
+				end		
+			end
+		end
+	end
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local selectionParts = {};
+	local str1 = string.match(selection, "%d+");
+	local str2 = string.match(selection, "%d+", string.len(str1) + 1);
+	
+	if g_Selected == nil then
+		g_Selected = {}
+	end
+	
+	g_Selected.ReactorIndex = tonumber(str1);
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

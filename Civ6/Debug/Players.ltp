@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Players</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>60</X>
+        <Y>48</Y>
+      </Location>
+      <Size>
+        <Width>1029</Width>
+        <Height>419</Height>
+      </Size>
+      <Name>Player:60;Alive:60;Turn Active:60;Civilization:200;Nick Name:200;Handicap:200;Human?:50;Major?:50;Team:50</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local player_ids = GameConfiguration.GetParticipatingPlayerIDs();
+	for _, player_id in ipairs(player_ids) do	
+		local pPlayer = Players[player_id];
+		local pPlayerConfig = PlayerConfigurations[player_id];
+		
+		if(pPlayerConfig and pPlayer and pPlayer:WasEverAlive()) then
+			local str = tostring(player_id) .. ";";
+			str = str .. tostring(pPlayer:IsAlive()) .. ";";
+			str = str .. tostring(pPlayer:IsTurnActive()) .. ";";
+					
+			local szName = pPlayerConfig:GetCivilizationShortDescription();
+			if (szName == nil or string.len(szName) == 0) then
+				szName = pPlayerConfig:GetCivilizationTypeName();
+			end
+			
+			if (szName == nil or string.len(szName) == 0) then
+				szName = tostring(pPlayerConfig:GetCivilizationTypeID());
+			end
+		  
+			str = str .. szName .. ";" .. pPlayerConfig:GetNickName();
+			local pHandicap = GameInfo.Difficulties[pPlayerConfig:GetHandicapTypeID()];
+			if (pHandicap ~= nil) then
+				str = str .. ";" .. pHandicap.Name;
+			end
+			
+			if (pPlayer:IsHuman()) then
+				str = str .. ";" .. "Y";
+			else
+				str = str .. ";" .. "N";
+			end
+
+			if (pPlayer:IsMajor()) then
+				str = str .. ";" .. "Y";
+			else
+				str = str .. ";" .. "N";
+			end
+						
+			str = str .. ";" .. tostring(pPlayer:GetTeam());
+			
+			table.insert(listItems, str);
+		end
+   end
+
+  return listItems;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

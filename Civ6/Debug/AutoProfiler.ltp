@@ -1,0 +1,459 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>AutoProfiler</Name>
+  <App>Civ6</App>
+  <EnterAction>g_PanelHasFocus = true;
+if (g_PlacementSettings.Active) then
+		LuaEvents.TunerEnterDebugMode();
+end
+</EnterAction>
+  <ExitAction>if (g_PanelHasFocus) then
+	g_PanelHasFocus = false;
+	if (g_PlacementSettings.Active) then
+			LuaEvents.TunerExitDebugMode();
+	end
+end
+</ExitAction>
+  <CompatibleStates>
+    <string>TunerAssetPreviewPanel</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>UI:TunerAssetPreviewPanel</string>
+  </LoadStates>
+  <Actions>
+    <ActionData>
+      <Name>Clear All Landmarks</Name>
+      <Action>AssetPreview.ClearLandmarkSystem();</Action>
+      <Location>
+        <X>10</X>
+        <Y>35</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Spoof Cities</Name>
+      <Action>AssetPreview.ClearLandmarkSystem();
+	  local maptype = Map.GetMapSize();
+	  local mapx = GameInfo.Maps[maptype].GridWidth;
+	  local mapy = GameInfo.Maps[maptype].GridHeight;
+	  local step = g_AddCitySpacing and 2 or 1;
+	  for y = 0, mapy-1, step do
+		local firstx = 0;
+		if ( g_AddCitySpacing ) then
+			firstx = (y/2) % 2;
+		end
+		for x = firstx, mapx-1, step do
+			local plot = Map.GetPlot(x, y);
+			if ( not plot:IsImpassable() and not plot:IsWater() ) then
+				AssetPreview.SpoofCityAt( x, y, GameInfo.Civilizations[g_SelectedCiv].Index, GameInfo.Eras[g_SelectedEra].Index, 22 );
+			end
+		end
+	  end</Action>
+      <Location>
+        <X>10</X>
+        <Y>63</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Start AutoProfile</Name>
+      <Action>AutoProfiler.Start();</Action>
+      <Location>
+        <X>10</X>
+        <Y>284</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Spoof Districts</Name>
+      <Action>AssetPreview.ClearLandmarkSystem();
+
+local tDistrictBases = AssetPreview.GetDistrictBaseList(g_SelectedDistrictIdx);
+local tDistProps = tDistrictBases[g_SelectedDistrictBaseName];
+if ( tDistProps == nil ) then return; end
+
+local maptype = Map.GetMapSize();
+local mapx = GameInfo.Maps[maptype].GridWidth;
+local mapy = GameInfo.Maps[maptype].GridHeight;
+local step = g_AddCitySpacing and 2 or 1;
+for y = 0, mapy-1, step do
+	local firstx = 0;
+	if ( g_AddCitySpacing ) then
+		firstx = (y/2) % 2;
+	end
+	for x = firstx, mapx-1, step do
+		local plot = Map.GetPlot(x, y);
+		if ( not plot:IsImpassable() and not plot:IsWater() ) then
+			AssetPreview.SpoofDistrictBaseAt( x, y, 
+				tDistProps.civ, tDistProps.era, tDistProps.appeal, 
+				g_SelectedPopulation, g_SelectedState, 
+				g_SelectedDistrictIdx, tDistProps.index );
+		end
+	end
+end</Action>
+      <Location>
+        <X>10</X>
+        <Y>90</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Spoof Buildings</Name>
+      <Action>AssetPreview.ClearLandmarkSystem();
+local tBuildings = AssetPreview.GetDistrictBuildingList(g_SelectedDistrictIdx);
+local tBldgProps = tBuildings[g_SelectedDistrictBldgName];
+if ( tBldgProps == nil ) then return; end
+
+local maptype = Map.GetMapSize();
+local mapx = GameInfo.Maps[maptype].GridWidth;
+local mapy = GameInfo.Maps[maptype].GridHeight;
+local step = g_AddCitySpacing and 2 or 1;
+for y = 0, mapy-1, step do
+	local firstx = 0;
+	if ( g_AddCitySpacing ) then
+		firstx = (y/2) % 2;
+	end
+	for x = firstx, mapx-1, step do
+		local plot = Map.GetPlot(x, y);
+		if ( not plot:IsImpassable() and not plot:IsWater() ) then
+			AssetPreview.SpoofBuildingAt( x, y, 
+				tBldgProps.civ, tBldgProps.era, tBldgProps.appeal,
+				g_SelectedState, g_SelectedDistrictIdx, tBldgProps.bldg );
+		end
+	end
+end</Action>
+      <Location>
+        <X>10</X>
+        <Y>117</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls>
+    <StringControlData>
+      <Name>State</Name>
+      <GetFunction>function()
+	return AutoProfiler.GetStateString();
+end</GetFunction>
+      <SetFunction>function(value)
+	return;
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>252</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Benchmark Log Name</Name>
+      <GetFunction>function()
+	return AutoProfiler.GetTestName();
+end</GetFunction>
+      <SetFunction>function(value)
+	AutoProfiler.SetTestName( value );
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>412</Y>
+      </Location>
+    </StringControlData>
+  </StringControls>
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Frames Remaining</Name>
+      <GetFunction>function()
+	return math.ceil(AutoProfiler.GetTimeRemaining());
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>130</X>
+        <Y>282</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>LookAt Count</Name>
+      <GetFunction>function()
+	return AutoProfiler.GetLookAtCount();
+end</GetFunction>
+      <SetFunction>function(value)
+	AutoProfiler.SetLookAtCount(value);
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>345</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Population</Name>
+      <GetFunction>function()
+	return g_SelectedPopulation;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_SelectedPopulation = tonumber(value);
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>178</Y>
+      </Location>
+      <DefaultValue>-1</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls>
+    <FloatControlData>
+      <Name>LookAt Frames</Name>
+      <GetFunction>function()
+	return AutoProfiler.GetLookAtFrames();
+end</GetFunction>
+      <SetFunction>function(value)
+	AutoProfiler.SetLookAtFrames( value );
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>379</Y>
+      </Location>
+      <DefaultValue>-1</DefaultValue>
+    </FloatControlData>
+    <FloatControlData>
+      <Name>Camera Zoom</Name>
+      <GetFunction>function()
+	return AutoProfiler.GetCameraZoom();
+end</GetFunction>
+      <SetFunction>function(value)
+	AutoProfiler.SetCameraZoom(value);
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>314</Y>
+      </Location>
+      <DefaultValue>1</DefaultValue>
+    </FloatControlData>
+  </FloatControls>
+  <BooleanControls>
+    <BooleanControlData>
+      <Name>Sparse</Name>
+      <GetFunction>function()
+	return g_AddCitySpacing;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_AddCitySpacing = value;
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>146</Y>
+      </Location>
+    </BooleanControlData>
+  </BooleanControls>
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>310</X>
+        <Y>184</Y>
+      </Location>
+      <Size>
+        <Width>123</Width>
+        <Height>110</Height>
+      </Size>
+      <Name>State:0</Name>
+      <PopulateList>function()
+	return { "Worked", "Unworked", "Pillaged", "Construction" };
+end</PopulateList>
+      <OnSelection>function(selection)
+	g_SelectedState = selection;
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists>
+    <MultiselectListData>
+      <Location>
+        <X>140</X>
+        <Y>36</Y>
+      </Location>
+      <Size>
+        <Width>150</Width>
+        <Height>134</Height>
+      </Size>
+      <Name>Era</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local ID = 1;
+
+	for era in GameInfo.Eras() do
+		local item = {};
+		item.Text = string.gsub( era.EraType, "ERA_", "" );
+		item.Selected = era.EraType == g_SelectedEra;
+		listItems[ID] = item;
+		ID = ID + 1;
+	end
+	if ( g_SelectedEra == nil and #listItems &gt; 0) then
+		g_SelectedEra = "ERA_" .. listItems[1].Text;
+		listItems[1].Selected = true;
+	end	
+	
+	return listItems;
+end
+</PopulateList>
+      <OnSelected>function(selection)
+	g_SelectedEra = "ERA_" .. selection;
+end
+
+</OnSelected>
+      <OnDeselected>function(selection) end
+</OnDeselected>
+    </MultiselectListData>
+    <MultiselectListData>
+      <Location>
+        <X>300</X>
+        <Y>36</Y>
+      </Location>
+      <Size>
+        <Width>150</Width>
+        <Height>134</Height>
+      </Size>
+      <Name>Civilization</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local ID = 1;
+	for civ in GameInfo.Civilizations() do
+		local item = {};
+		item.Text = string.gsub( civ.CivilizationType, "CIVILIZATION_", "" );
+		item.Selected = civ.CivilizationType == g_SelectedCiv;
+		listItems[ID] = item;
+		ID = ID + 1;
+	end
+	if ( g_SelectedCiv == nil and #listItems &gt; 0) then
+		g_SelectedCiv = "CIVILIZATION_" .. listItems[1].Text;
+		listItems[1].Selected = true;
+	end	
+	
+	return listItems;
+end
+</PopulateList>
+      <OnSelected>function(selection)
+	g_SelectedCiv = "CIVILIZATION_" .. selection;
+end
+</OnSelected>
+      <OnDeselected>function(selection)
+
+end
+</OnDeselected>
+    </MultiselectListData>
+    <MultiselectListData>
+      <Location>
+        <X>460</X>
+        <Y>36</Y>
+      </Location>
+      <Size>
+        <Width>224</Width>
+        <Height>254</Height>
+      </Size>
+      <Name>Districts</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local nDistricts = AssetPreview.GetDistrictCount();
+	if ( nDistricts &gt; 0 ) then
+		for i = 0, nDistricts-1, 1 do
+			table.insert( listItems, {
+				Text = string.gsub( AssetPreview.GetDistrictName(i), "DISTRICT_", "" ),
+				Selected = (g_SelectedDistrictIdx == i)
+			} );
+		end
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)
+	local nDistricts = AssetPreview.GetDistrictCount();
+	g_SelectedDistrictBaseName = nil;
+	g_SelectedDistrictBldgName = nil;
+	
+	selection = "DISTRICT_" .. selection;
+	if ( nDistricts &gt; 0 ) then
+		for i = 0, nDistricts-1, 1 do
+			if ( selection == AssetPreview.GetDistrictName(i) ) then
+				g_SelectedDistrictIdx = i;
+				break;
+			end
+		end
+	else
+		g_SelectedDistrictIdx = 0;
+	end
+end</OnSelected>
+      <OnDeselected>function(selection)
+
+end
+</OnDeselected>
+    </MultiselectListData>
+    <MultiselectListData>
+      <Location>
+        <X>690</X>
+        <Y>35</Y>
+      </Location>
+      <Size>
+        <Width>195</Width>
+        <Height>252</Height>
+      </Size>
+      <Name>District Base</Name>
+      <PopulateList>function()
+	if ( AssetPreview.GetDistrictCount() == 0 ) then g_SelectedDistrictBaseName = nil; return {}; end
+	
+	local listItems = {};
+	local tDistrictBases = AssetPreview.GetDistrictBaseList(g_SelectedDistrictIdx);
+	for name,props in pairs(tDistrictBases) do
+		table.insert( listItems, {
+			Text = name,
+			Selected = (g_SelectedDistrictBaseName == name)
+		} );
+	end
+	if ( g_SelectedDistrictBaseName == nil and #listItems &gt; 0  ) then
+		g_SelectedDistrictBaseName = listItems[1].Text;
+		listItems[1].Selected = true;
+	end
+	
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)
+	g_SelectedDistrictBaseName = selection;
+end</OnSelected>
+      <OnDeselected>function(selection)
+
+end
+</OnDeselected>
+    </MultiselectListData>
+    <MultiselectListData>
+      <Location>
+        <X>890</X>
+        <Y>35</Y>
+      </Location>
+      <Size>
+        <Width>193</Width>
+        <Height>252</Height>
+      </Size>
+      <Name>District Building</Name>
+      <PopulateList>function()
+	if ( AssetPreview.GetDistrictCount() == 0 ) then g_SelectedDistrictBldgName = nil; return {}; end
+	local tBuildings = AssetPreview.GetDistrictBuildingList(g_SelectedDistrictIdx);
+	
+	local listItems = {};
+	for name,_ in pairs(tBuildings) do
+		if ( g_SelectedDistrictBldgName == nil) then
+			g_SelectedDistrictBldgName = name;
+		end
+		table.insert( listItems, {
+			Text = name,
+			Selected = (g_SelectedDistrictBldgName == name)
+		} );
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)
+	g_SelectedDistrictBldgName = selection;
+end</OnSelected>
+      <OnDeselected>function(selection)
+
+end
+</OnDeselected>
+    </MultiselectListData>
+  </MultiselectLists>
+</PanelData>

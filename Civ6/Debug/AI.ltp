@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>AI</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction>		UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, false);</ExitAction>
+  <CompatibleStates>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>TunerAiPanel</string>
+  </LoadStates>
+  <Actions>
+    <ActionData>
+      <Name>Show Threat</Name>
+      <Action> if ( g_DangerThreshold == nil ) then
+	  g_DangerThreshold = 1;
+	end
+	if ( g_SelectedPlayer &gt;= 0 ) then
+		UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, false);
+		local player = Players[ g_SelectedPlayer ];
+		if ( player ~= nil ) then
+			local influenceMap = player:GetInfluenceMap();
+			local threatenedSpots = {};
+			for plotIndex = 0, Map.GetPlotCount()-1, 1 do
+				if ( influenceMap:Find( plotIndex ) &gt;= g_DangerThreshold ) then
+					table.insert( threatenedSpots, plotIndex );
+				end
+			end
+			UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, true, threatenedSpots);
+		end
+	end
+</Action>
+      <Location>
+        <X>210</X>
+        <Y>113</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Show Chokepoints</Name>
+      <Action>	local chokepoints = {};
+	UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, false);
+	for plotIndex = 0, Map.GetPlotCount()-1, 1 do
+		if ( Map.GetPlotByIndex(plotIndex):IsChokepoint() == true ) then
+			table.insert( chokepoints, plotIndex );
+		end
+	end
+ if ( g_SelectedPlayer &gt;= 0 ) then
+	 UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, true, chokepoints);
+ end
+
+</Action>
+      <Location>
+        <X>210</X>
+        <Y>409</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Danger Threshold</Name>
+      <GetFunction>function()
+	return g_DangerThreshold;
+end</GetFunction>
+      <SetFunction>function(value)
+ g_DangerThreshold = value;
+end</SetFunction>
+      <Location>
+        <X>210</X>
+        <Y>74</Y>
+      </Location>
+      <DefaultValue>1</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>30</X>
+        <Y>72</Y>
+      </Location>
+      <Size>
+        <Width>168</Width>
+        <Height>362</Height>
+      </Size>
+      <Name>ID:30;Player</Name>
+      <PopulateList>function()
+   local listItems = {};
+	local i = 0;
+	for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+			local pPlayer = Players[i];
+			local pPlayerConfig = PlayerConfigurations[i];
+		
+			if (pPlayer:IsAlive()) then
+				local str = tostring(i) .. ";";
+				str = str .. pPlayerConfig:GetNickName(i);
+				
+				listItems[i + 1] = str;
+			end
+	end
+
+  return listItems;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+		UI.HighlightPlots(PlotHighlightTypes.PLACEMENT, false);
+	  local selectedPlayerIDStr = string.match(selection, "%d+");
+	  g_SelectedPlayer = tonumber(selectedPlayerIDStr);
+end
+      </OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

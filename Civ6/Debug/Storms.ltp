@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Storms</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>GameCore_Tuner</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>30</X>
+        <Y>42</Y>
+      </Location>
+      <Size>
+        <Width>1025</Width>
+        <Height>224</Height>
+      </Size>
+      <Name>ID;Type:280;Severity;Start Turn;Direction;Location</Name>
+      <PopulateList>function()
+	local listItems = {};
+	if GameClimate ~= nil then
+		local i = 0;
+		local z = 1;
+		local count = GameClimate.GetNumActiveStorms();
+		for i = 1, count do
+		
+			local kStorm = GameClimate.GetActiveStormByIndex(i - 1);
+			
+			local typeName;
+			local typeDef = GameInfo.RandomEvents[ kStorm.StormType ];
+			if typeDef ~= nil then
+				typeName = typeDef.RandomEventType;
+			else
+				typeName = tostring( kStorm.StormType );
+			end
+			
+			local str = tostring(i) .. ";" .. typeName .. ";" .. tostring(kStorm.Severity) .. ";" .. tostring(kStorm.StartTurn) .. ";" .. tostring(kStorm.CurrentDirection) .. ";" .. tostring(kStorm.CurrentLocation);
+			listItems[z] = str;
+			z = z + 1;			
+		end
+	end
+  return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

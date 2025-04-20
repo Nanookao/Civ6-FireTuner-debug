@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Network</Name>
+  <App />
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>MainMenu</string>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions>
+    <ActionData>
+      <Name>Force Resync at End of Turn</Name>
+      <Action>Network.ForceResync();</Action>
+      <Location>
+        <X>20</X>
+        <Y>236</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Request Immediate Snapshot</Name>
+      <Action>Network.RequestSnapshot();</Action>
+      <Location>
+        <X>20</X>
+        <Y>206</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Trigger Immediate Sync</Name>
+      <Action>Network.TriggerTestSync();</Action>
+      <Location>
+        <X>20</X>
+        <Y>176</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists />
+  <MultiselectLists />
+</PanelData>

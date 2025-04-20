@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Territories</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions>
+    <ActionData>
+      <Name>Look At Selected</Name>
+      <Action>if g_SelectedTerritoryID ~= nil then
+	if Territories ~= nil then
+		local pTerritory = Territories.GetTerritory(g_SelectedTerritoryID);
+		if pTerritory ~= nil then
+			local x, y = pTerritory:GetCentroid();
+			UI.LookAtPlot(x, y);
+		end
+	end
+end</Action>
+      <Location>
+        <X>150</X>
+        <Y>407</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Count:</Name>
+      <GetFunction>function()
+	if Territories ~= nil then
+		return Territories.GetCount();
+	end
+	return 0;
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>30</X>
+        <Y>53</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>150</X>
+        <Y>53</Y>
+      </Location>
+      <Size>
+        <Width>928</Width>
+        <Height>341</Height>
+      </Size>
+      <Name>ID:150;Type:300;PlotCount;Center</Name>
+      <PopulateList>function()
+	local listItems = {};
+	if Territories ~= nil then
+		local i = 0;
+		local z = 1;
+		for _, territory in Territories.Members() do
+		
+			local typeName;
+			local typeDef = GameInfo.TerrainClasses[ territory:GetTerrainClass() ];
+			if typeDef ~= nil then
+				typeName = typeDef.TerrainClassType;
+			else
+				typeName = tostring( territory:GetTerrainClass() );
+			end
+			
+			local x, y = territory:GetCentroid();
+			local str = territory:GetID() .. ";" .. typeName .. ";" .. territory:GetPlotCount() .. ";" .. tostring(x) .. "," .. tostring(y);
+			listItems[z] = str;
+			z = z + 1;			
+		end
+	end
+  return listItems;
+end
+	</PopulateList>
+      <OnSelection>function(selection)
+	local str = string.match(selection, "%d+");
+	
+	g_SelectedTerritoryID = tonumber(str);
+		
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

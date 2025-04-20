@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Defeats</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>340</X>
+        <Y>86</Y>
+      </Location>
+      <Size>
+        <Width>746</Width>
+        <Height>401</Height>
+      </Size>
+      <Name>Inst:40;Defeat:140;Enabled:40;RequirementSet:240;IsMet:40</Name>
+      <PopulateList>function()
+	local items = {};
+	if(g_DefeatPlayerId) then
+		for row in GameInfo.Defeats() do
+			local inst = Game.GetDefeatRequirements(g_DefeatPlayerId, row.DefeatType);
+			local def = GameEffects.GetRequirementSetDefinition(inst);
+			local state = GameEffects.GetRequirementSetState(inst);
+			local item 	= {
+				inst,
+				Locale.Lookup(row.Name),
+				tostring(Game.IsDefeatEnabled(row.DefeatType)),
+				def and def.Id or "N/A",
+				state or "N/A"
+			};
+			table.insert(items, table.concat(item, ";"));
+			end
+		else
+			items = {";Select a player"};
+		end
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.match(selection, "%d+");
+	g_DefeatRequirementSetId = tonumber(str1);
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>85</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>ID:40;Name:120;Major:40;</Name>
+      <PopulateList>function()
+	local items = {};
+	for id, player in pairs(Players) do
+		local major = player:IsMajor();
+		local item = {
+			id,
+			Locale.Lookup(PlayerConfigurations[id]:GetPlayerName()),
+			tostring(major)
+		};
+	
+		table.insert(items, table.concat(item, ";"));
+	end
+
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.gmatch(selection,"[^;]+")();
+	g_DefeatPlayerId = tonumber(str1);
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>340</X>
+        <Y>492</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Inst:40;Requirements:180;IsMet:40;</Name>
+      <PopulateList>function()
+	local items = {};
+	if(g_DefeatRequirementSetId) then
+		local reqs = GameEffects.GetRequirementSetInnerRequirements(g_DefeatRequirementSetId);
+		for i,v in ipairs(reqs or {}) do
+			local def = GameEffects.GetRequirementDefinition(v);
+			local state = GameEffects.GetRequirementState(v);
+			local item = {
+				v,
+				def and def.Id or "N/A",
+				state or "N/A"
+			}
+			
+			table.insert(items, table.concat(item, ";"));
+		end
+	end
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

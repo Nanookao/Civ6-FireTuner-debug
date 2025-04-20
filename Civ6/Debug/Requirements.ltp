@@ -1,0 +1,512 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Requirements</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>GameCore_Tuner</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls>
+    <StringControlData>
+      <Name>Id</Name>
+      <GetFunction>function()
+	local reqId = g_RequirementId or g_SelectedRequirementId;
+	if(reqId) then
+			return GameEffects.GetRequirementDefinition(reqId).Id;
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>920</X>
+        <Y>106</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>State</Name>
+      <GetFunction>function()
+	local reqId = g_RequirementId or g_SelectedRequirementId;
+	if(reqId) then
+		return GameEffects.GetRequirementState(reqId);
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>1100</X>
+        <Y>73</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Subject</Name>
+      <GetFunction>function()
+	local reqId = g_RequirementId or g_SelectedRequirementId;
+	if(reqId) then
+		local subject = GameEffects.GetRequirementSubject(reqId);
+		local t = Locale.Lookup(GameEffects.GetObjectType(subject) or "");
+		local name = Locale.Lookup(GameEffects.GetObjectName(subject) or "");
+		return string.format("%i:%s:%s",subject, t, name);
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>920</X>
+        <Y>169</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Context</Name>
+      <GetFunction>function()
+	local reqId = g_RequirementId or g_SelectedRequirementId;
+	if(reqId) then
+		local subject = GameEffects.GetRequirementContext(reqId);
+		local t = Locale.Lookup(GameEffects.GetObjectType(subject) or "");
+		local name = Locale.Lookup(GameEffects.GetObjectName(subject) or "");
+		return string.format("%i:%s:%s",subject, t, name);
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>920</X>
+        <Y>200</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>State</Name>
+      <GetFunction>function()
+	local reqSetId = g_RequirementSetId or g_SelectedRequirementSetId;
+	if(reqSetId ) then
+		return GameEffects.GetRequirementSetState(reqSetId );
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>800</X>
+        <Y>71</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Id</Name>
+      <GetFunction>function()
+	local reqSetId = g_RequirementSetId or g_SelectedRequirementSetId;
+	if(reqSetId) then
+			local def = GameEffects.GetRequirementSetDefinition(reqSetId)
+			return def and def.Id;
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>600</X>
+        <Y>105</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Subject</Name>
+      <GetFunction>function()
+	local reqSetId = g_RequirementSetId or g_SelectedRequirementSetId;
+	if(reqSetId) then
+		local subject = GameEffects.GetRequirementSetSubject(reqSetId);
+		local t = Locale.Lookup(GameEffects.GetObjectType(subject) or "");
+		local name = Locale.Lookup(GameEffects.GetObjectName(subject) or "");
+		return string.format("%i:%s:%s",subject, t, name);
+	end
+end
+</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>600</X>
+        <Y>167</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Context</Name>
+      <GetFunction>function()
+	local reqSetId = g_RequirementSetId or g_SelectedRequirementSetId;
+	if(reqSetId) then
+		local subject = GameEffects.GetRequirementSetContext(reqSetId);
+		local t = Locale.Lookup(GameEffects.GetObjectType(subject) or "");
+		local name = Locale.Lookup(GameEffects.GetObjectName(subject) or "");
+		return string.format("%i:%s:%s",subject, t, name);
+	end
+end
+</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>600</X>
+        <Y>198</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Type</Name>
+      <GetFunction>function()
+	local reqId = g_RequirementId or g_SelectedRequirementId;
+	if(reqId) then
+		local definition = GameEffects.GetRequirementDefinition(reqId);
+		if(definition ~= nil) then
+			local typeInfo = GameInfo.Types[definition.Type];
+			return typeInfo and typeInfo.Type or definition.Type;
+		end
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>920</X>
+        <Y>138</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Type</Name>
+      <GetFunction>function()
+	local reqSetId = g_RequirementSetId or g_SelectedRequirementSetId;
+	if(reqSetId) then
+		local definition = GameEffects.GetRequirementSetDefinition(reqSetId);
+		if(definition ~= nil) then
+			local typeInfo = GameInfo.Types[definition.Type];
+			return typeInfo and typeInfo.Type or definition.Type;
+		end
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>600</X>
+        <Y>136</Y>
+      </Location>
+    </StringControlData>
+  </StringControls>
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Requirements</Name>
+      <GetFunction>function()
+	if(GameEffects) then
+		return GameEffects.GetRequirementCount();
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>170</X>
+        <Y>35</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Requirement Sets</Name>
+      <GetFunction>function()
+	if(GameEffects) then
+		return GameEffects.GetRequirementSetCount();
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>35</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Offset</Name>
+      <GetFunction>function()
+	return g_iRequirementsOffset;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_iRequirementsOffset = value;
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>71</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Count</Name>
+      <GetFunction>function()
+	return g_iRequirementsCount;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_iRequirementsCount = value;
+end</SetFunction>
+      <Location>
+        <X>170</X>
+        <Y>71</Y>
+      </Location>
+      <DefaultValue>1000</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Instance</Name>
+      <GetFunction>function()
+	return g_RequirementSetId or g_SelectedRequirementSetId;
+end</GetFunction>
+      <SetFunction>function(value)
+end</SetFunction>
+      <Location>
+        <X>600</X>
+        <Y>71</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Instance</Name>
+      <GetFunction>function()
+	return g_RequirementId or g_SelectedRequirementId;
+end</GetFunction>
+      <SetFunction>function(value)
+end</SetFunction>
+      <Location>
+        <X>920</X>
+        <Y>73</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Requirement Set Override</Name>
+      <GetFunction>function()
+	return g_RequirementSetId;
+end</GetFunction>
+      <SetFunction>function(value)
+	if(value == nil or value == 0) then
+			g_RequirementSetId = nil;
+		else
+			g_RequirementSetId = value;
+		end
+end</SetFunction>
+      <Location>
+        <X>600</X>
+        <Y>36</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Requirement Override</Name>
+      <GetFunction>function()
+	return g_RequirementId;
+end</GetFunction>
+      <SetFunction>function(value)
+	if(value and value == 0 or #value == 0) then
+			g_RequirementId = nil;
+		else
+			g_RequirementId = value;
+		end
+end</SetFunction>
+      <Location>
+        <X>920</X>
+        <Y>38</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>10</X>
+        <Y>106</Y>
+      </Location>
+      <Size>
+        <Width>570</Width>
+        <Height>565</Height>
+      </Size>
+      <Name>Inst:40;Id:280;Subject:120;Context:120;State:40;Inner:40;RefCount:40;</Name>
+      <PopulateList>function()
+	local results = {};
+	local offset = g_iRequirementsOffset or 0;
+	local count = g_iRequirementsCount or 1000;
+	if(GameEffects) then
+		local requirement_sets = GameEffects.GetRequirementSets() or {};
+		for i,v in ipairs(requirement_sets) do
+			if(i &gt; offset) then
+				local def = GameEffects.GetRequirementSetDefinition(v);
+				local subject = GameEffects.GetRequirementSetSubject(v);
+				local subject_name = Locale.Lookup(GameEffects.GetObjectName(subject) or "");
+				local context = GameEffects.GetRequirementSetContext(v);
+				local context_name = Locale.Lookup(GameEffects.GetObjectName(context) or "");
+				local state = GameEffects.GetRequirementSetState(v);
+				local inner_count = #(GameEffects.GetRequirementSetInnerRequirements(v) or {});
+				local ref_count = GameEffects.GetRequirementSetReferenceCount(v);
+				
+				local data = {
+					v,
+					def.Id,
+					subject_name,
+					context_name,
+					state,
+					inner_count,
+					ref_count
+				};
+				
+				table.insert(results, table.concat(data, ";"));
+				if(#results &gt;= count) then
+					break;
+				end	
+			end
+
+		end
+	end
+		
+ return results;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.gmatch(selection,"[^;]+")();
+	g_SelectedRequirementSetId = tonumber(str1);
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>600</X>
+        <Y>230</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Inst:40;Requirements:180;IsMet:40;</Name>
+      <PopulateList>function()
+	local items = {};
+	local reqSetId = g_RequirementSetId or g_SelectedRequirementSetId;
+	if(reqSetId) then
+		local reqs = GameEffects.GetRequirementSetInnerRequirements(reqSetId);
+		for i,v in ipairs(reqs) do
+			local def = GameEffects.GetRequirementDefinition(v);
+			local state = GameEffects.GetRequirementState(v);
+			local item = {
+				v,
+				def and def.Id or "N/A",
+				state or "N/A"
+			}
+			
+			table.insert(items, table.concat(item, ";"));
+		end
+	end
+	return items;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.gmatch(selection,"[^;]+")();
+	g_SelectedRequirementId = tonumber(str1);
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>920</X>
+        <Y>431</Y>
+      </Location>
+      <Size>
+        <Width>514</Width>
+        <Height>200</Height>
+      </Size>
+      <Name>Inst:40;Set:280;IsMet:60;Subject:100;Context:100;</Name>
+      <PopulateList>function()
+ 	local items = {};
+	local reqId = g_RequirementId or g_SelectedRequirementId;
+	if(reqId) then
+		local reqs = GameEffects.GetRequirementInnerRequirements(reqId) or {}
+		for i,v in ipairs(reqs) do
+			local def = GameEffects.GetRequirementDefinition(v);
+			local state = GameEffects.GetRequirementState(v);
+			
+			local subject = GameEffects.GetRequirementSubject(v);
+			local st = Locale.Lookup(GameEffects.GetObjectType(subject) or "");
+			local sname = Locale.Lookup(GameEffects.GetObjectName(subject) or "");
+			
+			local context = GameEffects.GetRequirementContext(v);
+			local ct = Locale.Lookup(GameEffects.GetObjectType(context) or "");
+			local cname = Locale.Lookup(GameEffects.GetObjectName(context) or "");
+			
+			local item = {
+				v,
+				def and def.Id or "N/A",
+				state,
+				string.format("%i:%s:%s",subject, st, sname),
+				string.format("%i:%s:%s",context, ct, cname)
+			};			
+			table.insert(items, table.concat(item, ";"));
+		end
+	end
+	   
+  return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>920</X>
+        <Y>233</Y>
+      </Location>
+      <Size>
+        <Width>513</Width>
+        <Height>192</Height>
+      </Size>
+      <Name>Inst:40;Set:280;IsMet:60;Subject:100;Context:100;</Name>
+      <PopulateList>function()
+ 	local items = {};
+	local reqId = g_RequirementId or g_SelectedRequirementId;
+	if(reqId) then
+		local reqs = GameEffects.GetRequirementInnerRequirementSets(reqId) or {}
+		for i,v in ipairs(reqs) do
+			local def = GameEffects.GetRequirementSetDefinition(v);
+			local state = GameEffects.GetRequirementSetState(v);
+			
+			local subject = GameEffects.GetRequirementSetSubject(v);
+			local st = Locale.Lookup(GameEffects.GetObjectType(subject) or "");
+			local sname = Locale.Lookup(GameEffects.GetObjectName(subject) or "");
+			
+			local context = GameEffects.GetRequirementSetContext(v);
+			local ct = Locale.Lookup(GameEffects.GetObjectType(context) or "");
+			local cname = Locale.Lookup(GameEffects.GetObjectName(context) or "");
+			
+			local item = {
+				v,
+				def and def.Id or "N/A",
+				state,
+				string.format("%i:%s:%s",subject, st, sname),
+				string.format("%i:%s:%s",context, ct, cname)
+			};			
+			table.insert(items, table.concat(item, ";"));
+		end
+	end
+	   
+  return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

@@ -1,0 +1,418 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Diplomacy</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>GameCore_Tuner</string>
+    <string>TunerDiplomacyPanel</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>TunerDiplomacyPanel</string>
+  </LoadStates>
+  <Actions>
+    <ActionData>
+      <Name>Raise Score</Name>
+      <Action>	local player = Players[g_SelectedPlayer];
+	local partner = Players[g_DiplomaticPlayer];
+	if ( player ~= nil and partner ~= nil ) then
+		local aiDiplomacy = player:GetAi_Diplomacy();
+		aiDiplomacy:AdjustBaseDiplomacy(g_DiplomaticPlayer, 5);
+	end</Action>
+      <Location>
+        <X>250</X>
+        <Y>321</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Lower Score</Name>
+      <Action>	local player = Players[g_SelectedPlayer];
+	local partner = Players[g_DiplomaticPlayer];
+	if ( player ~= nil and partner ~= nil ) then
+		local aiDiplomacy = player:GetAi_Diplomacy();
+		aiDiplomacy:AdjustBaseDiplomacy(g_DiplomaticPlayer, -5);
+	end
+</Action>
+      <Location>
+        <X>330</X>
+        <Y>321</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Give 100 Gold</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_DiplomaticPlayer ~= nil) then
+	local pDeal = DealManager.GetWorkingDeal(DealDirection.OUTGOING, g_SelectedPlayer, g_DiplomaticPlayer);
+	pDeal:ClearItems();
+	
+	local pDealItem = pDeal:AddItemOfType(DealItemTypes.GOLD);
+	if (pDealItem ~= nil) then
+		pDealItem:SetAmount(100);
+		pDealItem:SetDuration(0);	-- One time gift
+		
+		DealManager.SendWorkingDeal(DealProposalAction.PROPOSED, g_SelectedPlayer, g_DiplomaticPlayer);
+	end
+end</Action>
+      <Location>
+        <X>620</X>
+        <Y>521</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Give 10 Gold For 5 Turns</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_DiplomaticPlayer ~= nil) then
+	local pDeal = DealManager.GetWorkingDeal(DealDirection.OUTGOING, g_SelectedPlayer, g_DiplomaticPlayer);
+	pDeal:ClearItems();
+	
+	local pDealItem = pDeal:AddItemOfType(DealItemTypes.GOLD);
+	if (pDealItem ~= nil) then
+		pDealItem:SetAmount(10);
+		pDealItem:SetDuration(5);
+		
+		DealManager.SendWorkingDeal(DealProposalAction.PROPOSED, g_SelectedPlayer, g_DiplomaticPlayer);
+	end
+end</Action>
+      <Location>
+        <X>710</X>
+        <Y>521</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Send as Kudo</Name>
+      <Action>if g_SelectedPlayer ~= -1 and g_DiplomaticPlayer  ~= -1 then
+	local player = Players[g_SelectedPlayer];
+	if player ~= null and g_ModifierId ~= 0 then
+		local playerDiplomacy = player:GetDiplomacy();
+		local textString = GameEffects.GetModifierDefinition(g_ModifierId)["Id"];
+		if string.len(textString) &gt; 0 then
+			playerDiplomacy:SendKudoTo(g_DiplomaticPlayer, DB.MakeHash(textString));
+		end
+	end
+end</Action>
+      <Location>
+        <X>140</X>
+        <Y>533</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Send as Warning</Name>
+      <Action>if g_SelectedPlayer ~= -1 and g_DiplomaticPlayer  ~= -1 then
+	local player = Players[g_SelectedPlayer];
+	if player ~= null and g_ModifierId ~= 0 then
+		local playerDiplomacy = player:GetDiplomacy();
+		local textString = GameEffects.GetModifierDefinition(g_ModifierId)["Id"];
+		if string.len(textString) &gt; 0 then
+			playerDiplomacy:SendWarningTo(g_DiplomaticPlayer, DB.MakeHash(textString));
+		end
+	end
+end</Action>
+      <Location>
+        <X>140</X>
+        <Y>572</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Make Military Alliance</Name>
+      <Action>if g_SelectedPlayer ~= -1 and g_DiplomaticPlayer ~= g_SelectedPlayer then
+	DealManager.ClearWorkingDeal(DealDirection.OUTGOING, g_SelectedPlayer, g_DiplomaticPlayer);
+	local pDeal = DealManager.GetWorkingDeal(DealDirection.OUTGOING, g_SelectedPlayer, g_DiplomaticPlayer);
+	if pDeal then
+		pDealItem = pDeal:AddItemOfType(DealItemTypes.AGREEMENTS, g_SelectedPlayer);
+		if pDealItem then
+			pDealItem:SetSubType(DealAgreementTypes.ALLIANCE);
+			pDealItem:SetValueType(DB.MakeHash("ALLIANCE_MILITARY"));
+			pDealItem:SetLocked(true);
+		end
+		pDeal:Validate();
+		DealManager.EnactWorkingDeal(g_SelectedPlayer, g_DiplomaticPlayer);
+	end
+end</Action>
+      <Location>
+        <X>860</X>
+        <Y>521</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Set Declared Friendship</Name>
+      <Action>if g_SelectedPlayer ~= -1 and g_DiplomaticPlayer ~= gSelectedPlayer then
+	Players[g_SelectedPlayer]:GetDiplomacy():SetHasDeclaredFriendship(g_DiplomaticPlayer, true);
+	Players[g_DiplomaticPlayer]:GetDiplomacy():SetHasDeclaredFriendship(g_SelectedPlayer, true);
+end</Action>
+      <Location>
+        <X>990</X>
+        <Y>521</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Visibility</Name>
+      <GetFunction>function()
+	local pPlayer = Players[g_SelectedPlayer];
+	local pDiploPlayer = Players[g_DiplomaticPlayer];
+	if ( pPlayer ~= nil and pDiploPlayer ~= nil) then
+		local diplomacy = pPlayer:GetDiplomacy();
+		return diplomacy:GetVisibilityOn(g_DiplomaticPlayer);
+		end;	
+	return 0;
+end</GetFunction>
+      <SetFunction>function(value)
+	local pPlayer = Players[g_SelectedPlayer];
+	local pDiploPlayer = Players[g_DiplomaticPlayer];
+	if ( pPlayer ~= nil and pDiploPlayer ~= nil) then
+		local diplomacy = pPlayer:GetDiplomacy();
+		return diplomacy:SetVisibilityOn(g_DiplomaticPlayer, value);
+		end;	
+end</SetFunction>
+      <Location>
+        <X>640</X>
+        <Y>51</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls>
+    <BooleanControlData>
+      <Name>Force Trade</Name>
+      <GetFunction>function()
+	local pPlayer = Players[g_SelectedPlayer];
+	if ( pPlayer ~= nil) then
+		local diplomacy = pPlayer:GetAi_Diplomacy();
+		return diplomacy:GetTradeWithHuman();
+		end;	
+	return 0;
+end</GetFunction>
+      <SetFunction>function(value)
+	local pPlayer = Players[g_SelectedPlayer];
+	if ( pPlayer ~= nil ) then
+		local diplomacy = pPlayer:GetAi_Diplomacy();
+		return diplomacy:SetTradeWithHuman(value);
+		end;	
+end</SetFunction>
+      <Location>
+        <X>510</X>
+        <Y>321</Y>
+      </Location>
+    </BooleanControlData>
+  </BooleanControls>
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>48</Y>
+      </Location>
+      <Size>
+        <Width>205</Width>
+        <Height>416</Height>
+      </Size>
+      <Name>Player</Name>
+      <PopulateList>function()
+   local listItems = {};
+	local i = 0;
+	for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+			local pPlayer = Players[i];
+			local pPlayerConfig = PlayerConfigurations[i];
+		
+			if (pPlayer:IsAlive()) then
+				local str = tostring(i) .. ";";
+				str = str .. pPlayerConfig:GetNickName(i);
+				
+				listItems[i + 1] = str;
+			end
+	end
+
+  return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	  local selectedPlayerIDStr = string.match(selection, "%d+");
+	  g_SelectedPlayer = tonumber(selectedPlayerIDStr);
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>250</X>
+        <Y>49</Y>
+      </Location>
+      <Size>
+        <Width>365</Width>
+        <Height>256</Height>
+      </Size>
+      <Name>Diplomacy;State:200;Score:100;At War</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local player = Players[g_SelectedPlayer];
+	if ( player ~= nil ) then
+		local playerDiplomacy = player:GetDiplomacy();
+		local aiDiplomacy = player:GetAi_Diplomacy();
+		local ID = 0;
+	
+		local i = 0;
+		for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+			local otherPlayer = Players[i];
+			if ( playerDiplomacy:HasMet(i) ) then
+				local item = i .. ";" .. aiDiplomacy:GetDiplomaticState(i) .. ";" .. aiDiplomacy:GetDiplomaticScore(i) .. ";" .. tostring(playerDiplomacy:IsAtWarWith(i));
+		
+				listItems[ID] = item;
+				ID = ID + 1;
+			end
+		end
+	end
+	return listItems;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+	  local selectedPlayerIDStr = string.match(selection, "%d+");
+	  g_DiplomaticPlayer = tonumber(selectedPlayerIDStr);
+end
+
+</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>620</X>
+        <Y>107</Y>
+      </Location>
+      <Size>
+        <Width>400</Width>
+        <Height>194</Height>
+      </Size>
+      <Name>ToolTips</Name>
+      <PopulateList>function()
+ local listItems = {};
+	local pPlayer = Players[g_SelectedPlayer];
+	local pDiploPlayer = Players[g_DiplomaticPlayer];
+	if ( pPlayer ~= nil and pDiploPlayer ~= nil) then
+		local aiDiplomacy = pDiploPlayer:GetAi_Diplomacy();
+		local toolTips = aiDiplomacy:GetDiplomaticModifiers(g_SelectedPlayer);
+		for i, toolTip in ipairs(toolTips) do
+			local score = toolTip.Score;
+			local text = toolTip.Text;
+			if(score ~= 0) then
+				table.insert(listItems, tostring(score) .. " - " .. Locale.Lookup(text));
+			end
+		end
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>620</X>
+        <Y>318</Y>
+      </Location>
+      <Size>
+        <Width>832</Width>
+        <Height>168</Height>
+      </Size>
+      <Name>Type:180;For:180;Max Amount:80;Duration:80;Valid?:80;Reason</Name>
+      <PopulateList>function()
+ local listItems = {};
+	if (g_SelectedPlayer ~= nil and g_DiplomaticPlayer ~= nil) then
+		local aPossibleItems = DealManager.GetPossibleDealItems(g_SelectedPlayer, g_DiplomaticPlayer, DealItemTypes.ALL);
+		if (aPossibleItems ~= nil) then
+			for _, possibleItem in ipairs(aPossibleItems) do
+				local forName = possibleItem.ForTypeName;
+				if (forName == nil) then
+						forName = "-";
+				end
+				local item = GameInfo.DealItems[possibleItem.Type].Name .. ";" .. forName .. ";" .. tostring(possibleItem.MaxAmount) .. ";" .. tostring(possibleItem.Duration) .. ";" .. tostring(possibleItem.IsValid);
+				if (possibleItem.ValidationReason ~= nil) then
+					item = item .. ";" .. possibleItem.ValidationReason;
+				end
+				table.insert(listItems, item);
+			end
+		end
+	end
+	return listItems;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>620</X>
+        <Y>552</Y>
+      </Location>
+      <Size>
+        <Width>575</Width>
+        <Height>170</Height>
+      </Size>
+      <Name>Type:80;From:80;To:80;Duration:80;Amount:80; Turns Remaining</Name>
+      <PopulateList>function()
+	local listItems = {};
+	if (g_SelectedPlayer ~= nil and g_DiplomaticPlayer ~= nil) then
+		local aDeals = DealManager.GetPlayerDeals(g_SelectedPlayer, g_DiplomaticPlayer);
+		if (aDeals ~= nil) then
+			for _, pDeal in ipairs(aDeals) do
+				for pItem in pDeal:Items() do
+				local item = tostring(pItem:GetType()) .. ";" .. tostring(pItem:GetFromPlayerID()) .. ";" .. tostring(pItem:GetToPlayerID()) .. ";" .. tostring(pItem:GetDuration()) .. ";" .. tostring(pItem:GetAmount()) .. ";" .. tostring(pItem:GetEndTurn() - Game.GetCurrentGameTurn());
+				table.insert(listItems, item);
+				end
+			end
+		end
+	end				
+	return listItems;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>240</X>
+        <Y>354</Y>
+      </Location>
+      <Size>
+        <Width>374</Width>
+        <Height>368</Height>
+      </Size>
+      <Name>Inst:40;Modifier Id:280;Owner:120;# Subjects:40;Active:40;</Name>
+      <PopulateList>function()
+local modifiers = GameEffects.GetModifiers();
+local table_data = {};
+if modifiers == nil then
+		return table_data;
+end
+for i,v in ipairs(modifiers) do
+	local definition = GameEffects.GetModifierDefinition(v);
+	local owner = GameEffects.GetModifierOwner(v);
+	if GameEffects.GetObjectsPlayerId(owner) == g_SelectedPlayer and string.find(definition.Id, "AGENDA") then
+		local ownerName = Locale.Lookup(GameEffects.GetObjectName(owner));
+		local subjectCount = GameEffects.GetModifierSubjectCount(v);
+		local trackedCount = GameEffects.GetModifierTrackedObjectCount(v);
+		local data = tostring(v) .. ";" .. tostring(definition.Id) .. ";" .. tostring(ownerName) .. ";" .. 	tostring(subjectCount) .. "/" .. tostring(trackedCount) .. ";" .. tostring(GameEffects.GetModifierActive(v));		
+		table_data[i] = data;
+	end
+end
+return table_data;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.match(selection, "%d+");
+	g_ModifierId = tonumber(str1);
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Victories</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls>
+    <StringControlData>
+      <Name>Winning Team</Name>
+      <GetFunction>function()
+	if(Game.GetWinningTeam()) then
+		return GameConfiguration.GetTeamName(Game.GetWinningTeam());
+	else
+		return "Nobody";
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>44</Y>
+      </Location>
+    </StringControlData>
+  </StringControls>
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>340</X>
+        <Y>85</Y>
+      </Location>
+      <Size>
+        <Width>746</Width>
+        <Height>401</Height>
+      </Size>
+      <Name>Inst:40;Victory:140;Enabled:40;RequirementSet:240;IsMet:40;Progress:80;</Name>
+      <PopulateList>function()
+	local items = {};
+	if(g_TeamId) then
+		for row in GameInfo.Victories() do
+			local inst = Game.GetVictoryRequirements(g_TeamId, row.VictoryType);
+			local percent = Game.GetVictoryProgressForTeam(row.VictoryType, g_TeamId) or 0;
+			local progress = tostring(percent * 100) .. "%";
+			local def = GameEffects.GetRequirementSetDefinition(inst);
+			local state = GameEffects.GetRequirementSetState(inst);
+			local item 	= {
+				inst,
+				Locale.Lookup(row.Name),
+				tostring(Game.IsVictoryEnabled(row.VictoryType)),
+				def and def.Id or "N/A",
+				state or "N/A",
+				progress
+			};
+			table.insert(items, table.concat(item, ";"));
+			end
+		else
+			items = {";Select A Team"};
+		end
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.match(selection, "%d+");
+	g_RequirementSetId = tonumber(str1);
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>85</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>ID:40;Team:120;Members:70;Major:40;</Name>
+      <PopulateList>function()
+		local items = {};
+		for i, v in pairs(Teams) do
+			local major = true;
+			for _, playerId in ipairs(v) do
+				if(not Players[playerId]:IsMajor()) then
+					major = false;
+					break;
+				end
+			end
+		
+			local item = {
+				i,
+			GameConfiguration.GetTeamName(i),
+			#v,
+			tostring(major)
+			};
+		
+			table.insert(items, table.concat(item, ";"));
+		end
+
+		return items;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.gmatch(selection,"[^;]+")();
+	g_TeamId = tonumber(str1);
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>340</X>
+        <Y>492</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Inst:40;Requirements:180;IsMet:40;</Name>
+      <PopulateList>function()
+	local items = {};
+	if(g_RequirementSetId) then
+		local reqs = GameEffects.GetRequirementSetInnerRequirements(g_RequirementSetId);
+		for i,v in ipairs(reqs or {}) do
+			local def = GameEffects.GetRequirementDefinition(v);
+			local state = GameEffects.GetRequirementState(v);
+			local item = {
+				v,
+				def and def.Id or "N/A",
+				state or "N/A"
+			}
+			
+			table.insert(items, table.concat(item, ";"));
+		end
+	end
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>490</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>PlayerId:50;Name:100;Major:40;</Name>
+      <PopulateList>function()
+	local items = {};	
+	if(g_TeamId) then
+		for _,playerId in ipairs(Teams[g_TeamId] or {}) do
+			local player = Players[playerId];
+			local item = {
+				playerId,
+				Locale.Lookup(PlayerConfigurations[playerId]:GetPlayerName()),
+				tostring(player:IsMajor())
+			}
+			table.insert(items, table.concat(item, ";"));
+		end
+	end
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

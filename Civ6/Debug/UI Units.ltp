@@ -1,0 +1,1004 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>UI Units</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions>
+    <ActionData>
+      <Name>Play Idle</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "IDLE");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>710</X>
+        <Y>37</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Death</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "DEATH");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>710</X>
+        <Y>64</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Rebuild Formation</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetVisFormation(pUnit, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>840</X>
+        <Y>45</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Rotate Counter Clockwise</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			local iHexHeading = SimUnitSystem.GetVisHexHeading(pUnit);
+			SimUnitSystem.SetVisHexHeading(pUnit, iHexHeading + 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>840</X>
+        <Y>71</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Rotate Clockwise</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			local iHexHeading = SimUnitSystem.GetVisHexHeading(pUnit);
+			SimUnitSystem.SetVisHexHeading(pUnit, iHexHeading - 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>840</X>
+        <Y>98</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>-</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtVariation(pUnit, g_SelectedUnitMemberID, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>340</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtVariation(pUnit, g_SelectedUnitMemberID, 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>370</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>-</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachment(pUnit, g_SelectedUnitMemberID, 0, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>440</X>
+        <Y>321</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachment(pUnit, g_SelectedUnitMemberID, 0, 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>470</X>
+        <Y>321</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>-</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachment(pUnit, g_SelectedUnitMemberID, 1, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>640</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachment(pUnit, g_SelectedUnitMemberID, 1, 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>670</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>-</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachment(pUnit, g_SelectedUnitMemberID, 2, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>840</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachment(pUnit, g_SelectedUnitMemberID, 2, 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>870</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>-</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachment(pUnit, g_SelectedUnitMemberID, 3, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1040</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachment(pUnit, g_SelectedUnitMemberID, 3, 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1070</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Dodge</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "DODGE");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>710</X>
+        <Y>90</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Combat Idle</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "IDLE_COMBAT");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>710</X>
+        <Y>116</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play React</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "REACT");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>710</X>
+        <Y>143</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Strafe Fwd</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "FORWARD");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>710</X>
+        <Y>169</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Strafe Back</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "BACKWARD");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>710</X>
+        <Y>195</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Attack A</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "ATTACK");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1020</X>
+        <Y>43</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>-</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachmentTint(pUnit, g_SelectedUnitMemberID, 0, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>540</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachmentTint(pUnit, g_SelectedUnitMemberID, 0, 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>570</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>-</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachmentTint(pUnit, g_SelectedUnitMemberID, 1, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>740</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachmentTint(pUnit, g_SelectedUnitMemberID, 1, 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>770</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>-</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachmentTint(pUnit, g_SelectedUnitMemberID, 2, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>940</X>
+        <Y>323</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachmentTint(pUnit, g_SelectedUnitMemberID, 2, 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>970</X>
+        <Y>323</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>-</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachmentTint(pUnit, g_SelectedUnitMemberID, 3, -1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1160</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0 and g_SelectedUnitMemberID ~= nil and g_SelectedUnitMemberID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.ChangeVisMemberArtAttachmentTint(pUnit, g_SelectedUnitMemberID, 3, 1);
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1190</X>
+        <Y>322</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Hero</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "HERO");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1020</X>
+        <Y>199</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Attack_P</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "ATTACK_P");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1020</X>
+        <Y>148</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Attack_S</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "ATTACK_S");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1020</X>
+        <Y>174</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Defend</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "DEFEND");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>840</X>
+        <Y>222</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Run</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "RUN");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>840</X>
+        <Y>123</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Combat Run</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "RUN_COMBAT");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>840</X>
+        <Y>147</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Run Stop</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "RUN_STOP");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>900</X>
+        <Y>123</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Combat Run Stop</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "RUN_COMBAT_STOP");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>840</X>
+        <Y>172</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Spawn</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "SPAWN");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>840</X>
+        <Y>198</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Attack 1</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "ATTACK_1");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1020</X>
+        <Y>69</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Turn_L</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "TURN_L");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>920</X>
+        <Y>197</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Turn_R</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "TURN_R");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>920</X>
+        <Y>220</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Run_Start</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "RUN_START");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>710</X>
+        <Y>221</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Attack 2</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "ATTACK_2");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1020</X>
+        <Y>96</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Attack 3</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "ATTACK_3");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1020</X>
+        <Y>122</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Play Action 1</Name>
+      <Action>if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+	local pPlayer = Players[g_SelectedPlayer];
+	if pPlayer ~= nil then
+		local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+		if (pUnit ~= nil) then
+			SimUnitSystem.SetAnimationState(pUnit, "ACTION_1");
+		end
+	end
+end
+</Action>
+      <Location>
+        <X>1020</X>
+        <Y>225</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls />
+  <FloatControls>
+    <FloatControlData>
+      <Name>Map Zoom</Name>
+      <GetFunction>function()
+	return UI.GetMapZoom();
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>10</X>
+        <Y>626</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </FloatControlData>
+  </FloatControls>
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>10</X>
+        <Y>35</Y>
+      </Location>
+      <Size>
+        <Width>684</Width>
+        <Height>264</Height>
+      </Size>
+      <Name>ID:60;Type:220;X:40;Y:40;Damage:60;Owner</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local i = 0;
+	local z = 1;
+	for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+		local pPlayer = Players[i];
+		local pPlayerConfig = PlayerConfigurations[i];
+
+		if pPlayer:WasEverAlive()  then
+			local strPlayer = pPlayerConfig:GetCivilizationShortDescription();
+			if (#strPlayer == 0) then
+				strPlayer = "Player " .. tostring(i);
+			end
+			
+			local pUnits = pPlayer:GetUnits();
+			local pUnit;
+			for _, pUnit in pUnits:Members() do
+				local origOwner = pUnit:GetOriginalOwner();
+				local origOwnerStr = "none";
+				if origOwner ~= -1 then
+					origOwnerStr = PlayerConfigurations[origOwner]:GetCivilizationShortDescription();
+					if (#origOwnerStr == 0) then
+						origOwnerStr = "Player " .. tostring(origOwner);
+					end
+				end
+				local typeName = string.gsub(UnitManager.GetTypeName(pUnit), "UNIT_", "");
+				local str = pPlayer:GetID() .. "," .. pUnit:GetID() .. ";" .. typeName .. ";" .. pUnit:GetX() .. ";" .. pUnit:GetY() .. ";" .. pUnit:GetDamage() .. ";" .. strPlayer;
+				listItems[z] = str;
+				z = z + 1;			
+			end		
+		end
+	end
+
+  return listItems;
+end
+	</PopulateList>
+      <OnSelection>function(selection)
+	local selectionParts = {};
+	-- No split available?
+	local str1 = string.match(selection, "%d+");
+	local str2 = string.match(selection, "%d+", string.len(str1) + 1);
+	
+	g_SelectedPlayer = tonumber(str1);
+	g_SelectedUnitID = tonumber(str2);	
+		
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>1140</X>
+        <Y>40</Y>
+      </Location>
+      <Size>
+        <Width>416</Width>
+        <Height>257</Height>
+      </Size>
+      <Name>Selected Unit Vis State:200; Value</Name>
+      <PopulateList>function()
+	local listItems = {};
+	
+	if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+		local pPlayer = Players[g_SelectedPlayer];
+		if pPlayer ~= nil then
+			local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+			if (pUnit ~= nil) then
+				g_SelectedUnitVisState = SimUnitSystem.GetVisMemberState(pUnit, 0);
+	
+				if (g_SelectedUnitVisState ~= nil) then
+					listItems[1] = "Anim State;" .. tostring( g_SelectedUnitVisState.AnimState );
+					listItems[2] = "Damage State;" .. tostring( g_SelectedUnitVisState.DamageState );
+					listItems[3] = "Duration;" .. tostring( g_SelectedUnitVisState.Duration );
+					listItems[4] = "Elapsed;" .. tostring( g_SelectedUnitVisState.Elapsed );
+					listItems[5] = "IsComplete;" .. tostring( g_SelectedUnitVisState.IsComplete );
+					listItems[6] = "IsDead;" .. tostring( g_SelectedUnitVisState.IsDead );
+					listItems[7] = "Position;" .. tostring( g_SelectedUnitVisState.x ) .. ", " .. tostring( g_SelectedUnitVisState.y ) .. ", " .. tostring( g_SelectedUnitVisState.z );
+					listItems[8] = "Heading;" .. tostring( g_SelectedUnitVisState.Heading );
+				end
+			end
+		end
+	end
+	return listItems;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>10</X>
+        <Y>348</Y>
+      </Location>
+      <Size>
+        <Width>1391</Width>
+        <Height>253</Height>
+      </Size>
+      <Name>ID:30;Unit;Member;Culture;Variation;Attachment1;Tint1;Attachment2;Tint2;Attachment3;Tint3;Attachment4;Tint4;Attachment5;Tint5;Attachment6;Tint6</Name>
+      <PopulateList>function()
+	local listItems = {};
+	
+	if (g_SelectedPlayer ~= nil and g_SelectedPlayer &gt;= 0 and g_SelectedUnitID ~= nil and g_SelectedUnitID &gt;= 0) then
+		local pPlayer = Players[g_SelectedPlayer];
+		if pPlayer ~= nil then
+			local pUnit = pPlayer:GetUnits():FindID(g_SelectedUnitID);
+			if (pUnit ~= nil) then
+				local iMemberCount = SimUnitSystem.GetVisMemberCount(pUnit);
+				for i = 0, iMemberCount - 1, 1 do
+					local unitVisArtState = SimUnitSystem.GetVisMemberArtState(pUnit, i);
+	
+					if (unitVisArtState ~= nil) then
+						 local str = tostring(i) .. ";" .. unitVisArtState.UnitType .. ";" .. unitVisArtState.Type .. ";" .. unitVisArtState.Culture .. ";" .. unitVisArtState.Variation;
+						 for _,v in ipairs(unitVisArtState.Attachments) do 
+							str = str .. ";" .. v.Name .. ";" .. v.TintColor;
+						end
+						 listItems[i + 1] = str;
+					end
+				end
+			end
+		end
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.match(selection, "%d+");
+	
+	g_SelectedUnitMemberID = tonumber(str1);
+		
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists>
+    <MultiselectListData>
+      <Location>
+        <X>210</X>
+        <Y>622</Y>
+      </Location>
+      <Size>
+        <Width>168</Width>
+        <Height>93</Height>
+      </Size>
+      <Name>Unit Cycle Proximity Type</Name>
+      <PopulateList>function()
+	local listItems = {};
+
+	local value = Options.GetUserOption("Gameplay", "UnitCycleProximityType");
+	
+	local item = {};
+	item["Text"] = "End";
+	if(value == 0) then
+		item["Selected"] = true;
+	else
+		item["Selected"] = false;
+	end
+	listItems[1] = item;
+
+	item = {};
+	item["Text"] = "Best of Last Two";
+	if(value == 1) then
+		item["Selected"] = true;
+	else
+		item["Selected"] = false;
+	end
+	listItems[2] = item;
+
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)
+	if (selection == "End") then
+		Options.SetUserOption("Gameplay", "UnitCycleProximityType", 0);
+	else
+		if (selection == "Best of Last Two") then
+			Options.SetUserOption("Gameplay", "UnitCycleProximityType", 1);
+		end
+	end
+	local pSelected = UI.GetHeadSelectedUnit();
+	if pSelected ~= nil then
+		UI.RebuildSelectionList(pSelected);
+	end
+
+end</OnSelected>
+      <OnDeselected>function(selection)
+
+end
+</OnDeselected>
+    </MultiselectListData>
+  </MultiselectLists>
+</PanelData>

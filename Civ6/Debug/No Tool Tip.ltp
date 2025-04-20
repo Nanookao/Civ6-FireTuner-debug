@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>No Tool Tip</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>PlotToolTip</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions>
+    <ActionData>
+      <Name>Disable Tooltip</Name>
+      <Action>OnShowLeaderScreen();</Action>
+      <Location>
+        <X>10</X>
+        <Y>36</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle CultureBorder</Name>
+      <Action>AutoProfiler.RunCommand( "toggle overlay CultureBorders" );</Action>
+      <Location>
+        <X>350</X>
+        <Y>35</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Terrain</Name>
+      <Action>AutoProfiler.RunCommand( "commandset discard Terrain Cell Render" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>85</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Clutter</Name>
+      <Action>AutoProfiler.RunCommand( "toggle clutter" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>108</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Remove Golden Age Color</Name>
+      <Action>AutoProfiler.RunCommand( "colorkey Noon" );</Action>
+      <Location>
+        <X>350</X>
+        <Y>92</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle UI</Name>
+      <Action>AutoProfiler.RunCommand( "toggle ui" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>61</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Marketing Mode</Name>
+      <Action>AutoProfiler.RunCommand( "marketing mode" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>131</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle National Park Border</Name>
+      <Action>AutoProfiler.RunCommand( "toggle overlay NationalParks" );</Action>
+      <Location>
+        <X>350</X>
+        <Y>64</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>SingleHexGlamCam</Name>
+      <Action>AutoProfiler.RunCommand( "camera play NWON_SingleHex_Camera_Anim" );</Action>
+      <Location>
+        <X>160</X>
+        <Y>36</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>TruckInGlamCam</Name>
+      <Action>AutoProfiler.RunCommand( "camera play NWON_TruckInClose_Camera_Anim" );</Action>
+      <Location>
+        <X>160</X>
+        <Y>65</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>TruckOutGlamCam</Name>
+      <Action>AutoProfiler.RunCommand( "camera play NWON_TruckInFar_Camera_Anim" );</Action>
+      <Location>
+        <X>160</X>
+        <Y>94</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>MultiHexGlamCam</Name>
+      <Action>AutoProfiler.RunCommand( "camera play NWON_MultiHex_Camera_Anim" );</Action>
+      <Location>
+        <X>160</X>
+        <Y>120</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Free Camera</Name>
+      <Action>AutoProfiler.RunCommand( "camera free" );</Action>
+      <Location>
+        <X>550</X>
+        <Y>35</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Normal Speed</Name>
+      <Action>AutoProfiler.RunCommand( "timescale 1" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>235</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Double Speed</Name>
+      <Action>AutoProfiler.RunCommand( "timescale 2" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>262</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Half Speed</Name>
+      <Action>AutoProfiler.RunCommand( "timescale .5" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>210</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>One Tenth Speed</Name>
+      <Action>AutoProfiler.RunCommand( "timescale .1" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>184</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Ludicrious Speed</Name>
+      <Action>AutoProfiler.RunCommand( "timescale 20" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>289</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Matt's 4K Screenshot Button</Name>
+      <Action>AutoProfiler.RunCommand( "ss settings 3840 2160 -1 -1" );
+AutoProfiler.RunCommand( "screenshot noui" );</Action>
+      <Location>
+        <X>650</X>
+        <Y>37</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists />
+  <MultiselectLists />
+</PanelData>

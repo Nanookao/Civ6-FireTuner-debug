@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Notifications</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>GameCore_Tuner</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>30</X>
+        <Y>56</Y>
+      </Location>
+      <Size>
+        <Width>202</Width>
+        <Height>462</Height>
+      </Size>
+      <Name>PlayerID:60;Player Name:60</Name>
+      <PopulateList>function()
+
+	if (g_TunerSelectedPlayer == nil) then
+		g_TunerSelectedPlayer = 0;
+	end
+		
+	local listItems = {};
+	local i = 1;
+	local aPlayers = PlayerManager.GetAlive();
+	for _, pPlayer in ipairs(aPlayers) do
+		
+			local pPlayerConfig = PlayerConfigurations[pPlayer:GetID()];
+			local str = tostring(pPlayer:GetID()) .. ";";
+			str = str .. pPlayerConfig:GetNickName();
+				
+			listItems[i] = str;
+		 i = i + 1;
+	end
+	
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+   local selectedPlayerIDStr = string.match(selection, "%d+");
+	  g_TunerSelectedPlayer = tonumber(selectedPlayerIDStr);
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>260</X>
+        <Y>58</Y>
+      </Location>
+      <Size>
+        <Width>1120</Width>
+        <Height>458</Height>
+      </Size>
+      <Name>ID:30;Type:240;Added Turn:80;Other Player:100;Dismissed?:80;Expired?:80;Message</Name>
+      <PopulateList>function()
+	local listItems = {};
+   
+	local player = Players[g_TunerSelectedPlayer];
+	if (player ~= nil) then
+		local i = 1;
+		local notificationIDs = NotificationManager.GetList(g_TunerSelectedPlayer);
+		if (notificationIDs ~= nil) then
+			for _, id in ipairs(notificationIDs) do
+				local str = tostring(i) .. ";";
+				local pNotification = NotificationManager.Find(g_TunerSelectedPlayer, id);
+				if (pNotification ~= nil) then
+					str = str .. pNotification:GetTypeName();
+					str = str .. ";" .. tostring(pNotification:GetAddedTurn());
+					
+					local otherPlayer, otherID, otherType = pNotification:GetTarget();
+					if (otherPlayer ~= nil) then
+						str = str .. ";" .. tostring(otherPlayer);
+					else
+						str = str .. ";none";
+					end
+					
+					if pNotification:IsDismissed()  then
+						  str = str .. ";true";				
+					else
+						  str = str .. ";false";
+					end
+
+					if pNotification:IsExpired()  then
+						  str = str .. ";true";				
+					else
+						  str = str .. ";false";
+					end
+
+					str = str .. ";" .. tostring(pNotification:GetMessage());					
+				end
+				listItems[i] = str;
+				i = i + 1;
+
+			end
+		end
+   end
+
+  return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

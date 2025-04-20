@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Rivers</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>GameCore_Tuner</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>UI:TunerUIRiverPanel</string>
+  </LoadStates>
+  <Actions />
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls>
+    <BooleanControlData>
+      <Name>Highlight</Name>
+      <GetFunction>function()
+	if g_HighlightSelectedRiver ~= nil then
+		return g_HighlightSelectedRiver;
+	else
+		return 0;
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+	if g_HighlightSelectedRiver ~= value then
+		g_HighlightSelectedRiver = value;
+		ReportingEvents.SendLuaEvent("WorldBuilderRiverHighlight", {Highlight = value, RiverIndex = g_SelectedRiverIndex }); 
+	end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>464</Y>
+      </Location>
+    </BooleanControlData>
+  </BooleanControls>
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>51</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Index/ID:60;Name</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	if RiverManager ~= nil then
+		for z = 0, RiverManager.GetNumRivers() - 1, 1 do
+			local kRiver = RiverManager.GetRiverByIndex(z);
+			local str = tostring(z) .. " / " .. tostring(kRiver.ID);
+			local namedRiver = GameInfo.NamedRivers[kRiver.TypeID];
+			if namedRiver ~= nil then
+				 str  = str .. ";" .. string.gsub( namedRiver.NamedRiverType, "NAMED_RIVER_", "" );
+			end
+			
+			listItems [z + 1] = str;
+		end
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+   local selectedIDStr = string.match(selection, "%d+");
+   g_SelectedRiverIndex = tonumber(selectedIDStr);
+		if g_HighlightSelectedRiver ~= nil then
+			ReportingEvents.SendLuaEvent("WorldBuilderRiverHighlight", { Highlight = g_HighlightSelectedRiver, RiverIndex = g_SelectedRiverIndex }); 
+		end	
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>350</X>
+        <Y>52</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Edges</Name>
+      <PopulateList>function()
+	local listItems = {};
+	if RiverManager ~= nil then
+		if g_SelectedRiverIndex ~= nil then
+			local kRiver = RiverManager.GetRiverByIndex(g_SelectedRiverIndex, "edges");
+			if kRiver ~= nil and kRiver.Edges ~= nil then
+			
+				for i, child in ipairs(kRiver.Edges) do
+					local x1, y1 = Map.GetPlotLocation(child[1]);
+					local x2, y2 = Map.GetPlotLocation(child[2]);
+					local str = tostring(x1) .. "," .. tostring(y1) .. " -&gt; " .. tostring(x2) .. "," .. tostring(y2);
+					table.insert( listItems, str );
+				end
+			end
+		end
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>660</X>
+        <Y>51</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Floodplain</Name>
+      <PopulateList>function()
+	local listItems = {};
+	if RiverManager ~= nil then
+		if g_SelectedRiverIndex ~= nil then
+			local kRiver = RiverManager.GetRiverByIndex(g_SelectedRiverIndex, "floodplain");
+			if kRiver ~= nil and kRiver.Floodplain ~= nil then
+			
+				for i, plotIndex in ipairs(kRiver.Floodplain) do
+					local x1, y1 = Map.GetPlotLocation(plotIndex);
+					local str = tostring(x1) .. "," .. tostring(y1) 					
+					table.insert( listItems, str );
+				end
+			end
+		end
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>970</X>
+        <Y>51</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Plots</Name>
+      <PopulateList>function()
+	local listItems = {};
+	if RiverManager ~= nil then
+		if g_SelectedRiverIndex ~= nil then
+			local kRiver = RiverManager.GetRiverByIndex(g_SelectedRiverIndex, "plots");
+			if kRiver ~= nil and kRiver.Plots ~= nil then
+			
+				for i, plotIndex in ipairs(kRiver.Plots) do
+					local x1, y1 = Map.GetPlotLocation(plotIndex);
+					local str = tostring(x1) .. "," .. tostring(y1) .. " (" .. tostring(plotIndex) .. ")";
+					table.insert( listItems, str );
+				end
+			end
+		end
+	end
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

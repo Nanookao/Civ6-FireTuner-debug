@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Audio</Name>
+  <App />
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions>
+    <ActionData>
+      <Name>Reload Banks</Name>
+      <Action>UI.HotReloadSounds();</Action>
+      <Location>
+        <X>10</X>
+        <Y>35</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Next Song</Name>
+      <Action>UI.SkipSong();</Action>
+      <Location>
+        <X>10</X>
+        <Y>65</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Ambience clip distance</Name>
+      <GetFunction>function()
+	return UI.GetAmbienceClipDistance();
+end</GetFunction>
+      <SetFunction>function(value)
+	UI.SetAmbienceClipDistance(value);
+end</SetFunction>
+      <Location>
+        <X>180</X>
+        <Y>38</Y>
+      </Location>
+      <DefaultValue>1000</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists />
+  <MultiselectLists />
+</PanelData>

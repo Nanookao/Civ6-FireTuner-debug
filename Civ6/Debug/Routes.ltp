@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Routes</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>44</Y>
+      </Location>
+      <Size>
+        <Width>565</Width>
+        <Height>277</Height>
+      </Size>
+      <Name>Portal;Entrance;Exits</Name>
+      <PopulateList>function()
+	local listItems = {};
+	if MapRoutes ~= nil then
+		local portalCount = MapRoutes.GetPortalCount();
+		local z;
+		for z = 1, portalCount do
+		
+			local pPortal = MapRoutes.GetIndexedPortal(z - 1);
+			local sExitStr = "";
+			local i;
+			local exitCount = pPortal:GetExitCount();
+			for i = 1, exitCount do
+				if i ~= 1 then
+					sExitStr = sExitStr .. ", ";
+				end
+				sExitStr = sExitStr .. tostring( pPortal:GetExitPlotIndex(i - 1) );
+			end
+						
+			local str = tostring( z - 1 ) .. ";" .. tostring( pPortal:GetEntrancePlotIndex() ) .. ";" .. sExitStr;
+			listItems[z] = str;
+		end
+	end
+  return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

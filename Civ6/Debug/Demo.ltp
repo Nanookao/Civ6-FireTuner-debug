@@ -1,0 +1,538 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Demo</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>TunerDemoPanel</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>UI:TunerDemoPanel</string>
+  </LoadStates>
+  <Actions>
+    <ActionData>
+      <Name>Zoom In</Name>
+      <Action>local zoomTo = UI.GetMapZoom() - g_MapZoomAdjustAmount;
+if (zoomTo &lt; 0) then
+	zoomTo = 0;
+end
+
+UI.SetMapZoom( zoomTo );</Action>
+      <Location>
+        <X>1200</X>
+        <Y>141</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Zoom Out</Name>
+      <Action>local zoomTo = UI.GetMapZoom() + g_MapZoomAdjustAmount;
+if (zoomTo &gt; 1) then
+	zoomTo = 1;
+end
+
+UI.SetMapZoom( zoomTo );
+</Action>
+      <Location>
+        <X>1200</X>
+        <Y>171</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls />
+  <FloatControls>
+    <FloatControlData>
+      <Name>Look At Time Scale</Name>
+      <GetFunction>function()
+	return 	UI.GetLookAtTimeScale();
+end</GetFunction>
+      <SetFunction>function(value)
+	UI.SetLookAtTimeScale(value);
+end</SetFunction>
+      <Location>
+        <X>1200</X>
+        <Y>63</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </FloatControlData>
+    <FloatControlData>
+      <Name>Zoom Amount</Name>
+      <GetFunction>function()
+	return g_MapZoomAdjustAmount;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_MapZoomAdjustAmount = value
+end</SetFunction>
+      <Location>
+        <X>1200</X>
+        <Y>100</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </FloatControlData>
+    <FloatControlData>
+      <Name>Time Of Day Speed</Name>
+      <GetFunction>function()
+	return UI.GetAmbientTimeOfDaySpeed();
+end</GetFunction>
+      <SetFunction>function(value)
+	UI.SetAmbientTimeOfDaySpeed(value);
+end</SetFunction>
+      <Location>
+        <X>1200</X>
+        <Y>248</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </FloatControlData>
+    <FloatControlData>
+      <Name>Time Of Day</Name>
+      <GetFunction>function()
+	return UI.GetAmbientTimeOfDay();
+end</GetFunction>
+      <SetFunction>function(value)
+ UI.SetAmbientTimeOfDay(value);
+end</SetFunction>
+      <Location>
+        <X>1200</X>
+        <Y>283</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </FloatControlData>
+    <FloatControlData>
+      <Name>LookAtPlayerTurnCombatZoomLevel</Name>
+      <GetFunction>function()
+	return Options.GetUserOption("Gameplay", "LookAtPlayerTurnCombatZoomLevel");
+end</GetFunction>
+      <SetFunction>function(value)
+	Options.SetUserOption("Gameplay", "LookAtPlayerTurnCombatZoomLevel", value);
+end</SetFunction>
+      <Location>
+        <X>760</X>
+        <Y>548</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </FloatControlData>
+    <FloatControlData>
+      <Name>LookAtPlayerOffTurnCombatZoomLevel</Name>
+      <GetFunction>function()
+	return Options.GetUserOption("Gameplay", "LookAtPlayerOffTurnCombatZoomLevel");
+end</GetFunction>
+      <SetFunction>function(value)
+	Options.SetUserOption("Gameplay", "LookAtPlayerOffTurnCombatZoomLevel", value);
+end</SetFunction>
+      <Location>
+        <X>760</X>
+        <Y>636</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </FloatControlData>
+  </FloatControls>
+  <BooleanControls>
+    <BooleanControlData>
+      <Name>Auto Look At City</Name>
+      <GetFunction>function()
+	return g_SelectedCity.Active;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_SelectedCity.Active = value;
+	g_SelectedDistrict.Active = value;
+end</SetFunction>
+      <Location>
+        <X>40</X>
+        <Y>494</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Auto Look At Unit</Name>
+      <GetFunction>function()
+	return g_SelectedUnit.Active;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_SelectedUnit.Active = value;
+end</SetFunction>
+      <Location>
+        <X>590</X>
+        <Y>490</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Only Visible Cities</Name>
+      <GetFunction>function()
+	return g_SelectedCity.OnlyVisible;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_SelectedCity.OnlyVisible = value;
+end</SetFunction>
+      <Location>
+        <X>220</X>
+        <Y>493</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Only Visible Units</Name>
+      <GetFunction>function()
+	return g_SelectedUnit.OnlyVisible;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_SelectedUnit.OnlyVisible = value;
+end</SetFunction>
+      <Location>
+        <X>760</X>
+        <Y>491</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Auto Look At Map Pin</Name>
+      <GetFunction>function()
+	return g_SelectedMapPin.Active;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_SelectedMapPin.Active = value;
+end</SetFunction>
+      <Location>
+        <X>40</X>
+        <Y>785</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Time Of Day Animation</Name>
+      <GetFunction>function()
+	return UI.IsAmbientTimeOfDayAnimating();
+end</GetFunction>
+      <SetFunction>function(value)
+	UI.SetAmbientTimeOfDayAnimating(value);
+end</SetFunction>
+      <Location>
+        <X>1200</X>
+        <Y>213</Y>
+      </Location>
+    </BooleanControlData>
+  </BooleanControls>
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>40</X>
+        <Y>55</Y>
+      </Location>
+      <Size>
+        <Width>511</Width>
+        <Height>421</Height>
+      </Size>
+      <Name>ID:50;Name:180;X:40;Y:40;Owner:180</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local i = 0;
+	local z = 1;
+	local pLocalPlayerVis = PlayerVisibilityManager.GetPlayerVisibility(Game.GetLocalObserver());
+	
+		for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+		local pPlayer = Players[i];
+		local pPlayerConfig = PlayerConfigurations[i];
+
+		if pPlayer:WasEverAlive()  then
+			local strPlayer = pPlayerConfig:GetCivilizationShortDescription();
+			if (#strPlayer == 0) then
+				strPlayer = "Player " .. tostring(i);
+			end
+			
+			local pCities = pPlayer:GetCities();
+			local pCity;
+			for ii, pCity in pCities:Members() do
+				if pLocalPlayerVis == nil or not g_SelectedCity.OnlyVisible or pLocalPlayerVis:IsVisible(pCity:GetX(), pCity:GetY()) then
+					local str = pPlayer:GetID() .. "," .. pCity:GetID() .. ",C;" .. pCity:GetName() .. ";" .. pCity:GetX() .. ";" .. pCity:GetY() .. ";" .. strPlayer;
+					listItems[z] = str;
+					z = z + 1;	
+					local pDistricts = pCity:GetDistricts();
+					if (pDistricts ~= nil) then
+						for ij, pDistrict in pDistricts:Members() do
+							local szDistrictTypeName = GameInfo.Districts[pDistrict:GetType()].DistrictType;
+							if (szDistrictTypeName ~= "DISTRICT_CITY_CENTER") then
+								str = pPlayer:GetID() .. "," .. pDistrict:GetID() .. ",D;" .. szDistrictTypeName .. ";" .. pDistrict:GetX() .. ";" .. pDistrict:GetY();
+								listItems[z] = str;
+								z = z + 1;	
+							end
+						end
+					end
+				end
+			end		
+		end
+	end
+
+  return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local selectionParts = {};
+	-- No split available?
+	local str1 = string.match(selection, "%d+");
+	local nextToken = string.len(str1) + 1;
+	local str2 = string.match(selection, "%d+", nextToken);
+	 nextToken = string.len(str2) + 1;
+	local str3 = string.match(selection, "%u", nextToken);
+	
+	if (str3 == "C") then
+		g_SelectedCity.Player = tonumber(str1);
+		g_SelectedCity.CityID = tonumber(str2);	
+	
+		if (g_SelectedCity.Active) then
+			LookAtCity(g_SelectedCity.Player, g_SelectedCity.CityID);
+		end	
+	else
+		if (str3 == "D") then
+			g_SelectedDistrict.Player = tonumber(str1);
+			g_SelectedDistrict.DistrictID = tonumber(str2);	
+	
+			if (g_SelectedDistrict.Active) then
+				LookAtDistrict(g_SelectedDistrict.Player, g_SelectedDistrict.DistrictID);
+			end	
+		end
+	end
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>590</X>
+        <Y>57</Y>
+      </Location>
+      <Size>
+        <Width>591</Width>
+        <Height>419</Height>
+      </Size>
+      <Name>ID:60;Type:220;X:40;Y:40;Owner:180</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local i = 0;
+	local z = 1;
+	local pLocalPlayerVis = PlayerVisibilityManager.GetPlayerVisibility(Game.GetLocalObserver());
+		
+	for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+		local pPlayer = Players[i];
+		local pPlayerConfig = PlayerConfigurations[i];
+
+		if pPlayer:WasEverAlive()  then
+			local strPlayer = pPlayerConfig:GetCivilizationShortDescription();
+			if (#strPlayer == 0) then
+				strPlayer = "Player " .. tostring(i);
+			end
+			
+			local pUnits = pPlayer:GetUnits();
+			local pUnit;
+			for _, pUnit in pUnits:Members() do
+				if pLocalPlayerVis == nil or not g_SelectedUnit.OnlyVisible or pLocalPlayerVis:IsVisible(pUnit:GetX(), pUnit:GetY()) then				
+					local typeName = string.gsub(UnitManager.GetTypeName(pUnit), "UNIT_", "");
+					local str = pPlayer:GetID() .. "," .. pUnit:GetID() .. ";" .. typeName .. ";" .. pUnit:GetX() .. ";" .. pUnit:GetY() .. ";" .. strPlayer;
+					listItems[z] = str;
+					z = z + 1;
+				end
+			end		
+		end
+	end
+
+  return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local selectionParts = {};
+	-- No split available?
+	local str1 = string.match(selection, "%d+");
+	local str2 = string.match(selection, "%d+", string.len(str1) + 1);
+	
+	g_SelectedUnit.Player = tonumber(str1);
+	g_SelectedUnit.UnitID = tonumber(str2);	
+	
+	if (g_SelectedUnit.Active) then
+		LookAtUnit(g_SelectedUnit.Player, g_SelectedUnit.UnitID);
+	end
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>40</X>
+        <Y>541</Y>
+      </Location>
+      <Size>
+        <Width>504</Width>
+        <Height>233</Height>
+      </Size>
+      <Name>ID:50;Name:180;X:40;Y:40;Player:200</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local i = 0;
+	local z = 1;
+	local pLocalPlayerVis = PlayerVisibilityManager.GetPlayerVisibility(Game.GetLocalObserver());
+	
+		for i = 0, GameDefines.MAX_PLAYERS-1, 1 do
+		local pPlayer = Players[i];
+		local pPlayerConfig = PlayerConfigurations[i];
+
+		if pPlayer:WasEverAlive()  then
+			local strPlayer = pPlayerConfig:GetCivilizationShortDescription();
+			if (#strPlayer == 0) then
+				strPlayer = "Player " .. tostring(i);
+			end
+			
+			local pPlayerPins = pPlayerConfig:GetMapPins();
+			for ii, mapPinCfg in pairs(pPlayerPins) do
+				
+				if (mapPinCfg ~= nil) then
+					local szName = mapPinCfg:GetName();
+					if (szName == nil) then
+							szName = "??";
+					end
+					local str = pPlayer:GetID() .. "," .. mapPinCfg:GetID() .. ";" .. szName .. ";" .. mapPinCfg:GetHexX() .. ";" .. mapPinCfg:GetHexY() .. ";" .. strPlayer;
+					listItems[z] = str;
+					z = z + 1;	
+				end
+			end
+		end
+	end
+
+  return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local selectionParts = {};
+	-- No split available?
+	local str1 = string.match(selection, "%d+");
+	local nextToken = string.len(str1) + 1;
+	local str2 = string.match(selection, "%d+", nextToken);
+	
+	g_SelectedMapPin.Player = tonumber(str1);
+	g_SelectedMapPin.MapPinID = tonumber(str2);	
+	
+	if (g_SelectedMapPin.Active) then
+		LookAtMapPin(g_SelectedMapPin.Player, g_SelectedMapPin.MapPinID);
+	end
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists>
+    <MultiselectListData>
+      <Location>
+        <X>590</X>
+        <Y>546</Y>
+      </Location>
+      <Size>
+        <Width>162</Width>
+        <Height>73</Height>
+      </Size>
+      <Name>LookAtPlayerTurnCombat</Name>
+      <PopulateList>function()
+	local listItems = {};
+
+	local value = Options.GetUserOption("Gameplay", "LookAtPlayerTurnCombat");
+	
+	local item = {};
+	item["Text"] = "Off";
+	if(value == 0) then
+		item["Selected"] = true;
+	else
+		item["Selected"] = false;
+	end
+	listItems[1] = item;
+
+	item = {};
+	item["Text"] = "Move";
+	if(value == 1) then
+		item["Selected"] = true;
+	else
+		item["Selected"] = false;
+	end
+	listItems[2] = item;
+
+	item = {};
+	item["Text"] = "Move and Zoom";
+	if(value == 2) then
+		item["Selected"] = true;
+	else
+		item["Selected"] = false;
+	end
+	listItems[3] = item;
+
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)
+	if (selection == "Off") then
+		Options.SetUserOption("Gameplay", "LookAtPlayerTurnCombat", 0);
+	else
+		if (selection == "Move") then
+			Options.SetUserOption("Gameplay", "LookAtPlayerTurnCombat", 1);
+		else
+			if (selection == "Move and Zoom") then
+				Options.SetUserOption("Gameplay", "LookAtPlayerTurnCombat", 2);
+			end
+		end
+	end
+end</OnSelected>
+      <OnDeselected>function(selection)
+
+end
+</OnDeselected>
+    </MultiselectListData>
+    <MultiselectListData>
+      <Location>
+        <X>590</X>
+        <Y>633</Y>
+      </Location>
+      <Size>
+        <Width>162</Width>
+        <Height>76</Height>
+      </Size>
+      <Name>LookAtPlayerOffTurnCombat</Name>
+      <PopulateList>function()
+	local listItems = {};
+
+	local value = Options.GetUserOption("Gameplay", "LookAtPlayerOffTurnCombat");
+	
+	local item = {};
+	item["Text"] = "Off";
+	if(value == 0) then
+		item["Selected"] = true;
+	else
+		item["Selected"] = false;
+	end
+	listItems[1] = item;
+
+	item = {};
+	item["Text"] = "Move";
+	if(value == 1) then
+		item["Selected"] = true;
+	else
+		item["Selected"] = false;
+	end
+	listItems[2] = item;
+
+	item = {};
+	item["Text"] = "Move and Zoom";
+	if(value == 2) then
+		item["Selected"] = true;
+	else
+		item["Selected"] = false;
+	end
+	listItems[3] = item;
+
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)
+	if (selection == "Off") then
+		Options.SetUserOption("Gameplay", "LookAtPlayerOffTurnCombat", 0);
+	else
+		if (selection == "Move") then
+			Options.SetUserOption("Gameplay", "LookAtPlayerOffTurnCombat", 1);
+		else
+			if (selection == "Move and Zoom") then
+				Options.SetUserOption("Gameplay", "LookAtPlayerOffTurnCombat", 2);
+			end
+		end
+	end
+end</OnSelected>
+      <OnDeselected>function(selection)
+
+end
+</OnDeselected>
+    </MultiselectListData>
+  </MultiselectLists>
+</PanelData>

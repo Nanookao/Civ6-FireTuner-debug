@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Leader</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>InGame</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>80</X>
+        <Y>90</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Leader state</Name>
+      <PopulateList>function()
+   local listItems = {
+		"NEUTRAL_IDLE",
+		"NEUTRAL_POSITIVE",
+	 "NEUTRAL_NEGATIVE",
+	 "HAPPY_IDLE",
+	 "HAPPY_POSITIVE",
+	 "HAPPY_NEGATIVE",
+	 "UNHAPPY_IDLE",
+	 "UNHAPPY_POSITIVE",
+	 "UNHAPPY_NEGATIVE",
+	 "FIRST_MEET",
+	 "DECLARE_WAR",
+	 "DECLARE_WAR_FROM_HUMAN",
+	 "DECLARE_WAR_FROM_AI",
+	 "KUDOS",
+	 "WARNING",
+	 "DEFEAT",
+	 "ENRAGED"	,
+	 "TO_NEUTRAL",
+	 "TO_UNHAPPY",
+	 "TO_HAPPY",
+	};
+	
+	  return listItems;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+	UI.PlayLeaderAnimation(selection);
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

@@ -1,0 +1,586 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Map</Name>
+  <App>Civ5</App>
+  <EnterAction>g_PanelHasFocus = true;
+if (g_PlacementSettings.Active) then
+		LuaEvents.TunerEnterDebugMode();
+end
+	</EnterAction>
+  <ExitAction>if (g_PanelHasFocus) then
+	g_PanelHasFocus = false;
+	if (g_PlacementSettings.Active) then
+			LuaEvents.TunerExitDebugMode();
+	end
+end
+</ExitAction>
+  <CompatibleStates>
+    <string>TunerMapPanel</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>TunerMapPanel</string>
+  </LoadStates>
+  <Actions>
+    <ActionData>
+      <Name>Reveal All</Name>
+      <Action>if (Game.GetLocalPlayer() ~= -1) then
+	local pVis = PlayersVisibility[Game.GetLocalPlayer()];
+	for iPlotIndex = 0, Map.GetPlotCount()-1, 1 do
+			pVis:ChangeVisibilityCount(iPlotIndex, 1);
+	end
+end</Action>
+      <Location>
+        <X>0</X>
+        <Y>30</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Explore All</Name>
+      <Action>if (Game.GetLocalPlayer() ~= -1) then
+	local pVis = PlayersVisibility[Game.GetLocalPlayer()];
+	for iPlotIndex = 0, Map.GetPlotCount()-1, 1 do
+			pVis:ChangeVisibilityCount(iPlotIndex, 0);
+	end
+end
+</Action>
+      <Location>
+        <X>0</X>
+        <Y>59</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Set Observer To Selected</Name>
+      <Action>if g_PlacementSettings.Player ~= -1 then
+	PlayerManager.SetLocalObserverTo(g_PlacementSettings.Player);
+end</Action>
+      <Location>
+        <X>520</X>
+        <Y>437</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Set Observer To OBSERVER</Name>
+      <Action>if (g_PlacementSettings.Player ~= -1) then
+		PlayerManager.SetLocalObserverTo(PlayerTypes.OBSERVER);
+end</Action>
+      <Location>
+        <X>510</X>
+        <Y>463</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Unreveal All</Name>
+      <Action>if (Game.GetLocalPlayer() ~= -1) then
+	local pVis = PlayersVisibility[Game.GetLocalPlayer()];
+	for iPlotIndex = 0, Map.GetPlotCount()-1, 1 do
+			pVis:ChangeVisibilityCount(iPlotIndex, -1);
+	end
+end</Action>
+      <Location>
+        <X>0</X>
+        <Y>86</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Remove All Resources</Name>
+      <Action>local maptype = Map.GetMapSize();
+local mapx = GameInfo.Maps[maptype].GridWidth;
+local mapy = GameInfo.Maps[maptype].GridHeight;
+for y = 0, mapy-1, 1 do
+	for x = 0, mapx-1, 1 do
+		local plot = Map.GetPlot(x, y);
+		if ( not plot:IsImpassable() ) then
+			ResourceBuilder.SetResourceType(plot, -1);
+		end
+	end
+end</Action>
+      <Location>
+        <X>0</X>
+        <Y>111</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Remove All Features</Name>
+      <Action>local maptype = Map.GetMapSize();
+local mapx = GameInfo.Maps[maptype].GridWidth;
+local mapy = GameInfo.Maps[maptype].GridHeight;
+for y = 0, mapy-1, 1 do
+	for x = 0, mapx-1, 1 do
+		local plot = Map.GetPlot(x, y);
+		if ( not plot:IsImpassable() ) then
+			TerrainBuilder.SetFeatureType(plot, -1);
+		end
+	end
+end</Action>
+      <Location>
+        <X>0</X>
+        <Y>137</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls>
+    <StringControlData>
+      <Name>Filter:166</Name>
+      <GetFunction>function()
+	return g_UnitPlacement.UnitFilter;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_UnitPlacement.UnitFilter = value;
+end</SetFunction>
+      <Location>
+        <X>680</X>
+        <Y>33</Y>
+      </Location>
+    </StringControlData>
+  </StringControls>
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Res. Amount</Name>
+      <GetFunction>function()
+	return g_ResourcePlacement.ResourceAmount;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_ResourcePlacement.ResourceAmount = value;
+end</SetFunction>
+      <Location>
+        <X>330</X>
+        <Y>58</Y>
+      </Location>
+      <DefaultValue>5</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls>
+    <BooleanControlData>
+      <Name>Placing Improvement</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_ImprovementPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_ImprovementPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_ImprovementPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>130</X>
+        <Y>29</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Placing Resource</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_ResourcePlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_ResourcePlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_ResourcePlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>330</X>
+        <Y>29</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Placing City</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_CityPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_CityPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_CityPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>520</X>
+        <Y>60</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Placing Unit</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_UnitPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_UnitPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_UnitPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>520</X>
+        <Y>29</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Pillaged</Name>
+      <GetFunction>function()
+	return g_ImprovementPlacement.Pillaged;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_ImprovementPlacement.Pillaged = value;
+end</SetFunction>
+      <Location>
+        <X>130</X>
+        <Y>59</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Place Unit Embarked</Name>
+      <GetFunction>function()
+	return g_UnitPlacement.Embarked;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_UnitPlacement.Embarked = value;
+end</SetFunction>
+      <Location>
+        <X>710</X>
+        <Y>486</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Placing Route</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_RoutePlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_RoutePlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_RoutePlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>910</X>
+        <Y>29</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Pillaged Routes</Name>
+      <GetFunction>function()
+	return g_RoutePlacement.Pillaged;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_RoutePlacement.Pillaged = value;
+end</SetFunction>
+      <Location>
+        <X>910</X>
+        <Y>58</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Placing Feature</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_FeaturePlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_FeaturePlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_FeaturePlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>1090</X>
+        <Y>31</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Placing Great Person</Name>
+      <GetFunction>function()
+	return g_PlacementSettings.Active and
+	       g_PlacementSettings.PlacementHandler == g_GreatPersonPlacement;
+end</GetFunction>
+      <SetFunction>function(value)
+	if value then
+		LuaEvents.TunerEnterDebugMode();
+		g_PlacementSettings.PlacementHandler = g_GreatPersonPlacement;
+	else
+		if (g_PlacementSettings.PlacementHandler == g_GreatPersonPlacement) then
+			g_PlacementSettings.Active = false;
+			LuaEvents.TunerExitDebugMode();
+		end
+	end
+end</SetFunction>
+      <Location>
+        <X>130</X>
+        <Y>482</Y>
+      </Location>
+    </BooleanControlData>
+  </BooleanControls>
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>130</X>
+        <Y>93</Y>
+      </Location>
+      <Size>
+        <Width>184</Width>
+        <Height>336</Height>
+      </Size>
+      <Name>Improvements</Name>
+      <PopulateList>function()
+	items = {};
+	for improvement in GameInfo.Improvements() do
+		local name = string.gsub( improvement.ImprovementType, "IMPROVEMENT_", "" );
+		table.insert( items, name );
+	end
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type name, change back to the full text key and look for it.
+	local improvementType = "IMPROVEMENT_" .. tostring(selection);
+		
+	local improvement = GameInfo.Improvements[improvementType];
+	if (improvement ~= nil) then
+		g_ImprovementPlacement.ImprovementType = improvement.Index;
+	end
+end</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>330</X>
+        <Y>93</Y>
+      </Location>
+      <Size>
+        <Width>176</Width>
+        <Height>338</Height>
+      </Size>
+      <Name>Resources</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for resource in GameInfo.Resources() do
+		listItems [i + 1] = string.gsub( resource.ResourceType, "RESOURCE_", "" );
+		i = i + 1;
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type  name, change back to the full text key and look for it.
+	local resourceType = "RESOURCE_" .. tostring(selection);
+		
+	local resource = GameInfo.Resources[resourceType];
+	if (resource ~= nil) then
+		g_ResourcePlacement.ResourceType = resource.Index;
+	end
+end</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>520</X>
+        <Y>92</Y>
+      </Location>
+      <Size>
+        <Width>144</Width>
+        <Height>336</Height>
+      </Size>
+      <Name>ID;Player</Name>
+      <PopulateList>function()
+	local items = {};
+	local aPlayers = PlayerManager.GetAlive();
+	for _, pPlayer in ipairs(aPlayers) do
+		local pPlayerConfig = PlayerConfigurations[pPlayer:GetID()];
+		local strPlrID = tostring(pPlayer:GetID())
+		local strPlrName = pPlayerConfig:GetNickName();
+		
+		if ( #strPlrName == 0 ) then
+			strPlrName = Locale.Lookup(pPlayerConfig:GetCivilizationShortDescription()):upper();
+			strPlrName = strPlrName:gsub("LOC_CIVILIZATION_", "");
+		end
+		
+		table.insert( items, pPlayer:GetID() .. ";" .. strPlrName );
+	end
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+   local selectedPlayerIDStr = string.match(selection, "%d+");
+	  g_PlacementSettings.Player = tonumber(selectedPlayerIDStr);
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>680</X>
+        <Y>68</Y>
+      </Location>
+      <Size>
+        <Width>214</Width>
+        <Height>410</Height>
+      </Size>
+      <Name>Units</Name>
+      <PopulateList>function()
+	items = {};
+	
+	local strFilter = "";
+	if ( g_UnitPlacement.UnitFilter ~= nil ) then
+		strFilter = string.lower(g_UnitPlacement.UnitFilter);
+	end
+		
+	for unit in GameInfo.Units() do
+		local name = string.gsub( unit.UnitType, "UNIT_", "" );
+		if ( strFilter == nil or string.find( string.lower(name), strFilter ) ~= nil ) then
+			table.insert( items, name );
+		end
+	end
+		
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type name, change back to the full text key and look for it.
+	local unitType = "UNIT_" .. tostring(selection);
+		
+	local unit = GameInfo.Units[unitType];
+	if (unit ~= nil) then
+			g_UnitPlacement.UnitType = unit.Index;
+	end
+end</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>910</X>
+        <Y>89</Y>
+      </Location>
+      <Size>
+        <Width>171</Width>
+        <Height>197</Height>
+      </Size>
+      <Name>Route</Name>
+      <PopulateList>function()
+ listItems = {};
+ local i = 0;
+ for route in GameInfo.Routes() do
+  listItems [i + 1] = string.gsub( route.RouteType, "ROUTE_", "" );
+  i = i + 1;
+ end
+ return listItems;
+end
+      </PopulateList>
+      <OnSelection>function(selection)
+ -- Searching by the type name, change back to the full text key and look for it.
+ local routeType = "ROUTE_" .. tostring(selection);
+ local route = GameInfo.Routes[routeType];
+ if (route ~= nil) then
+  g_RoutePlacement.Type = route.Index;
+ end
+end
+      </OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>1090</X>
+        <Y>90</Y>
+      </Location>
+      <Size>
+        <Width>205</Width>
+        <Height>346</Height>
+      </Size>
+      <Name>Features</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for feature in GameInfo.Features() do
+		listItems [i + 1] = string.gsub( feature.FeatureType, "FEATURE_", "" );
+		i = i + 1;
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	-- Searching by the type name, change back to the full text key and look for it.
+	local featureType = "FEATURE_" .. tostring(selection);
+		
+	local feature = GameInfo.Features[featureType];
+	if (feature ~= nil) then
+		g_FeaturePlacement.FeatureType = feature.Index;
+	end
+end</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>130</X>
+        <Y>514</Y>
+      </Location>
+      <Size>
+        <Width>300</Width>
+        <Height>400</Height>
+      </Size>
+      <Name>Great Person:200;Type</Name>
+      <PopulateList>function()
+	listItems = {};
+	
+	local i = 0;		
+
+	for unit in GameInfo.GreatPersonIndividuals() do
+		
+		local str = string.gsub( unit.GreatPersonIndividualType, "GREAT_PERSON_INDIVIDUAL_", "" );
+		str = str .. ";" .. string.gsub( unit.GreatPersonClassType, "GREAT_PERSON_CLASS_", "" )		
+		listItems [i + 1] = str;
+		i = i + 1;
+	end
+		
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local unitType = "GREAT_PERSON_INDIVIDUAL_" .. tostring(selection);
+		
+	local unit = GameInfo.GreatPersonIndividuals[unitType];
+	if (unit ~= nil) then
+		g_GreatPersonPlacement.UnitType = unit.Index;
+	end
+end</OnSelection>
+      <Sorted>true</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

@@ -1,0 +1,374 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Modifiers</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>GameCore_Tuner</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions />
+  <StringControls>
+    <StringControlData>
+      <Name>Owner</Name>
+      <GetFunction>function()
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		local owner = GameEffects.GetModifierOwner(g_ModifierId);
+		if(owner ~= nil) then
+			return GameEffects.GetObjectString(owner);
+		end
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>620</X>
+        <Y>80</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Owner Requirements</Name>
+      <GetFunction>function()
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		local definition = GameEffects.GetModifierDefinition(g_ModifierId);
+		if(definition ~= nil) then
+			return definition.OwnerRequirementSetId or "No Requirements";
+		end
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>620</X>
+        <Y>175</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Subject Requirements</Name>
+      <GetFunction>function()
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		local definition = GameEffects.GetModifierDefinition(g_ModifierId);
+		if(definition ~= nil) then
+			return definition.SubjectRequirementSetId or "No Requirements";
+		end
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>620</X>
+        <Y>206</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Type</Name>
+      <GetFunction>function()
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		local definition = GameEffects.GetModifierDefinition(g_ModifierId);
+		if(definition ~= nil) then
+			local typeInfo = GameInfo.Types[definition.Type];
+			return typeInfo and typeInfo.Type or definition.Type;
+		end
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>720</X>
+        <Y>48</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>RunOnce</Name>
+      <GetFunction>function()
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		local definition = GameEffects.GetModifierDefinition(g_ModifierId);
+		if(definition ~= nil) then
+			return definition.IsRunOnce;
+		end
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>620</X>
+        <Y>143</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Permanent</Name>
+      <GetFunction>function()
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		local definition = GameEffects.GetModifierDefinition(g_ModifierId);
+		if(definition ~= nil) then
+			return definition.IsPermanent;
+		end
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>730</X>
+        <Y>143</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Owner Name</Name>
+      <GetFunction>function()
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		local owner = GameEffects.GetModifierOwner(g_ModifierId);
+		if(owner ~= nil) then
+			return Locale.Lookup(GameEffects.GetObjectName(owner));
+		end
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>620</X>
+        <Y>111</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Active</Name>
+      <GetFunction>function()
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		return tostring(GameEffects.GetModifierActive(g_ModifierId));
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>840</X>
+        <Y>143</Y>
+      </Location>
+    </StringControlData>
+  </StringControls>
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>ModifierCount</Name>
+      <GetFunction>function()
+	if(GameEffects ~= nil) then
+		return GameEffects.GetModifierCount();
+	end	
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>47</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>InstanceId</Name>
+      <GetFunction>function()
+	return g_ModifierId;
+end</GetFunction>
+      <SetFunction>function(value)
+	g_ModifierId = value;
+end</SetFunction>
+      <Location>
+        <X>620</X>
+        <Y>47</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Per Page</Name>
+      <GetFunction>function()
+	return g_ModifiersPerPage or 500;
+end</GetFunction>
+      <SetFunction>function(value)
+  g_ModifiersPerPage = value;
+end</SetFunction>
+      <Location>
+        <X>170</X>
+        <Y>78</Y>
+      </Location>
+      <DefaultValue>500</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Page</Name>
+      <GetFunction>function()
+	return g_ModifierPage or 0;
+end</GetFunction>
+      <SetFunction>function(value)
+  g_ModifierPage = value;
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>78</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>20</X>
+        <Y>113</Y>
+      </Location>
+      <Size>
+        <Width>583</Width>
+        <Height>752</Height>
+      </Size>
+      <Name>Inst:40;Modifier Id:280;Owner:120;# Subjects:40;Active:40;</Name>
+      <PopulateList>function()
+local modifiers = GameEffects.GetModifiers();
+local table_data = {};
+	
+local offBegin = (g_ModifiersPerPage or 500) * (g_ModifierPage or 0);
+local offEnd = offBegin + (g_ModifiersPerPage or 500);
+
+for i = offBegin + 1, offEnd + 1, 1 do
+	local v = modifiers[i];
+	if(v == nil) then break; end
+	local definition = GameEffects.GetModifierDefinition(v);
+	local owner = GameEffects.GetModifierOwner(v);
+	local ownerName = Locale.Lookup(GameEffects.GetObjectName(owner) or "Unknown");
+	local subjectCount = GameEffects.GetModifierSubjectCount(v);
+	local trackedCount = GameEffects.GetModifierTrackedObjectCount(v);
+	local data = tostring(v) .. ";" .. tostring(definition.Id) .. ";" .. tostring(ownerName) .. ";" .. 	tostring(subjectCount) .. "/" .. tostring(trackedCount) .. ";" .. tostring(GameEffects.GetModifierActive(v));		
+	table_data[i] = data;
+end
+return table_data;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.match(selection, "%d+");
+	g_ModifierId = tonumber(str1);
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>620</X>
+        <Y>239</Y>
+      </Location>
+      <Size>
+        <Width>436</Width>
+        <Height>590</Height>
+      </Size>
+      <Name>Inst:60;Name;Type;Debug;Met</Name>
+      <PopulateList>function()
+	local listItems = {};
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		local subjects = GameEffects.GetModifierSubjects(g_ModifierId) or {};
+		local objects = GameEffects.GetModifierTrackedObjects(g_ModifierId) or {};
+		
+		local sortedItems = {};
+		for i,v in ipairs(subjects) do
+			local name = Locale.Lookup(GameEffects.GetObjectName(v) or "");
+			local t = Locale.Lookup(GameEffects.GetObjectType(v) or "");
+			local s = GameEffects.GetObjectString(v);
+			sortedItems[v] = tostring(v) .. ";" .. tostring(name) .. ";" .. t .. ";" .. s .. ";Met;";
+		end
+		
+		for i,v in ipairs(objects) do
+			if(sortedItems[v] == nil) then
+				local name = Locale.Lookup(GameEffects.GetObjectName(v) or "");
+				local t = Locale.Lookup(GameEffects.GetObjectType(v) or "");
+				local s = GameEffects.GetObjectString(v);
+				sortedItems[v] = tostring(v) .. ";" .. tostring(name) .. ";" .. t .. ";" .. s .. ";Not Met;";
+			end
+		end
+		
+		for k,v in pairs(sortedItems) do
+			table.insert(listItems, v);
+		end
+	end
+	
+	return listItems;
+end</PopulateList>
+      <OnSelection>function(selection)
+	local str1 = string.match(selection, "%d+");
+	g_SubjectId = tonumber(str1);
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>1060</X>
+        <Y>48</Y>
+      </Location>
+      <Size>
+        <Width>434</Width>
+        <Height>184</Height>
+      </Size>
+      <Name>Inst:60;Id:300;State:40</Name>
+      <PopulateList>function()
+	local items = {};
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0) then
+		local ownerRequirements = GameEffects.GetModifierOwnerRequirementSet(g_ModifierId);
+		if(ownerRequirements ~= nil) then
+			local requirements = GameEffects.GetRequirementSetInnerRequirements(ownerRequirements) or {};
+			for i,v in ipairs(requirements) do
+				local definition = GameEffects.GetRequirementDefinition(v);
+				local state = GameEffects.GetRequirementState(v);
+				table.insert(items, tostring(v) .. ";" .. tostring(definition.Id) .. ";" .. tostring(state));
+			end
+		end
+	end
+	
+	return items;
+end
+</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>1060</X>
+        <Y>239</Y>
+      </Location>
+      <Size>
+        <Width>435</Width>
+        <Height>588</Height>
+      </Size>
+      <Name>Inst:60;Id:300;State:40</Name>
+      <PopulateList>function()
+	local items = {};
+	if(g_ModifierId ~= nil and tonumber(g_ModifierId) ~= 0 and g_SubjectId ~= nil and tonumber(g_SubjectId) ~= 0) then
+		local requirementSet = GameEffects.GetModifierTrackedOjectRequirementSet(g_ModifierId, g_SubjectId);
+		if(requirementSet ~= nil) then
+			local requirements = GameEffects.GetRequirementSetInnerRequirements(requirementSet) or {};
+			for i,v in ipairs(requirements) do
+				local definition = GameEffects.GetRequirementDefinition(v);
+				local state = GameEffects.GetRequirementState(v);
+				table.insert(items, tostring(v) .. ";" .. tostring(definition.Id) .. ";" .. tostring(state));
+			end
+		end
+	end
+	
+	return items;
+end</PopulateList>
+      <OnSelection>function(selection)
+
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

@@ -1,0 +1,535 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Forge</Name>
+  <App>Civ6</App>
+  <EnterAction>include("TunerUtilities")</EnterAction>
+  <ExitAction />
+  <CompatibleStates>
+    <string>FrontEnd</string>
+    <string>InGame</string>
+    <string>WorldBuilder</string>
+  </CompatibleStates>
+  <LoadStates />
+  <Actions>
+    <ActionData>
+      <Name>Play</Name>
+      <Action>if TunerUtilities then TunerUtilities:PlayAnimation() end</Action>
+      <Location>
+        <X>70</X>
+        <Y>456</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Reverse</Name>
+      <Action>if TunerUtilities then TunerUtilities:ReverseAnimation() end</Action>
+      <Location>
+        <X>120</X>
+        <Y>456</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Reset</Name>
+      <Action>if TunerUtilities then TunerUtilities:ResetAnimation() end</Action>
+      <Location>
+        <X>20</X>
+        <Y>456</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls>
+    <StringControlData>
+      <Name>Path</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedControlPath() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities then TunerUtilities:SetSelectedControlPath(value) end
+end</SetFunction>
+      <Location>
+        <X>0</X>
+        <Y>25</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Anchor</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor()or nil
+end</GetFunction>
+      <SetFunction>function(value)
+ if TunerUtilities then TunerUtilities:SetSelectedAnchor(value) end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>219</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Type</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedType() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>0</X>
+        <Y>53</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>ID</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedID() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>135</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Color</Name>
+      <GetFunction>function()
+	return "TODO";
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>200</X>
+        <Y>244</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Parent Context</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetParentContext() or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>380</X>
+        <Y>79</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Parent ID</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetParentID() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>380</X>
+        <Y>25</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Parent Type</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetParentType() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>380</X>
+        <Y>52</Y>
+      </Location>
+    </StringControlData>
+    <StringControlData>
+      <Name>Texture</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetTexture() or nil;
+end</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities then TunerUtilities:SetTexture(value) end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>421</Y>
+      </Location>
+    </StringControlData>
+  </StringControls>
+  <IntegerControls>
+    <IntegerControlData>
+      <Name>Y</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedOffsetY() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+	return if TunerUtilities then TunerUtilities:SetSelectedOffsetY(value) end
+end
+</SetFunction>
+      <Location>
+        <X>60</X>
+        <Y>163</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>X</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedOffsetX() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+	return if TunerUtilities then TunerUtilities:SetSelectedOffsetX(value) end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>163</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Width</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedSizeX() or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities then TunerUtilities:SetSelectedSizeX(value) end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>191</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+    <IntegerControlData>
+      <Name>Height</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedSizeY() or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities then TunerUtilities:SetSelectedSizeY(value) end
+end
+</SetFunction>
+      <Location>
+        <X>100</X>
+        <Y>191</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </IntegerControlData>
+  </IntegerControls>
+  <FloatControls>
+    <FloatControlData>
+      <Name>Alpha</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAlpha() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+ if TunerUtilities then TunerUtilities:SetSelectedAlpha(value) end
+end</SetFunction>
+      <Location>
+        <X>200</X>
+        <Y>215</Y>
+      </Location>
+      <DefaultValue>0</DefaultValue>
+    </FloatControlData>
+  </FloatControls>
+  <BooleanControls>
+    <BooleanControlData>
+      <Name>IsVisible</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedVisible() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities then TunerUtilities:SetSelectedVisible(value) end
+end</SetFunction>
+      <Location>
+        <X>200</X>
+        <Y>273</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>IsEnabled</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedEnabled() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+end</SetFunction>
+      <Location>
+        <X>200</X>
+        <Y>302</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Mouse Selection (toggle with CAPS LOCK when game has focus)</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetControlUnderMouse() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities then TunerUtilities:SetMousePick(value) end
+end</SetFunction>
+      <Location>
+        <X>0</X>
+        <Y>81</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>LT</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor() == "L,T" or nil
+end</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities and value then
+		TunerUtilities:SetSelectedAnchor("L,T");
+	end
+end
+
+
+</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>247</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>CT</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor() == "C,T" or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities and value then
+		TunerUtilities:SetSelectedAnchor("C,T");
+	end
+end
+
+</SetFunction>
+      <Location>
+        <X>70</X>
+        <Y>247</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>RT</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor() == "R,T" or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities and value then
+		TunerUtilities:SetSelectedAnchor("R,T");
+	end
+end
+
+</SetFunction>
+      <Location>
+        <X>120</X>
+        <Y>247</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>LC</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor() == "L,C" or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities and value then
+		TunerUtilities:SetSelectedAnchor("L,C");
+	end
+end
+</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>274</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>CC</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor() == "C,C" or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities and value then
+		TunerUtilities:SetSelectedAnchor("C,C");
+	end
+end
+
+</SetFunction>
+      <Location>
+        <X>70</X>
+        <Y>274</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>RC</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor() == "R,C" or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities and value then
+		TunerUtilities:SetSelectedAnchor("R,C");
+	end
+end
+
+</SetFunction>
+      <Location>
+        <X>120</X>
+        <Y>274</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>LB</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor() == "L,B" or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities and value then
+		TunerUtilities:SetSelectedAnchor("L,B");
+	end
+end
+</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>301</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>CB</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor() == "C,B" or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities and value then
+		TunerUtilities:SetSelectedAnchor("C,B");
+	end
+end
+</SetFunction>
+      <Location>
+        <X>70</X>
+        <Y>301</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>RB</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetSelectedAnchor() == "R,B" or nil
+end
+</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities and value then
+		TunerUtilities:SetSelectedAnchor("R,B");
+	end
+end</SetFunction>
+      <Location>
+        <X>120</X>
+        <Y>301</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Consumes All Mouse</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetConsumesAllMouse() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities then TunerUtilities:SetConsumesAllMouse(value) end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>339</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Consumes Mouse Button</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetConsumeMouseButton() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities then TunerUtilities:SetConsumeMouseButton(value) end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>366</Y>
+      </Location>
+    </BooleanControlData>
+    <BooleanControlData>
+      <Name>Consumes Mouse Wheel</Name>
+      <GetFunction>function()
+	return TunerUtilities and TunerUtilities:GetConsumeMouseWheel() or nil
+end</GetFunction>
+      <SetFunction>function(value)
+	if TunerUtilities then TunerUtilities:SetConsumeMouseWheel(value) end
+end</SetFunction>
+      <Location>
+        <X>20</X>
+        <Y>394</Y>
+      </Location>
+    </BooleanControlData>
+  </BooleanControls>
+  <TableViews />
+  <TreeViews>
+    <TreeViewData>
+      <ControlName>Context/Control Tree</ControlName>
+      <PopulateTree>function(viewRoot)
+  return TunerUtilities and TunerUtilities:GetContextTree(viewRoot) or nil
+end</PopulateTree>
+      <OnSelection>function(selection)
+  	if TunerUtilities then TunerUtilities:OnContextTreeSelection(selection) end
+end
+</OnSelection>
+      <Location>
+        <X>390</X>
+        <Y>112</Y>
+      </Location>
+      <Size>
+        <Width>481</Width>
+        <Height>207</Height>
+      </Size>
+    </TreeViewData>
+  </TreeViews>
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>390</X>
+        <Y>325</Y>
+      </Location>
+      <Size>
+        <Width>482</Width>
+        <Height>80</Height>
+      </Size>
+      <Name>#:20;Popup ID:220;Priority:40;Flags:100</Name>
+      <PopulateList>function()
+  return TunerUtilities and TunerUtilities:GetPopupNavigationOptions() or nil
+end</PopulateList>
+      <OnSelection>function(selection)
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+    <SelectionListData>
+      <Location>
+        <X>390</X>
+        <Y>410</Y>
+      </Location>
+      <Size>
+        <Width>482</Width>
+        <Height>80</Height>
+      </Size>
+      <Name>#:20;Modal ID:300</Name>
+      <PopulateList>function()
+  return TunerUtilities and TunerUtilities:GetModalNavigationOptions() or nil
+end</PopulateList>
+      <OnSelection>function(selection)
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists />
+</PanelData>

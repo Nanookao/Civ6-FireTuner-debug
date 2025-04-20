@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Heroes</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>TunerHeroesPanel</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>TunerHeroesPanel</string>
+  </LoadStates>
+  <Actions>
+    <ActionData>
+      <Name>+1 Lifespan</Name>
+      <Action>local pUnit = GetSelectedUnit();
+if (pUnit ~= nil) then
+	local int iLifespan = pUnit:GetLifespan();
+	pUnit:SetLifespan(iLifespan + 1);	
+end</Action>
+      <Location>
+        <X>260</X>
+        <Y>298</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+10 Lifespan</Name>
+      <Action>local pUnit = GetSelectedUnit();
+if (pUnit ~= nil) then
+	local int iLifespan = pUnit:GetLifespan();
+	pUnit:SetLifespan(iLifespan + 10);	
+end</Action>
+      <Location>
+        <X>260</X>
+        <Y>325</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+1 Renown</Name>
+      <Action>local pUnit = GetSelectedUnit();
+if (pUnit ~= nil) then
+	local int iVal = pUnit:GetRenown();
+	pUnit:SetRenown(iVal + 1);	
+end</Action>
+      <Location>
+        <X>370</X>
+        <Y>298</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+10 Renown</Name>
+      <Action>local pUnit = GetSelectedUnit();
+if (pUnit ~= nil) then
+	local int iVal = pUnit:GetRenown();
+	pUnit:SetRenown(iVal + 10);	
+end</Action>
+      <Location>
+        <X>370</X>
+        <Y>325</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>+1 Charge</Name>
+      <Action>local pUnit = GetSelectedUnit();
+if (pUnit ~= nil) then
+	pUnit:ChangeActionCharges(1);
+end</Action>
+      <Location>
+        <X>490</X>
+        <Y>298</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Discover Next Hero</Name>
+      <Action>local pGameHeroes = Game.GetHeroesManager();
+pGameHeroes:PlayerDiscoverNextHero(0);</Action>
+      <Location>
+        <X>10</X>
+        <Y>403</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls>
+    <StringControlData>
+      <Name>Selected Hero:120</Name>
+      <GetFunction>function()
+	local pUnit = GetSelectedUnit();
+	if (pUnit ~= nil) then
+		return GameInfo.Units[pUnit:GetType()].UnitType;
+	else
+		return "none";
+	end
+end</GetFunction>
+      <SetFunction>function(value)
+
+end</SetFunction>
+      <Location>
+        <X>260</X>
+        <Y>264</Y>
+      </Location>
+    </StringControlData>
+  </StringControls>
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <TreeViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists>
+    <SelectionListData>
+      <Location>
+        <X>260</X>
+        <Y>59</Y>
+      </Location>
+      <Size>
+        <Width>618</Width>
+        <Height>203</Height>
+      </Size>
+      <Name>ID:50;Active Hero Type:200;Charges:80;Lifespan:80;Renown:40</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local players = Game.GetPlayers({Alive = true, Major = true});
+	local ID = 1;
+	for i, player in ipairs(players) do
+		local playerID = player:GetID();
+		local playerUnits = players[i]:GetUnits();
+		for _, unit in playerUnits:Members() do
+			if (unit:IsHero()) then				
+				
+				local item = {};
+				
+				local unitType = unit:GetType();
+				local unitTypeStr = GameInfo.Units[unitType].UnitType;
+				local str = unit:GetID() .. 
+				";" .. unitTypeStr .. 
+				";" .. unit:GetActionCharges() .. 
+				";" .. unit:GetLifespan() ..
+				";" .. unit:GetRenown();
+
+				ID = ID + 1;
+				listItems[ID] = str;
+			end
+		end
+	end
+	return listItems;
+end
+
+</PopulateList>
+      <OnSelection>function(selection)
+	local selectionParts = {};
+	-- No split available?
+	local str1 = string.match(selection, "%d+");
+	local str2 = string.match(selection, "%d+", string.len(str1) + 1);
+	
+	g_SelectedUnitID = tonumber(str1);	
+end
+</OnSelection>
+      <Sorted>false</Sorted>
+    </SelectionListData>
+  </SelectionLists>
+  <MultiselectLists>
+    <MultiselectListData>
+      <Location>
+        <X>10</X>
+        <Y>59</Y>
+      </Location>
+      <Size>
+        <Width>232</Width>
+        <Height>338</Height>
+      </Size>
+      <Name>Discovered Heroes</Name>
+      <PopulateList>function()
+	local listItems = {};
+	local pGameHeroes = Game.GetHeroesManager();
+	local ID = 1;
+	for heroClass in GameInfo.HeroClasses() do
+		local item = {};
+		if (pGameHeroes == nil) then
+			item["Text"]="Game.HeroesManager is nil";			
+		else
+			item["Text"]=tostring(heroClass.HeroClassType);
+		end
+		item["Selected"] = pGameHeroes:IsHeroDiscovered(0, heroClass.Index);
+		ID = ID + 1;
+		listItems[ID] = item;     
+	end
+	
+	return listItems;
+end</PopulateList>
+      <OnSelected>function(selection)	
+	local pGameHeroes = Game.GetHeroesManager();
+	if pGameHeroes == nil then return; end
+
+	local heroClassType = tostring(selection);
+  local heroClass = GameInfo.HeroClasses[heroClassType];
+	if (heroClass ~= nil) then
+		pGameHeroes:SetHeroDiscovered(0, heroClass.Index, true);
+	end
+end
+</OnSelected>
+      <OnDeselected>function(selection)	
+	local pGameHeroes = Game.GetHeroesManager();
+	if pGameHeroes == nil then return; end
+
+	local heroClassType = tostring(selection);
+  local heroClass = GameInfo.HeroClasses[heroClassType];
+	if (heroClass ~= nil) then
+		pGameHeroes:SetHeroDiscovered(0, heroClass.Index, false);
+	end
+end
+</OnDeselected>
+    </MultiselectListData>
+  </MultiselectLists>
+</PanelData>

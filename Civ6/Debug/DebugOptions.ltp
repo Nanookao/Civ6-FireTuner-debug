@@ -1,0 +1,293 @@
+<?xml version="1.0"?>
+<PanelData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Debug Options</Name>
+  <App>Civ6</App>
+  <EnterAction />
+  <ExitAction />
+  <CompatibleStates>
+    <string>TunerAssetPreviewPanel</string>
+  </CompatibleStates>
+  <LoadStates>
+    <string>UI:TunerAssetPreviewPanel</string>
+  </LoadStates>
+  <Actions>
+    <ActionData>
+      <Name>Toggle Blocker Vis</Name>
+      <Action>AutoProfiler.RunCommand( "debug blockers" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>187</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Matt's 4K Screenshot Button</Name>
+      <Action>AutoProfiler.RunCommand( "ss settings 3840 2160 0 0" );
+AutoProfiler.RunCommand( "screenshot noui" );</Action>
+      <Location>
+        <X>90</X>
+        <Y>32</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Unit Focus</Name>
+      <Action>AutoProfiler.RunCommand( "toggle ocean" );
+	  AutoProfiler.RunCommand( "toggle landmarks" );
+	  AutoProfiler.RunCommand( "toggle clutter" );
+	  AutoProfiler.RunCommand( "toggle river" );
+	  AutoProfiler.RunCommand( "toggle naturalwonders" );
+	  AutoProfiler.RunCommand( "toggle coastwaves" );
+	  AutoProfiler.RunCommand( "toggle farms" );
+	  AutoProfiler.RunCommand( "toggle cities" );
+	  AutoProfiler.RunCommand( "toggle wonders" );
+	  AutoProfiler.RunCommand( "toggle dyngeo" );
+	  AutoProfiler.RunCommand( "toggle routes" );
+	  AutoProfiler.RunCommand( "toggle fow" );
+	  AutoProfiler.RunCommand( "commandset discard SkyPlane" );
+AutoProfiler.RunCommand( "commandset discard Terrain Cell Render" );</Action>
+      <Location>
+        <X>290</X>
+        <Y>32</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Reset Shaders</Name>
+      <Action>AutoProfiler.RunCommand( "shaders reset" );</Action>
+      <Location>
+        <X>530</X>
+        <Y>29</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Basecolor</Name>
+      <Action>AutoProfiler.RunCommand( "shaders basecolor" );</Action>
+      <Location>
+        <X>460</X>
+        <Y>55</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Metalness</Name>
+      <Action>AutoProfiler.RunCommand( "shaders metalness" );</Action>
+      <Location>
+        <X>460</X>
+        <Y>80</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Explicit AO</Name>
+      <Action>AutoProfiler.RunCommand( "shaders ao" );
+</Action>
+      <Location>
+        <X>460</X>
+        <Y>105</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Diffuse</Name>
+      <Action>AutoProfiler.RunCommand( "shaders diffuse" );</Action>
+      <Location>
+        <X>460</X>
+        <Y>130</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Normal</Name>
+      <Action>AutoProfiler.RunCommand( "shaders normal" );</Action>
+      <Location>
+        <X>460</X>
+        <Y>155</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Specular</Name>
+      <Action>AutoProfiler.RunCommand( "shaders spec" );</Action>
+      <Location>
+        <X>460</X>
+        <Y>180</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Gloss</Name>
+      <Action>AutoProfiler.RunCommand( "shaders gloss" );</Action>
+      <Location>
+        <X>460</X>
+        <Y>205</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Fuzz</Name>
+      <Action>AutoProfiler.RunCommand( "shaders fuzz" );</Action>
+      <Location>
+        <X>460</X>
+        <Y>230</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Bounce</Name>
+      <Action>AutoProfiler.RunCommand( "shaders bounce" );</Action>
+      <Location>
+        <X>460</X>
+        <Y>255</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Isolate Basecolor</Name>
+      <Action>AutoProfiler.RunCommand( "shaders show_basecolor" );</Action>
+      <Location>
+        <X>600</X>
+        <Y>55</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Isolate Metalness</Name>
+      <Action>AutoProfiler.RunCommand( "shaders show_metalness" );</Action>
+      <Location>
+        <X>600</X>
+        <Y>80</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Isolate Explicit AO</Name>
+      <Action>AutoProfiler.RunCommand( "shaders show_ao" );</Action>
+      <Location>
+        <X>600</X>
+        <Y>105</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Highlight Opacity</Name>
+      <Action>AutoProfiler.RunCommand( "shaders show_opacity" );</Action>
+      <Location>
+        <X>600</X>
+        <Y>144</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>White Particles</Name>
+      <Action>AutoProfiler.RunCommand( "shaders particles" );</Action>
+      <Location>
+        <X>600</X>
+        <Y>171</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Show Miplevels (Relative)</Name>
+      <Action>AutoProfiler.RunCommand( "shaders mip_relative" );</Action>
+      <Location>
+        <X>600</X>
+        <Y>198</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Show Miplevels (Absolute)</Name>
+      <Action>AutoProfiler.RunCommand( "shaders mip_absolute" );</Action>
+      <Location>
+        <X>600</X>
+        <Y>224</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Free Camera</Name>
+      <Action>AutoProfiler.RunCommand( "camera free" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>32</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Model Wireframe</Name>
+      <Action>AutoProfiler.RunCommand( "toggle wireframe" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>85</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Terrain Wireframe</Name>
+      <Action>AutoProfiler.RunCommand( "terrain toggle wireframe" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>111</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle VFX</Name>
+      <Action>AutoProfiler.RunCommand( "toggle vfx" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>162</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>GTA Game-Over Simulator</Name>
+      <Action>AutoProfiler.RunCommand( "toggle ui" );
+AutoProfiler.RunCommand( "set desaturation 1" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>272</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Restore Saturation</Name>
+      <Action>AutoProfiler.RunCommand( "set desaturation 0" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>299</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Water</Name>
+      <Action>AutoProfiler.RunCommand( "toggle ocean" );
+AutoProfiler.RunCommand( "toggle river" );
+AutoProfiler.RunCommand( "toggle wavecrashes" );
+AutoProfiler.RunCommand( "toggle coastwaves" );
+
+</Action>
+      <Location>
+        <X>10</X>
+        <Y>137</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle UI</Name>
+      <Action>AutoProfiler.RunCommand( "toggle ui" );</Action>
+      <Location>
+        <X>10</X>
+        <Y>59</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Toggle Procedural AO</Name>
+      <Action>AutoProfiler.RunCommand( "toggle ao" );</Action>
+      <Location>
+        <X>460</X>
+        <Y>299</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Disable Overlay</Name>
+      <Action>AutoProfiler.RunCommand( "commandset zero OverlayPass" );</Action>
+      <Location>
+        <X>210</X>
+        <Y>83</Y>
+      </Location>
+    </ActionData>
+    <ActionData>
+      <Name>Enable Overlay</Name>
+      <Action>AutoProfiler.RunCommand( "commandset reset OverlayPass" );</Action>
+      <Location>
+        <X>210</X>
+        <Y>107</Y>
+      </Location>
+    </ActionData>
+  </Actions>
+  <StringControls />
+  <IntegerControls />
+  <FloatControls />
+  <BooleanControls />
+  <TableViews />
+  <DataViews />
+  <StatTrackers />
+  <SelectionLists />
+  <MultiselectLists />
+</PanelData>
