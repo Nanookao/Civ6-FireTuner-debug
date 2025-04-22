@@ -234,7 +234,7 @@ function TunerCity:SelectDistrictOfBuilding(dbBuildingInfo :table, districtIDStr
     end
   else
     pDistrict = districtID and pDistricts.GetDistrictByID and pDistricts:GetDistrictByID(districtID)
-      or pDistricts:GetDistrictByIndex(dbBuildingInfo.Index)
+      or pDistricts.GetDistrictByIndex and pDistricts:GetDistrictByIndex(dbBuildingInfo.Index)
   end
 
   if not pDistrict then
@@ -384,6 +384,8 @@ end
 
 
 function TunerCity:ProcessCityDistricts(pCity :table, d :table)
+  if not d.pDistricts.GetDistrictByIndex then  return self:ProcessCityDistrictsUI(pCity, d)  end
+
   pCity.Districts = {}
   -- pCity.Districts.NoDistrict = nil
   -- pCity.DistrictsByPlotID = {}
@@ -403,7 +405,7 @@ function TunerCity:ProcessCityDistricts(pCity :table, d :table)
 end
 
 -- TODO: keep?
-function TunerCity:ProcessCityDistricts2(pCity :table, d :table)
+function TunerCity:ProcessCityDistrictsUI(pCity :table, d :table)
   pCity.Districts = {}
   local numDistricts = d.pDistricts:GetNumDistricts()
   for dbBuildingInfo in GameInfo.Districts() do
@@ -418,7 +420,7 @@ function TunerCity:ProcessCityDistricts2(pCity :table, d :table)
 
         pCity.Districts[i] = pDistrict
         pCity.Districts[dbBuildingInfo.DistrictType] = pDistrict
-        local plotID = Map.GetPlotIndex( pDistrict.GetLocation() )
+        local plotID = Map.GetPlotIndex( pDistrict:GetLocation() )
         -- pCity.DistrictsByPlotID[plotID] = pDistrict
         pDistrict.BuildingTypes = {}
       end
@@ -431,11 +433,11 @@ end
 function TunerCity:ProcessCityBuildings(pCity :table, d :table)
   for dbBuildingInfo in GameInfo.Buildings() do
     local buildingIndex = dbBuildingInfo.Index
-    local plotID = d.pBuildings:GetBuildingLocation(buildingIndex)
+    local plotID = d.pBuildings.GetBuildingLocation and d.pBuildings:GetBuildingLocation(buildingIndex)
     local complete = d.pBuildings.HasBuilding and d.pBuildings:HasBuilding(buildingIndex)
     local placed = d.pBuildQueue.HasBuildingBeenPlaced and d.pBuildQueue:HasBuildingBeenPlaced(buildingIndex)
     -- local pDistrict = pCity.DistrictsByPlotID[plotID]
-    local pDistrict = d.pDistricts:GetDistrictAtLocation(plotID)
+    local pDistrict = d.pDistricts.GetDistrictAtLocation and d.pDistricts:GetDistrictAtLocation(plotID)
       or dbBuildingInfo.IsWonder and pCity.Districts.DISTRICT_WONDER
       or pCity.Districts[dbBuildingInfo.PrereqDistrict]
 
@@ -509,7 +511,7 @@ function TunerCity:FormatDistrictOrBuilding(dbBuildingInfo :table, d :table, pDi
     placed = d.pBuildQueue.HasBuildingBeenPlaced and d.pBuildQueue:HasBuildingBeenPlaced(buildingIndex)
     pillaged = d.pBuildings:IsPillaged(buildingIndex)
     if d.shortID then  ID = ID:gsub("^BUILDING_", "")  end
-    local plot = Map.GetPlotByIndex( d.pBuildings:GetBuildingLocation(buildingIndex) )
+    local plot = Map.GetPlotByIndex( d.pBuildings.GetBuildingLocation and d.pBuildings:GetBuildingLocation(buildingIndex) )
     location = plot and plot:GetX()..","..plot:GetY()
   end
 

@@ -18,10 +18,12 @@ if TunerCity and TunerCity.SetFocused then  TunerCity:SetFocused(true)  end
   <CompatibleStates>
     <string>GameCore_Tuner</string>
     <string>TunerCityPanel</string>
-    <string>CityPanel</string>
     <string>Main State</string>
     <string>InGame</string>
   </CompatibleStates>
+  <InCompatibleStates>
+    <string>CityPanel</string>
+  </InCompatibleStates>
   <LoadStates>
     <string>TunerCityPanel</string>
   </LoadStates>
